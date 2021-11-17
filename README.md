@@ -1,2 +1,5 @@
-# jals
+# JALS
+
 Just Another Link Shortener
+
+---
