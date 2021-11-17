@@ -10,11 +10,16 @@ export default mongoose.model('Links', new mongoose.Schema({
 		type: Date,
 		required: true
 	},
-	flags: {
-		type: Number,
-		required: true,
-		default: 0
-	}
+	flags: [{
+		note: {
+			type: String,
+			required: true
+		},
+		time: {
+			type: Date,
+			required: true
+		}
+	}]
 },{
 	id: false,
 	versionKey: false

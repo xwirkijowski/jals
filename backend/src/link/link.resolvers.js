@@ -7,6 +7,9 @@ export default {
 		},
 		clicks: (root, _, {dataSources}) => {
 			return (async () => { return dataSources.click.countDocuments({link: root._id}); })();
+		},
+		flagCount: (root) => {
+			return root.flags.length;
 		}
 	},
 	LinkConnection: {
@@ -52,8 +55,13 @@ export default {
 			})();
 		},
 		flagLink: (_, {input}, {dataSources}) => {
+			const flag = {
+				note: input.note,
+				time: new Date()
+			}
+
 			return (async () => {
-				return { link: (await dataSources.link.findOneAndUpdate({_id: input._id}, {$inc: {flags: 1}})) };
+				return { link: (await dataSources.link.findOneAndUpdate({_id: input._id}, {$push: {flags: flag}}, {new: true})) };
 			})();
 		},
 		removeLink: (_, {input}, {dataSources}) => {

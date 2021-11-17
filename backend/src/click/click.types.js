@@ -1,7 +1,7 @@
 export default `
 	type Click {
 		_id: ID!
-		link: ID!
+		link: Link!
 		time: Timestamp!
 		platform: String!
 		isMobile: Boolean!

@@ -5,7 +5,13 @@ export default `
 		url: String!
 		created: Timestamp!
 		clicks: Int!
-		flags: Int!
+		flagCount: Int!
+		flags: [LinkFlag!]
+	}
+	
+	type LinkFlag {
+		note: String!
+		time: Timestamp!
 	}
 	
 	type LinkConnection {

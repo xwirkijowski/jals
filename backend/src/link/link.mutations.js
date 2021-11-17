@@ -9,6 +9,7 @@ export default `
 
 	input FlagLinkInput {
 		_id: ID!
+		note: String!
 	}
 	
 	type FlagLinkPayload {
