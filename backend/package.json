@@ -3,14 +3,13 @@
   "version": "0.0.1",
   "description": "",
   "keywords": [],
-  "author": "Sebastian Wirkijowski <sebastian@wirkijowski.dev> (https://wirkijowski.dev/)",
+  "homepage": "",
   "license": "ISC",
-  "private": true,
+  "author": "Sebastian Wirkijowski <sebastian@wirkijowski.dev> (https://wirkijowski.dev/)",
   "main": "main.js",
   "scripts": {
     "start": "babel-node main.js",
-    "dev": "nodemon --exec babel-node --presets=@babel/preset-env -- main.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon --exec babel-node --presets=@babel/preset-env -- main.js"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
@@ -25,5 +24,6 @@
     "graphql": "^16.0.1",
     "graphql-tools": "^8.2.0",
     "mongoose": "^6.0.13"
-  }
+  },
+  "private": true
 }

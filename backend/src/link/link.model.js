@@ -10,8 +10,7 @@ export default mongoose.model('Links', new mongoose.Schema({
 		type: Date,
 		required: true
 	},
-	clicks: {
-		// @todo Remove when linkData ready
+	flags: {
 		type: Number,
 		required: true,
 		default: 0
@@ -19,4 +18,4 @@ export default mongoose.model('Links', new mongoose.Schema({
 },{
 	id: false,
 	versionKey: false
-}) )
+}));

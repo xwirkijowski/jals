@@ -5,6 +5,7 @@ export default `
 		url: String!
 		created: Timestamp!
 		clicks: Int!
+		flags: Int!
 	}
 	
 	type LinkConnection {
@@ -26,6 +27,5 @@ export default `
 			perPage: Int
 			target: String
 		): LinkConnection!
-		getAllLinks: [Link]
 	}
 `;

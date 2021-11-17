@@ -1,11 +1,17 @@
-// @todo Remove clickLink when linkData ready
-
 export default `
 	input LinkInput {
 		target: String!
 	}
 	
 	type AddLinkPayload {
+		link: Link
+	}
+
+	input FlagLinkInput {
+		_id: ID!
+	}
+	
+	type FlagLinkPayload {
 		link: Link
 	}
 	
@@ -17,17 +23,9 @@ export default `
 		deletedId: ID
 	}
 
-	input ClickLinkInput {
-		_id: ID!
-	}
-	
-	type ClickLinkPayload {
-		clickedId: ID
-	}
-
 	extend type Mutation {
 		addLink(input: LinkInput!): AddLinkPayload
-		removeLink(input: RemoveLinkInput!): RemoveLinkPayload
-		clickLink(input: ClickLinkInput!): ClickLinkPayload
+		flagLink(input: FlagLinkInput!): FlagLinkPayload
+		removeLink(input: RemoveLinkInput!): RemoveLinkPayload 
 	}
 `;

@@ -1,9 +1,12 @@
+import {UserInputError} from "apollo-server";
+
 export default {
 	Link: {
-		// @todo Resolve clicks by counting logs related to Link when linkData ready
-
 		url: (root, _, {globals}) => {
 			return `${globals.host}/${root._id}`;
+		},
+		clicks: (root, _, {dataSources}) => {
+			return (async () => { return dataSources.click.countDocuments({link: root._id}); })();
 		}
 	},
 	LinkConnection: {
@@ -15,12 +18,12 @@ export default {
 		node: (root) => { return root; }
 	},
 	Query: {
-		getLink: (root, args, {dataSources}) => {
+		getLink: (_, args, {dataSources}) => {
 			return (async () => {
 				return dataSources.link.findOne({_id: args.input._id});
 			})();
 		},
-		getLinks: (root, args, {pagination, helpers, dataSources}) => {
+		getLinks: (_, args, {pagination, helpers, dataSources}) => {
 			const paginationData = helpers.prepPagination(args, pagination)
 
 			const query = {}
@@ -36,32 +39,24 @@ export default {
 					pageInfo: helpers.constructPageInfo(total, pageCount, paginationData)
 				}
 			})();
-		},
-		getAllLinks: (root, _, {dataSources}) => {
-			return (async () => {
-				return dataSources.link.find();
-			})();
 		}
 	},
 	Mutation: {
-		addLink: (root, {input}, {dataSources}) => {
+		addLink: (_, {input}, {dataSources}) => {
 			// @todo Check if input.target is valid and not on blacklist
 
 			input.created = new Date();
-			input.clicks = 0
 
 			return (async () => {
 				return { link: dataSources.link.create(input) };
 			})();
 		},
-		clickLink: (root, {input}, {dataSources}) => {
-			// @todo Remove when linkData ready
-
+		flagLink: (_, {input}, {dataSources}) => {
 			return (async () => {
-				return { clickedId: (await dataSources.link.findOneAndUpdate({_id: input._id}, {$inc: {clicks: 1}}))._id };
+				return { link: (await dataSources.link.findOneAndUpdate({_id: input._id}, {$inc: {flags: 1}})) };
 			})();
 		},
-		removeLink: (root, {input}, {dataSources}) => {
+		removeLink: (_, {input}, {dataSources}) => {
 			// @todo Check if admin
 
 			return (async () => {

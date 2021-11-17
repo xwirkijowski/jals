@@ -39,6 +39,7 @@ mongoose.connect(config.database).then(() => {
 		dataSources: () => {
 			return {
 				link: models.link,
+				click: models.click
 			}
 		}
 	});
