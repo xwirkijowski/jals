@@ -1,0 +1,64 @@
+@import '../../assets/scss/variables.module';
+
+.notification {
+	color: $colorLight;
+	background: $colorPrimary;
+	padding: 15px 20px;
+	font-weight: bold;
+	border-radius: $border-radius;
+	width: 100%;
+	line-height: 17px;
+	box-shadow: $box-shadow rgba($colorDark, .25);
+	transition: all 200ms $transition;
+	animation: notificationAnimation both 300ms;
+	opacity: 0;
+
+	&-success {
+		background: $colorSuccess;
+		box-shadow: $box-shadow rgba($colorSuccess, .25);
+	}
+
+	&-danger {
+		background: $colorDanger;
+		box-shadow: $box-shadow rgba($colorDanger, .25);
+	}
+
+	&-warning {
+		background: $colorWarning;
+		box-shadow: $box-shadow rgba($colorWarning, .25);
+	}
+
+	&-info {
+		background: $colorInfo;
+		box-shadow: $box-shadow rgba($colorInfo, .25);
+	}
+
+	&-help {
+		background: $colorHelp;
+		box-shadow: $box-shadow rgba($colorHelp, .25);
+	}
+
+	> a {
+		text-decoration: underline;
+		color: inherit;
+		opacity: .75;
+
+		&:hover {
+			opacity: 1;
+		}
+	}
+}
+
+@keyframes notificationAnimation {
+	0% {
+		opacity: 0;
+		transform: scale(0);
+	}
+	75% {
+		opacity: 0;
+	}
+	100% {
+		opacity: 1;
+		transform: scale(1);
+	}
+}

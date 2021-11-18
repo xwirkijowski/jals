@@ -1,0 +1,15 @@
+@import '../../assets/scss/variables.module';
+
+.container {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	flex: none;
+	flex-grow: 0;
+	padding: $padding;
+	max-width: 505px;
+
+	> *:not(:last-child) {
+		margin-bottom: $padding;
+	}
+}
