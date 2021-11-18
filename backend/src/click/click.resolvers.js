@@ -44,7 +44,7 @@ export default {
 			input.time = new Date();
 
 			return (async () => {
-				if (!(await dataSources.link.findOne({_id: input.link}))) throw new UserInputError("No links with this _id found");
+				if (!(await dataSources.link.findOne({_id: input.link}))) throw new UserInputError("No links with this _id found.");
 
 				return { click: dataSources.click.create(input) };
 			})();

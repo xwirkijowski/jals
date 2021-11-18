@@ -46,7 +46,19 @@ export default {
 	},
 	Mutation: {
 		addLink: (_, {input}, {dataSources}) => {
-			// @todo Check if input.target is valid and not on blacklist
+			// @todo Check if input.target is not on blacklist
+
+			const isValidUrl = (()=> {
+				try {
+					new URL(input.target);
+				} catch (_) {
+					return false;
+				}
+
+				return true
+			})();
+
+			if (!isValidUrl) throw new UserInputError('Please provide a valid target URL.', ['input', 'target'])
 
 			input.created = new Date();
 
