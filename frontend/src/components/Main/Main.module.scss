@@ -1,0 +1,12 @@
+@import '../../assets/scss/variables.module';
+
+.main {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	flex: none;
+	align-self: stretch;
+	flex-grow: 1;
+	padding: 0;
+}

@@ -1,0 +1,40 @@
+@import '../../assets/scss/variables.module';
+
+.footer {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	flex: none;
+	flex-grow: 0;
+	padding: ($padding/2);
+
+	.link-list {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		flex: none;
+		flex-grow: 1;
+		padding: ($padding/2);
+		margin: 0;
+
+		&__item {
+
+			&__link {
+
+			}
+		}
+	}
+
+	&__copyright {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		flex: none;
+		flex-grow: 0;
+		justify-content: flex-end;
+		padding: ($padding/2);
+
+		font-size: 12px;
+		line-height: 15px;
+	}
+}
