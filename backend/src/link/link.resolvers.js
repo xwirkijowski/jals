@@ -23,7 +23,7 @@ export default {
 	Query: {
 		getLink: (_, args, {dataSources}) => {
 			return (async () => {
-				return dataSources.link.findOne({_id: args.input._id});
+				return dataSources.link.findOne({_id: args._id});
 			})();
 		},
 		getLinks: (_, args, {pagination, helpers, dataSources}) => {
