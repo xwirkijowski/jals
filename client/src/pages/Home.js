@@ -1,4 +1,5 @@
 import React from 'react';
+import {Link} from "react-router-dom";
 import {
 	gql,
 	useMutation
@@ -12,11 +13,10 @@ import {
 	Input
 } from '../components/Form';
 import Notification from "../components/Notification";
-import {Link} from "react-router-dom";
 
 
 const Home = () => {
-	const [formState, setFormState] = React.useState({
+	const [state, setState] = React.useState({
 		linkToShorten: ''
 	});
 
@@ -32,8 +32,8 @@ const Home = () => {
         }
 	`, {
 		variables: {
-			"input": {
-				"target": formState.linkToShorten
+			input: {
+				target: state.linkToShorten
 			}
 		}
 	});
@@ -47,7 +47,7 @@ const Home = () => {
 			<p className={`${'big'}`}>Your URL will be exchanged for a unique short URL code.</p>
 			<Form onSubmit={e => { e.preventDefault(); addLink() }}>
 				<InputGroup>
-					<Input required type="text" value={formState.url} onChange={(e) => setFormState({ ...formState, linkToShorten: e.target.value })} placeholder="Your link..." />
+					<Input required type="text" value={state.url} onChange={(e) => setState({ ...state, linkToShorten: e.target.value })} placeholder="Your link..." />
 					<Button disabled={(loading)} element="button" type="submit" label="Shorten" inline="true" />
 				</InputGroup>
 			</Form>

@@ -3,9 +3,14 @@ import {
 	Navigate,
 	useParams
 } from "react-router-dom";
+import {
+	gql,
+	useMutation,
+	useQuery
+} from "@apollo/client";
 
 import Container from "../components/Container";
-import {gql, useMutation, useQuery} from "@apollo/client";
+import Notification from "../components/Notification";
 
 // @todo Add confirmation before proceeding to flagged links
 
@@ -13,60 +18,59 @@ const Redirect = () => {
 	const params = useParams();
 	const isValid = (params._id && (/^[a-f\d]{24}$/i.test(params._id)));
 
-	let target;
-
 	const { loading, error, data } = useQuery(gql`
         query GetLink($_id: ID!) {
             getLink(_id: $_id) {
                 _id
                 target
-                clicks
+				flagCount
             }
         }
 	`, {
 		skip: !isValid,
 		variables: {
-			"_id": params._id
-		},
-		onCompleted: (data) => { target = data.getLink.target; }
+			_id: params._id
+		}
 	});
 
 	// @todo Replace when Client Hints out
 	const clickData = navigator.userAgentData;
-
-	let clicked = false;
 
 	const [addClick] = useMutation(gql`
         mutation addClick($input: ClickInput) {
             addClick(input: $input) {
                 click {
                     _id
-					link {
-						target
-					}
                 }
             }
         }
 	`, {
 		variables: {
-			"input": {
-				"link": params._id,
-				"platform": clickData.platform,
-				"isMobile": clickData.mobile
+			input: {
+				link: params._id,
+				platform: clickData.platform,
+				isMobile: clickData.mobile
 			}
 		},
-		onCompleted: (data) => {
-			clicked = true;
-			window.location.replace(data.addClick.click.link.target);
+		onCompleted: () => {
+			window.location.replace(data.getLink.target);
 		}
 	});
 
-	useEffect(addClick, [clicked]);
+	useEffect(addClick, []);
 
 	if (!isValid) return (<Navigate to="/" replace={true} />);
 
-	if (loading) return <p>Retrieving data...</p>;
-	if (error) return <p>Error! {error}</p>;
+	if (loading) return (
+		<Container>
+			<h2>Retrieving data...</h2>
+		</Container>
+	);
+	if (error) return (
+		<Container>
+			<Notification color={"danger"}>Error! {error.message}</Notification>
+		</Container>
+	);
 
 	if (!data || !data.getLink) return (<Navigate to="/" replace={true} />);
 

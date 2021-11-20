@@ -1,5 +1,8 @@
 import React from 'react';
-import {Navigate, useParams} from "react-router-dom";
+import {
+	Navigate,
+	useParams
+} from "react-router-dom";
 import {
 	gql,
 	useQuery
@@ -37,8 +40,16 @@ const Info = () => {
 
 	if (!isValid) return (<Navigate to="/" replace={true} />);
 
-	if (loading) return <p>Loading...</p>;
-	if (error) return <p>Error! {error}</p>;
+	if (loading) return (
+		<Container>
+			<h2>Retrieving data...</h2>
+		</Container>
+	);
+	if (error) return (
+		<Container>
+			<Notification color={"danger"}>Error! {error.message}</Notification>
+		</Container>
+	);
 
 	if (!data || !data.getLink ) return (<Navigate to="/" replace={true} />);
 
