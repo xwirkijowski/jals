@@ -2,7 +2,6 @@ export default `
 	type Link {
 		_id: ID!
 		target: String!
-		url: String!
 		created: Timestamp!
 		clicks: Int!
 		flagCount: Int!

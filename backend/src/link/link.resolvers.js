@@ -2,9 +2,6 @@ import {UserInputError} from "apollo-server";
 
 export default {
 	Link: {
-		url: (root, _, {globals}) => {
-			return `${globals.host}/${root._id}`;
-		},
 		clicks: (root, _, {dataSources}) => {
 			return (async () => { return dataSources.click.countDocuments({link: root._id}); })();
 		},
