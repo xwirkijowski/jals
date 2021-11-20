@@ -72,6 +72,6 @@ const Info = () => {
 			</Row>
 		</Container>
 	)
-}
+};
 
 export default Info;

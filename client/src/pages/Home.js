@@ -57,6 +57,6 @@ const Home = () => {
 			</p>
 		</Container>
 	)
-}
+};
 
 export default Home;

@@ -9,6 +9,6 @@ const Modal = ({open, children}) => {
 			{children}
 		</div>
 	)
-}
+};
 
 export default Modal;

@@ -10,6 +10,6 @@ const Footer = () => {
 			<p className={`${styles.footer__copyright}  ${'disabled'}`}>Made by Sebastian Wirkijowski</p>
 		</footer>
 	)
-}
+};
 
 export default Footer;

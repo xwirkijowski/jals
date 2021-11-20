@@ -9,6 +9,6 @@ const Notification = ({color, children}) => {
 			{children}
 		</div>
 	)
-}
+};
 
 export default Notification;

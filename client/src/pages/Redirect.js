@@ -28,7 +28,7 @@ const Redirect = () => {
 		variables: {
 			"_id": params._id
 		},
-		onCompleted: (data) => { target = data.getLink.target }
+		onCompleted: (data) => { target = data.getLink.target; }
 	});
 
 	// @todo Replace when Client Hints out
@@ -61,7 +61,7 @@ const Redirect = () => {
 		}
 	});
 
-	useEffect(addClick, [clicked])
+	useEffect(addClick, [clicked]);
 
 	if (!isValid) return (<Navigate to="/" replace={true} />);
 
@@ -77,6 +77,6 @@ const Redirect = () => {
 			</Container>
 		</React.Fragment>
 	)
-}
+};
 
 export default Redirect;

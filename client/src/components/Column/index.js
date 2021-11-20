@@ -9,6 +9,6 @@ const Column = ({children, shrink}) => {
 			{children}
 		</div>
 	)
-}
+};
 
 export default Column;

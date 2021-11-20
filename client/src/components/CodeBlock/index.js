@@ -9,6 +9,6 @@ const CodeBlock = ({children}) => {
 			</code>
 		</pre>
 	)
-}
+};
 
 export default CodeBlock;

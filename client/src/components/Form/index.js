@@ -9,7 +9,7 @@ export const Input = ({type, placeholder, required, value, onChange}) => {
 	return (
 		<input required={required} type={type} className={`${inputStyles.input} ${inputStyles[typeClass]}`} placeholder={placeholder} value={value} onChange={onChange} />
 	)
-}
+};
 
 export const InputGroup = ({children}) => {
 	return (
@@ -17,7 +17,7 @@ export const InputGroup = ({children}) => {
 			{children}
 		</div>
 	)
-}
+};
 
 export const Form = ({children, onSubmit}) => {
 	return (
@@ -25,5 +25,4 @@ export const Form = ({children, onSubmit}) => {
 			{children}
 		</form>
 	)
-}
-
+};

@@ -7,6 +7,6 @@ const Row = ({children}) => {
 			{children}
 		</div>
 	)
-}
+};
 
 export default Row;
