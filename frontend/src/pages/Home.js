@@ -20,21 +20,17 @@ const Home = () => {
 		linkToShorten: ''
 	});
 
-	const mutation = gql`
+	const [addLink, { data, loading, error }] = useMutation(gql`
         mutation addLink($input: LinkInput!) {
             addLink(input: $input) {
                 link {
                     _id
                     target
-                    url
                     created
-                    clicks
                 }
             }
         }
-	`;
-
-	const [addLink, { data, loading, error }] = useMutation(mutation, {
+	`, {
 		variables: {
 			"input": {
 				"target": formState.linkToShorten
@@ -44,14 +40,14 @@ const Home = () => {
 
 	return (
 		<Container>
-			{ (loading) && <Notification color={"info"}>Shortening in progress...</Notification>}
-			{ (error) && <Notification color={"danger"}>Error! {error.message}</Notification>}
-			{ (data) && <Notification color={"success"}>Link created! Your short code: <Link to={`/${data.addLink.link._id}`}>{data.addLink.link._id}</Link></Notification>}
+			{(loading) && <Notification color={"info"}>Shortening in progress...</Notification>}
+			{(error) && <Notification color={"danger"}>Error! {error.message}</Notification>}
+			{(data) && <Notification color={"success"}>Link created! Your short code: <Link to={`/${data.addLink.link._id}`}>{data.addLink.link._id}</Link></Notification>}
 			<h2>Paste the URL you want to shorten below</h2>
 			<p className={`${'big'}`}>Your URL will be exchanged for a unique short URL code.</p>
 			<Form onSubmit={e => { e.preventDefault(); addLink() }}>
 				<InputGroup>
-					<Input required type="text" value={formState.url} onChange={(e) => setFormState({ ...formState, linkToShorten: e.target.value }) } placeholder="Your link..." />
+					<Input required type="text" value={formState.url} onChange={(e) => setFormState({ ...formState, linkToShorten: e.target.value })} placeholder="Your link..." />
 					<Button disabled={(loading)} element="button" type="submit" label="Shorten" inline="true" />
 				</InputGroup>
 			</Form>

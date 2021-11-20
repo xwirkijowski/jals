@@ -18,20 +18,17 @@ const Info = () => {
 	const params = useParams();
 	const isValid = (params._id && (/^[a-f\d]{24}$/i.test(params._id)));
 
-	const query = gql`
+	const { loading, error, data } = useQuery(gql`
         query GetLink($_id: ID!) {
             getLink(_id: $_id) {
                 _id
                 target
-                url
                 created
                 clicks
                 flagCount
             }
         }
-	`;
-
-	const { loading, error, data } = useQuery(query, {
+	`, {
 		skip: !isValid,
 		variables: {
 			_id: params._id
@@ -42,8 +39,6 @@ const Info = () => {
 
 	if (loading) return <p>Loading...</p>;
 	if (error) return <p>Error! {error}</p>;
-
-	console.log(data)
 
 	if (!data || !data.getLink ) return (<Navigate to="/" replace={true} />);
 
