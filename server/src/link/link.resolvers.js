@@ -36,7 +36,7 @@ export default {
 
 				return {
 					edges: data,
-					pageInfo: helpers.constructPageInfo(total, pageCount, paginationData)
+					pageInfo: {total, pageCount, paginationData}
 				}
 			})();
 		}

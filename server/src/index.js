@@ -5,6 +5,7 @@ import click from './click';
 
 import { query, utils } from './types';
 import { mutation } from './mutations';
+import { resolvers } from './resolvers';
 
 export const schema = makeExecutableSchema({
 	typeDefs: [
@@ -15,6 +16,7 @@ export const schema = makeExecutableSchema({
 		click.types
 	],
 	resolvers: [
+		resolvers,
 		link.resolvers,
 		click.resolvers
 	]

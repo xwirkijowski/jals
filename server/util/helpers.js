@@ -23,33 +23,4 @@ f.prepPagination = (args, pagination) => {
 	}
 }
 
-/**
- * Constructs PageInfo type for paginated output (connection)
- *
- * @author	Sebastian Wirkijowski <sebastian@wirkijowski.dev>
- *
- * @param 	total		number	Total query document count.
- * @param 	pageCount	number	Calculated query page count.
- * @param 	pagination	object	Data prepared by f.prepPagination().
- *
- * @returns {{
- * 		total: number,
- * 		perPage: number,
- * 		pageCount: number,
- * 		currentPage: number,
- * 		hasNextPage: boolean,
- * 		hasPreviousPage: boolean
- * }}					object	Constructed PageInfo.
- */
-f.constructPageInfo = (total, pageCount, pagination) => {
-	return {
-		total: total,
-		perPage: pagination.perPage,
-		pageCount: pageCount,
-		currentPage: pagination.page,
-		hasNextPage: (pagination.page < pageCount),
-		hasPreviousPage: (pagination.page <= pageCount + 1 && pagination.page > 1)
-	}
-}
-
 export default f;
