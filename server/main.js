@@ -2,6 +2,8 @@ import { config } from './config';
 
 import {ApolloServer} from "apollo-server";
 import mongoose from "mongoose";
+import * as Sentry from "@sentry/node";
+import * as Tracing from "@sentry/tracing";
 
 import log from './util/logger';
 import helpers from './util/helpers';
@@ -40,3 +42,23 @@ mongoose.connect(config.database).then(() => {
 	log.error('Cannot establish database connection, shutting down...');
 	process.exit(1);
 });
+
+Sentry.init({
+	dsn: "https://1a8c737b791d40b3b2df0f27cd07b82f@o1074830.ingest.sentry.io/6074725",
+	tracesSampleRate: 1.0,
+});
+
+const transaction = Sentry.startTransaction({
+	op: "test",
+	name: "My First Test Transaction",
+});
+
+setTimeout(() => {
+	try {
+		foo();
+	} catch (e) {
+		Sentry.captureException(e);
+	} finally {
+		transaction.finish();
+	}
+}, 99);
