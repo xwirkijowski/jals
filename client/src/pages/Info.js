@@ -38,7 +38,7 @@ const Info = () => {
 		}
 	});
 
-	if (!isValid) return (<Navigate to="/" replace={true} />);
+	if (!isValid) return (<Navigate to="/" replace={true} state={{message:{type:'danger', content:'Oops! Looks like your short code is invalid :('}}}/>);
 
 	if (loading) return (
 		<Container>
@@ -51,7 +51,7 @@ const Info = () => {
 		</Container>
 	);
 
-	if (!data || !data.getLink ) return (<Navigate to="/" replace={true} />);
+	if (!data || !data.getLink ) return (<Navigate to="/" replace={true} state={{message:{type:'danger', content:'Oops! Looks like your short code is invalid :('}}}/>);
 
 	return (
 		<Container>

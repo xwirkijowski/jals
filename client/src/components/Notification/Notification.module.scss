@@ -12,6 +12,20 @@
 	transition: all 200ms $transition;
 	animation: notificationAnimation both 300ms;
 	opacity: 0;
+	display: flex;
+	align-items: center;
+
+	> p {
+		color: inherit;
+		margin: 0;
+		width: 100%;
+	}
+
+	&-dismissible {
+		> button {
+			margin-left: 20px;
+		}
+	}
 
 	&-success {
 		background: $colorSuccess;

@@ -70,4 +70,8 @@
 			background: lighten($colorHelp, $lightenAmount);
 		}
 	}
+
+	&-sm {
+		padding: 5px 10px;
+	}
 }
