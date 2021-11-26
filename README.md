@@ -42,6 +42,8 @@ You can run JALS locally with full functionality. Just install a MongoDB databas
 
 > **Heads up!** If your database user uses characters that need to be percent encoded (@, :, /, %), use separate database connection values in `.env` instead of a single connection string variable!
 
+---
+
 ## 📋 Future plans
 
 - [ ] Replace ObjectIds with something shorter
