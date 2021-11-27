@@ -31,9 +31,11 @@ This is a project I designed and developed as a personal challenge to get some n
   - **Mongoose** object data modeling
   - **Node**
   - **Dotenv** environment variables loader
+  - **Ioredis** redis client
   - **Sentry** monitoring & error tracking
 - **Environment**
   - **MongoDB** database
+  - **Redis** caching
   - **Nginx** web server & proxy
   
 ---
@@ -47,7 +49,7 @@ You can run JALS locally with full functionality. Just install a MongoDB databas
 ## 📋 Future plans
 
 - [ ] Replace ObjectIds with something shorter
-- [ ] Redis cache implementation
+- [x] Redis cache implementation
 - [ ] CORS configuration
 - [ ] Containerization
 - [ ] Attempt to decompose server into microservices
