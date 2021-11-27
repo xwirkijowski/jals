@@ -1,5 +1,5 @@
 export default `
-	type Click {
+	type Click @cacheControl(maxAge: 30) {
 		_id: ID!
 		link: Link!
 		time: Timestamp!

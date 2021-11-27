@@ -1,11 +1,11 @@
 export default `
-	type Link {
+	type Link @cacheControl(maxAge: 30) {
 		_id: ID!
 		target: String!
 		created: Timestamp!
-		clicks: Int!
-		flagCount: Int!
-		flags: [LinkFlag!]
+		clicks: Int! @cacheControl(maxAge: 5)
+		flagCount: Int! @cacheControl(maxAge: 5)
+		flags: [LinkFlag!] @cacheControl(maxAge: 5)
 	}
 	
 	type LinkFlag {
@@ -26,7 +26,7 @@ export default `
 	extend type Query {
 		getLink (
 			_id: ID!
-		): Link
+		): Link @cacheControl(maxAge: 30)
 		getLinks (
 			page: Int
 			perPage: Int

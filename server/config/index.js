@@ -12,8 +12,9 @@ config.debug = (env.NODE_ENV === 'development');
 (() => {
 	log.info('---')
 	log.info(`Starting ${env.npm_package_name} v${env.npm_package_version} in ${env.NODE_ENV}`);
-	if (env.npm_package_description) log.info(env.npm_package_description);
+	if (env.npm_package_description && env.npm_package_description !== '---') log.info(env.npm_package_description);
 	log.info('---')
+	if (env.NODE_ENV === 'development') log.warn('Server running in development mode!')
 })();
 
 log.info('Constructing configuration...')

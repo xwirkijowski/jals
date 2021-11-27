@@ -22,9 +22,12 @@
     "@sentry/node": "^6.15.0",
     "@sentry/tracing": "^6.15.0",
     "apollo-server": "^3.5.0",
+    "apollo-server-cache-redis": "^3.3.0",
+    "apollo-server-plugin-response-cache": "^3.4.0",
     "dotenv": "^10.0.0",
     "graphql": "^16.0.1",
     "graphql-tools": "^8.2.0",
+    "ioredis": "^4.28.1",
     "mongoose": "^6.0.13"
   },
   "private": true
