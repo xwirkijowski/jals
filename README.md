@@ -50,7 +50,7 @@ You can run JALS locally with full functionality. Just install a MongoDB databas
 
 - [ ] Replace ObjectIds with something shorter
 - [x] Redis cache implementation
-- [ ] CORS configuration
+- [x] CORS configuration
 - [ ] Containerization
 - [ ] Attempt to decompose server into microservices
 - [ ] API rate limiter

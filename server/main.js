@@ -15,7 +15,7 @@ import { schema, models } from './src';
 log.info('Establishing database connection...')
 mongoose.Promise = global.Promise;
 mongoose.connect(config.database).then(() => {
-	mongoose.set('debug', config.debug); //@todo Remove debug before release
+	mongoose.set('debug', config.debug);
 	log.success('Database connection established!')
 
 	// Construct cache client
@@ -43,7 +43,10 @@ mongoose.connect(config.database).then(() => {
 		cache: (cacheClient) ? new BaseRedisCache({
 			client: cacheClient,
 		}) : undefined,
-		plugins: [responseCachePlugin()]
+		plugins: [responseCachePlugin()],
+		cors: {
+			origin: 'https://jals.wirkijowski.dev'
+		}
 	});
 
 	log.info("Starting GraphQL server...")
