@@ -1,67 +1,102 @@
-import {config, env} from './config';
+// Import dependencies
+import { ApolloServer } from '@apollo/server';
+import { startStandaloneServer } from '@apollo/server/standalone';
+import { ulid } from 'ulid';
 
-import {ApolloServer} from "apollo-server";
-import mongoose from "mongoose";
-import * as Sentry from "@sentry/node";
-import * as Tracing from "@sentry/tracing";
-import {BaseRedisCache} from "apollo-server-cache-redis";
-import responseCachePlugin from 'apollo-server-plugin-response-cache';
-import Redis from "ioredis";
+// Error statistics counters
+import { getCounter as warningCounter } from './src/utilities/internalWarning.js';
+import { getCounter as errorCounter } from './src/utilities/internalError.js';
 
-import log from './util/logger';
-import helpers from './util/helpers';
-import { schema, models } from './src';
+// Import middleware
+import { extensionsPlugin } from "./src/middleware/extensionsPlugin.js";
 
-log.info('Establishing database connection...')
-mongoose.Promise = global.Promise;
-mongoose.connect(config.database).then(() => {
-	mongoose.set('debug', config.debug);
-	log.success('Database connection established!')
+// Load configuration
+import config from "./config.js";
 
-	// Construct cache client
-	if (env.NODE_ENV !== 'development') log.info("Constructing cache client...")
-	const cacheClient = (env.NODE_ENV !== 'development') ? new Redis({
-		showFriendlyErrorStack: true
-	}) : undefined;
-	if (env.NODE_ENV !== 'development') log.success('Cache client constructed successfully!');
-	if (env.NODE_ENV === 'development') log.info('Cache client construction skipped in development mode')
+// Import database configuration and status
+import { setupMongo, redisClient, setupRedis, $S } from './src/database.js';
 
-	// Construct GraphQL server instance
-	const server = new ApolloServer({
-		schema,
-		context: ({}) => {
-			const pagination = config.pagination;
+// Import logger
+import { globalLogger as log } from './src/utilities/log.js';
 
-			return { pagination, helpers };
-		},
-		dataSources: () => {
-			return {
-				link: models.link,
-				click: models.click
-			}
-		},
-		cache: (cacheClient) ? new BaseRedisCache({
-			client: cacheClient,
-		}) : undefined,
-		plugins: [responseCachePlugin()],
-		cors: {
-			origin: 'https://jals.wirkijowski.dev'
+// Import final schema
+import schema from './src/schema.js';
+
+// Import data models
+import clickModel from './src/models/click.model.js';
+import linkModel from "./src/models/link.model.js";
+import userModel from './src/models/user.model.js';
+import sessionModel from "./src/models/session.model.js";
+
+// Import services
+import { service as AuthService } from "./src/services/auth/index.js";
+
+// Setup Redis client
+setupRedis(redisClient);
+export {redisClient};
+
+// Setup mongoose database connection
+await setupMongo();
+
+// Construct Apollo server instance
+const server = new ApolloServer({
+	schema,
+	plugins: [extensionsPlugin()],
+	includeStacktraceInErrorResponses: (config.server.env === 'development'),
+	introspection: (config.server.env === 'development')
+})
+
+// Statistics collection
+const statistics = {
+	timeStartup: new Date(),
+	requestCount: 0,
+	warningCount: warningCounter,
+	errorCount: errorCounter,
+}
+
+// Launch the Apollo server
+const { url } = await startStandaloneServer(server, {
+	listen: {
+		port: config.server.port,
+		host: config.server.host
+	},
+	context: async ({req, }) => {
+		statistics.requestCount++;
+
+		const telemetryStart = performance.now(); // Request processing start
+		const timestampStart = new Date();
+		const requestId = ulid(); // Internal correlation / request ID
+
+		// @todo Rate limit, max depth, complexity
+		// @todo Add check for client app to prevent direct use.
+
+		//const session = await handleSession(req);
+
+		return {
+			//session,
+			req,
+			models: {
+				user: userModel,
+				session: sessionModel,
+				link: linkModel,
+				click: clickModel,
+			},
+			services: {
+				auth: AuthService,
+			},
+			internal: {
+				telemetryStart,
+				timestampStart,
+				requestId,
+				statistics,
+			},
+			systemStatus: $S,
 		}
-	});
+	},
+	cors: {
+		origin: ['https://sandbox.embed.apollographql.com', `${config.server.protocol}://${config.server.host}:${config.server.port}`],
+		credentials: true
+	},
+})
 
-	log.info("Starting GraphQL server...")
-	server.listen({ port: config.port }).then(({url}) => {
-		log.success(`GraphQL server started, listening on ${url}`);
-	}, () => {
-		log.error("Cannot start GraphQL server, shutting down...");
-		process.exit(1);
-	});
-}, () => {
-	log.error('Cannot establish database connection, shutting down...');
-	process.exit(1);
-});
-
-Sentry.init({
-	dsn: "https://1a8c737b791d40b3b2df0f27cd07b82f@o1074830.ingest.sentry.io/6074725",
-	tracesSampleRate: 1.0,
-});
+log.success(`Ready at ${url}, running in ${config.server.env.toLowerCase()} environment...`);
