@@ -1,12 +1,13 @@
 {
   "name": "jals-server",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "",
   "keywords": [],
   "homepage": "",
   "license": "ISC",
-  "author": "Sebastian Wirkijowski <sebastian@wirkijowski.dev> (https://wirkijowski.dev/)",
+  "author": "Sebastian Wirkijowski <sebastian@wirkijowski.me> (https://wirkijowski.me/)",
   "main": "main.js",
+  "type": "module",
   "scripts": {
     "start": "babel-node main.js",
     "dev": "nodemon --exec babel-node --presets=@babel/preset-env -- main.js"
@@ -18,17 +19,21 @@
     "nodemon": "^2.0.15"
   },
   "dependencies": {
-    "@graphql-tools/schema": "^8.3.1",
-    "@sentry/node": "^6.15.0",
-    "@sentry/tracing": "^6.15.0",
-    "apollo-server": "^3.5.0",
-    "apollo-server-cache-redis": "^3.3.0",
-    "apollo-server-plugin-response-cache": "^3.4.0",
-    "dotenv": "^10.0.0",
-    "graphql": "^16.0.1",
-    "graphql-tools": "^8.2.0",
-    "ioredis": "^4.28.1",
-    "mongoose": "^6.0.13"
+    "@apollo/server": "^4.11.2",
+    "@graphql-tools/load-files": "^7.0.0",
+    "@graphql-tools/merge": "^9.0.8",
+    "@graphql-tools/schema": "^10.0.7",
+    "eudoros": "^1.2.0",
+    "graphql": "^16.9.0",
+    "graphql-scalars": "^1.23.0",
+    "inigo-windows-amd64": "^0.30.11",
+    "inigo.js": "^0.30.11",
+    "luxon": "^3.5.0",
+    "mongoose": "^8.8.0",
+    "redis": "^4.7.0",
+    "redis-om": "^0.4.7",
+    "resend": "^4.0.1",
+    "ulid": "^2.3.0"
   },
   "private": true
 }
