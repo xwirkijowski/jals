@@ -10,6 +10,11 @@ input LogInInput {
     email: EmailAddress!
     "Provided login code"
     code: String!
+
+    "User-agent used while creating the session"
+    userAgent: String
+    "Remote host IP address used while creating the session"
+    userAddress: IPAddress
 }
 
 input CreateTokenInput {
