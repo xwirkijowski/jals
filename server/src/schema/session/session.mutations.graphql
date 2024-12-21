@@ -1,0 +1,68 @@
+# Inputs
+
+input RequestAuthCodeInput {
+    "The user's e-mail address"
+    email: EmailAddress!
+}
+
+input LogInInput {
+    "The user's e-mail address"
+    email: EmailAddress!
+    "Provided login code"
+    code: String!
+}
+
+input CreateTokenInput {
+    "User Id of the desired API user"
+    userId: ID!
+    "Secret (password) to the API user"
+    secret: String!
+}
+
+# Payloads
+
+type RequestAuthCodePayload {
+    result: Result!
+}
+
+type LogInPayload {
+    result: Result!
+    user: User
+    sessionId: String
+}
+
+type LogOutPayload {
+    result: Result!
+}
+
+type LogOutAllPayload {
+    result: Result!
+    deletedCount: Int
+}
+
+type DeleteSessionPayload {
+    result: Result!
+}
+
+type DeleteAllSessionsPayload {
+    result: Result!
+    deletedCount: Int
+}
+
+# Extends
+
+extend type Mutation {
+    "Request a login code"
+    requestAuthCode(input: RequestAuthCodeInput): RequestAuthCodePayload
+    "Log in user"
+    logIn(input: LogInInput): LogInPayload
+    "Log out current user out of current session"
+    logOut: LogOutPayload
+    "Log out current user out of all sessions"
+    logOutAll: LogOutAllPayload
+
+    "Delete a specific session"
+    deleteSession(sessionId: String): DeleteSessionPayload
+    "Delete all sessions for specified user"
+    deleteAllSessions(userId: ID): DeleteAllSessionsPayload
+}

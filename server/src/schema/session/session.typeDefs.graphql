@@ -1,0 +1,28 @@
+type Session {
+    "Session Id"
+    id: String!
+    "Associated user"
+    user: User
+    "User-agent used while creating the session"
+    userAgent: String
+    "Remote host IP address used while creating the seesion"
+    userAddress: IPAddress
+    "Session creation timestamp"
+    createdAt: DateTime
+    "Session last refresh timestamp"
+    updatedAt: DateTime
+    "Session refresh count, also equivalent of how many requests were made with the session"
+    version: Int
+}
+
+extend type Query {
+    "Get session by ID"
+    session(sessionId: String!): Session
+    "Get sessions by userId (ObjectId)"
+    sessionsByUser(userId: ID!): [Session]
+
+    "Get user from current session"
+    currentUser: User
+    "Get current session"
+    currentSession: Session
+}
