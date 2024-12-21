@@ -43,7 +43,7 @@ export default {
 		}
 	},
 	Mutation: {
-		requestAuthCode: async (_, {input}, {models, services, req, res, session}) => {
+		requestAuthCode: async (_, {input}, {models, services, req, res, session, internal: {requestId}}) => {
 			check.needs('redis');
 
 			// Check if user logged in
@@ -67,15 +67,15 @@ export default {
 			}
 
 			// Create loginCode
-			const codeNode = await services.auth.createCode(userNode._id, userNode.email);
+			const codeNode = await services.auth.createCode(userNode._id, userNode.email, requestId);
 
-			if (codeNode?.code) {
+			if (codeNode) {
 				return result.response(true)
 			} else {
 				return result.addErrorAndLog('CANNOT_CREATE_CODE', null, null, 'error', 'Failed to create an auth code', 'AuthService').response(true);
 			}
 		},
-		logIn: async (_, {input}, {models, services, session, req}) => {
+		logIn: async (_, {input}, {models, services, session, req, internal: {requestId}}) => {
 			check.needs('redis');
 
 			// Check if user logged in
@@ -87,9 +87,12 @@ export default {
 			check.validate(input, 'object');
 			check.validate(input.email, 'string');
 			check.validate(input.code, 'string');
+			if (input?.userAgent) check.validate(input.userAgent, 'string');
+			if (input?.userAddr) check.validate(input.userAddr, 'string');
 
 			// Normalize user input
 			input.email = input.email.normalize('NFKD');
+			if (input?.userAgent) input.userAgent.normalize('NFKD');
 
 			// Get user by email
 			const userNode = await models.user.findOne({email: input.email})
@@ -100,20 +103,19 @@ export default {
 			}
 
 			// Check code
-			const codeNode = await services.auth.checkCode(userNode._id, input.code);
+			const codeNode = await services.auth.checkCode(userNode._id, input.code, requestId);
 
-			if (!codeNode?.code) {
+			if (!codeNode) {
 				return result.addError('INVALID_CODE', null, 'Login failed, invalid code').response(true);
 			}
 
 			// Create a session
 
-			const sessionNode = await services.auth.createSession(userNode._id, req);
+			const sessionNode = await services.auth.createSession(userNode._id, req, requestId);
 
-
-			if (codeNode?.code) {
+			if (sessionNode) {
 				return result.response(true, {
-					sessionId: sessionNode[EntityId],
+					sessionId: sessionNode.sessionId,
 					user: userNode
 				});
 			} else {
