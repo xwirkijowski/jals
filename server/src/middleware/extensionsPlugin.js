@@ -10,11 +10,19 @@ export const extensionsPlugin = () => {
 				executionDidStart: () => {},
 				didEncounterErrors: () => {},
 				willSendResponse(requestContext) {
+					const requestId = requestContext.contextValue.internal.requestId;
+
+					const session = requestContext.contextValue.session;
+					const sessionStatus = (session && session !== 'invalid')
+						? session.expiresIn.toISOString()
+						: session;
+
 					requestContext.response.body.singleResult = {
 						...requestContext.response.body.singleResult,
 						extensions: {
 							...requestContext.response.body?.extensions,
-							requestId: requestContext.contextValue.internal.requestId
+							requestId,
+							auth: sessionStatus,
 						},
 					};
 				},
