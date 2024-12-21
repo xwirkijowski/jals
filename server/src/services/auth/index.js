@@ -56,18 +56,18 @@ class AuthService {
 		} else return undefined;
 	}
 
-	createSession = async (userId, request) => {
-		return await new Session(userId, request).catch(_ => false); // Catch internal errors, return false on fail
+	createSession = async (userId, request, rId) => {
+		return await new Session({userId, request}, rId).save(this.#config.auth.session.expiresIn, rId).catch(_ => false); // Catch internal errors, return false on fail
 	}
 
 
 	// Authentication code block
 
-	generateCode = () => {
+	generateCode = (rId) => {
 		const length = this.#config.auth.code.length;
 
 		if (length <= 0) {
-			throw new InternalError("Auth length must be greater than 0! Cannot generate auth code.", undefined, 'AuthService', false);
+			throw new InternalError("Auth length must be greater than 0! Cannot generate auth code.", undefined, 'AuthService', false, {requestId: rId});
 		}
 
 		let code = '';
@@ -82,16 +82,16 @@ class AuthService {
 		return parseInt(code, 10);
 	}
 
-	createCode = async (userId, userEmail) => {
-		return await new AuthCode({userId, userEmail}).save(this.#config.auth.code.expiresIn).catch(_ => false); // Catch internal errors, return false on fail
+	createCode = async (userId, userEmail, rId) => {
+		return await new AuthCode({userId, userEmail}, rId).save(this.#config.auth.code.expiresIn, rId).catch(_ => false); // Catch internal errors, return false on fail
 	}
 
 	sendEmail = async () => {
 
 	}
 
-	checkCode = async (userId, code) => {
-		const node = await AuthCode.find(userId, code);
+	checkCode = async (userId, code, rId) => {
+		const node = await AuthCode.find(userId, code, rId);
 
 		return (node?.code !== undefined && node?.code !== null) ? node : this.deny();
 	}

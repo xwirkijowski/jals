@@ -12,7 +12,7 @@ export default class AuthCode {
 	code;
 	createdAt;
 
-	constructor(props) {
+	constructor(props, rId) {
 		if (props?.[EntityId] && props?.code) { // Create new instance from existing
 			this.authCodeId = props[EntityId];
 			this.userId = props.userId;
@@ -22,7 +22,7 @@ export default class AuthCode {
 		} else { // New instance to insert
 			if (!props) return this; // Pass to `Find`
 			else if (!props?.userId || !props?.userEmail) {
-				new InternalError('Code creation failed, no userId and userEmail provided!', undefined, 'AuthService', false, props)
+				new InternalError('Code creation failed, no userId and userEmail provided!', undefined, 'AuthService', false, props, {requestId: rId})
 				return undefined;
 			}
 
@@ -34,7 +34,7 @@ export default class AuthCode {
 		return this;
 	}
 
-	static async find (userId, code) {
+	static async find (userId, code, rId) {
 		const node = await model.search({
 			userId: userId.toString(),
 			code: code.toString(),
@@ -43,23 +43,23 @@ export default class AuthCode {
 		return (node?.code) ? new AuthCode(node) : undefined;
 	}
 
-	save = async (expiresIn) => {
+	save = async (expiresIn, rId) => {
 		if (this.authCodeId) return undefined;
 
 		this.createdAt = new Date().toISOString(); // Set close to insertion
 
 		const node = await model.save(this);
 
-		if (node.code !== undefined && node.code !== null) {
+		if (node.code) {
 			this.authCodeId = node[EntityId];
 
 			await model.expire(node[EntityId], expiresIn);
 
-			log.withDomain('audit', 'AuthService', "Authentication code created", this.userId, this.authCodeId);
+			log.withDomain('audit', 'AuthService', "Authentication code created", {userId: this.userId, authCodeId: this.authCodeId, requestId: rId});
 
 			return this;
 		} else {
-			new InternalError("AuthCode saved failed!", undefined, 'AuthService', false, {userId: this.userId});
+			new InternalError("AuthCode save failed!", undefined, 'AuthService', false, {userId: this.userId, requestId: rId});
 			return undefined;
 		}
 	}
