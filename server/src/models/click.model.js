@@ -1,26 +1,33 @@
 import mongoose from 'mongoose';
 
 export default mongoose.model('Click', new mongoose.Schema({
-	link: {
+	linkId: {
 		type: mongoose.ObjectId,
 		ref: "Link",
 		required: true,
 		index: true
 	},
-	time: {
-		type: Date,
-		required: true
+	userAgent: {
+		type: String,
+		index: true,
 	},
 	platform: {
 		type: String,
-		required: true,
-		index: true
+		index: true,
 	},
 	isMobile: {
 		type: Boolean,
-		required: true,
-	}
+	},
+	ipAddress: {
+		type: String,
+		index: true,
+	},
+	createdAt: {
+		type: String,
+	},
+	createdBy: {
+		type: mongoose.ObjectId,
+	},
 },{
-	id: false,
 	versionKey: false
 }));
