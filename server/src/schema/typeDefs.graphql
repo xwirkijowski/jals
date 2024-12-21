@@ -1,0 +1,71 @@
+type Query {
+    healthCheck: HealthCheck
+}
+
+type Mutation
+
+type HealthCheck {
+    timestamp: DateTime!
+    internal: InternalStatus!
+    domains: DomainStatus!
+}
+
+type DomainStatus {
+    session: String!
+    user: String!
+}
+
+type InternalStatus {
+    database: String!
+    redis: String!
+
+    requestCount: Int
+    warningCount: Int
+    errorCount: Int
+    timeStartup: DateTime
+    timeOnline: DateTimeObject
+}
+
+type Result {
+    "If the mutation was a success"
+    success: Boolean!
+    "Array of Error objects"
+    errors: [Error]
+    """
+    Array of error codes from all Error objects.
+    Error codes do not repeat.
+    """
+    errorCodes: [String]
+}
+
+type Error {
+    "Short descriptive error code used by client application"
+    code: String
+    "Path (on input) on which the error has occurred"
+    path: String
+    "Error description or explanation"
+    msg: String
+}
+
+scalar DateTime
+scalar EmailAddress
+scalar IPAddress
+
+type DateTimeObject {
+    seconds: Float
+    minutes: Int
+    hours: Int
+    days: Int
+    months: Int
+    years: Int
+}
+
+type PageInfo {
+    total: Int!
+    perPage: Int!
+    pageCount: Int!
+    currentPage: Int!
+    hasNextPage: Boolean!
+    hasPreviousPage: Boolean!
+}
+
