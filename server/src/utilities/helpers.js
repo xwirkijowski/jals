@@ -127,6 +127,8 @@ export const check = {
 }
 
 export const getIP = (req) => {
+	if (!req) return undefined;
+
 	let ip;
 
 	if (req.headers?.["p9s-user-ip"] !== null) { // Check custom header
