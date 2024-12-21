@@ -1,11 +1,13 @@
+import {GraphQLError} from "graphql";
+
 import crypto from 'node:crypto';
-import { EntityId } from "redis-om";
 
 import InternalError from "../../utilities/internalError.js";
 import { globalLogger as log } from '../../utilities/log.js';
+export {log};
 
-import model from "./authCode.model.js";
-
+import Session from "./session.class.js";
+import AuthCode from "./authCode.class.js";
 
 class AuthService {
 	#config = {
@@ -14,8 +16,13 @@ class AuthService {
 			senderName: "Just Another Link Shortener",
 		},
 		auth: {
-			length: 6,
-			expiresIn: 300
+			code: {
+				length: 6,
+				expiresIn: 60 * 5,
+			},
+			session: {
+				expiresIn: 60 * 30,
+			},
 		}
 	}
 
@@ -25,8 +32,39 @@ class AuthService {
 		return this;
 	}
 
+	 deny = () => {
+		throw new GraphQLError('Invalid credentials', {
+			extensions: {
+				code: 'UNAUTHORIZED',
+				http: { status: 401 },
+			}
+		});
+	}
+
+	// Session block
+
+	handleSession = async (request) => {
+		if (request.headers?.authorization) {
+			const sessionId = request.headers.authorization.replace('Bearer ', '');
+			const session = await this.getSession(sessionId);
+			if (session?.userId !== null) {
+
+			} else {
+				return 'invalid';
+			}
+
+		} else return undefined;
+	}
+
+	createSession = async (userId, request) => {
+		return await new Session(userId, request).catch(_ => false); // Catch internal errors, return false on fail
+	}
+
+
+	// Authentication code block
+
 	generateCode = () => {
-		const length = this.#config.auth.length;
+		const length = this.#config.auth.code.length;
 
 		if (length <= 0) {
 			throw new InternalError("Auth length must be greater than 0! Cannot generate auth code.", undefined, 'AuthService', false);
@@ -35,6 +73,7 @@ class AuthService {
 		let code = '';
 		while (code.length < length) {
 			const byte = crypto.randomBytes(1)[0];
+
 			if (byte < 250) {
 				code += (byte % 10).toString();
 			}
@@ -44,50 +83,18 @@ class AuthService {
 	}
 
 	createCode = async (userId, userEmail) => {
-		return await new Code(userId, userEmail).save(this.#config.auth.expiresIn).catch(_ => false);
+		return await new AuthCode({userId, userEmail}).save(this.#config.auth.code.expiresIn).catch(_ => false); // Catch internal errors, return false on fail
 	}
 
 	sendEmail = async () => {
 
 	}
+
+	checkCode = async (userId, code) => {
+		const node = await AuthCode.find(userId, code);
+
+		return (node?.code !== undefined && node?.code !== null) ? node : this.deny();
+	}
 }
 
 export const service = new AuthService();
-
-class Code {
-	authCodeId;
-	userId;
-	userEmail;
-	code;
-	createdAt;
-
-	constructor(userId, userEmail) {
-		const code = service.generateCode();
-
-		this.userId = userId.toString();
-		this.userEmail = userEmail;
-		this.code = code;
-
-		return this;
-	}
-
-	save = async (expiresIn) => {
-		this.createdAt = new Date().toISOString();
-
-		if (this.authCodeId) return this;
-
-		const node = await model.save(this);
-
-		if (node.code !== undefined && node.code !== null) {
-			this.authCodeID = node[EntityId];
-
-			await model.expire(node[EntityId], expiresIn);
-
-			log.withDomain('audit', 'AuthService', "Authentication code created", this.userId, this.authCodeID);
-
-			return this;
-		} else {
-			new InternalError("AuthService saved failed!", undefined, 'AuthService', false, {userId: this.userId});
-		}
-	}
-}

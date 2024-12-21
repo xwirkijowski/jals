@@ -5,7 +5,7 @@ const repository = new Repository(new Schema(
 	'authCode', {
 		userId: { type: 'string' },
 		userEmail: { type: 'string' },
-		loginCode: { type: 'string' },
+		code: { type: 'string' },
 		createdAt: { type: 'date' },
 	},
 	{
