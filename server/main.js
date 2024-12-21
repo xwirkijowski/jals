@@ -60,7 +60,7 @@ const { url } = await startStandaloneServer(server, {
 		port: config.server.port,
 		host: config.server.host
 	},
-	context: async ({req, }) => {
+	context: async ({req}) => {
 		statistics.requestCount++;
 
 		const telemetryStart = performance.now(); // Request processing start
@@ -75,6 +75,7 @@ const { url } = await startStandaloneServer(server, {
 		return {
 			//session,
 			req,
+			pagination: config.server.pagination,
 			models: {
 				user: userModel,
 				session: sessionModel,
