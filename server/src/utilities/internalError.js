@@ -44,6 +44,9 @@ export default class InternalError extends Error {
 		// Call `Error` constructor
 		super(message.toString())
 
+		// Capture stack if none provided
+		if (!stack)	Error.captureStackTrace(this, this.constructor)
+
 		// Increment error counter for current error
 		incrementCounter();
 
@@ -55,7 +58,7 @@ export default class InternalError extends Error {
 
 		// Prioritize supplied stack on logs to avoid clutter
 		// If stack is not string, convert to string
-		const logTrace =  stack?.toString() || this.stack || undefined;
+		const logTrace =  stack || this.stack || undefined;
 		//
 		//	const logTrace =
 		// 		? stack?.toString() || this.stack || undefined
