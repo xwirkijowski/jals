@@ -26,7 +26,6 @@ import schema from './src/schema.js';
 import clickModel from './src/models/click.model.js';
 import linkModel from "./src/models/link.model.js";
 import userModel from './src/models/user.model.js';
-import sessionModel from "./src/models/session.model.js";
 
 // Import services
 import { service as AuthService } from "./src/services/auth/index.js";
@@ -70,15 +69,14 @@ const { url } = await startStandaloneServer(server, {
 		// @todo Rate limit, max depth, complexity
 		// @todo Add check for client app to prevent direct use.
 
-		//const session = await handleSession(req);
+		const session = await AuthService.handleSession(req);
 
 		return {
-			//session,
+			session,
 			req,
 			pagination: config.server.pagination,
 			models: {
 				user: userModel,
-				session: sessionModel,
 				link: linkModel,
 				click: clickModel,
 			},
