@@ -47,7 +47,7 @@ if (!process.env?.REDIS_STRING) {
         password: process.env?.REDIS_PASSWORD ?? null,
     };
 
-    !config.redis.host && new InternalWarning('No REDIS_HOST specified, sessions will not be available without a REDIS database');
+    !config.redis.host && new InternalWarning('No REDIS_HOST specified, sessions will not be available without a Redis database');
     !process.env?.REDIS_PORT && new InternalWarning(`No REDIS_PORT specified, using default ${defaults.redis.port}`);
     !config.redis.db && new InternalWarning('No REDIS_DB specified');
     !config.redis.user && new InternalWarning('No REDIS_USER specified');
