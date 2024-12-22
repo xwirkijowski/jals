@@ -48,6 +48,14 @@ const server = new ApolloServer({
 	introspection: (config.server.env === 'development')
 })
 
+export const stopServer = async () => {
+	log.critical('Stopping server...')
+
+	// Disconnect databases
+
+	return server.stop();
+}
+
 // Statistics collection
 const statistics = {
 	timeStartup: new Date(),
