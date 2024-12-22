@@ -14,7 +14,7 @@ export const extensionsPlugin = () => {
 
 					const session = requestContext.contextValue.session;
 					const sessionStatus = (session && session !== 'invalid')
-						? session.expiresIn.toISOString()
+						? true
 						: session;
 
 					requestContext.response.body.singleResult = {

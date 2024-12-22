@@ -7,6 +7,7 @@ import { ulid } from 'ulid';
 import Counters from './src/utilities/internalCounters.js';
 
 // Import middleware
+import { telemetryPlugin } from "./src/middleware/telemetryPlugin.js";
 import { extensionsPlugin } from "./src/middleware/extensionsPlugin.js";
 
 // Load configuration
@@ -39,7 +40,10 @@ await setupMongo();
 // Construct Apollo server instance
 const server = new ApolloServer({
 	schema,
-	plugins: [extensionsPlugin()],
+	plugins: [
+		telemetryPlugin(),
+		extensionsPlugin()
+	],
 	includeStacktraceInErrorResponses: (config.server.env === 'development'),
 	introspection: (config.server.env === 'development')
 })
@@ -68,7 +72,7 @@ const { url } = await startStandaloneServer(server, {
 		// @todo Rate limit, max depth, complexity
 		// @todo Add check for client app to prevent direct use.
 
-		const session = await AuthService.handleSession(req);
+		const session = await AuthService.handleSession(req, telemetryRequest.requestId);
 
 		return {
 			session,
