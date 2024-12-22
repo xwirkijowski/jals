@@ -86,7 +86,7 @@ export const redisClient = createClient({
 
 				if (retries % 5 === 0) new InternalError('Cannot connect to the database. Check if the redis database is running!', false, 'Redis', false)
 
-				new InternalWarning(`Unexpected error, attempting to connect again [${retries}, ${delay+jitter}ms]...`, undefined, 'Redis');
+				new InternalWarning(`Connection error, attempting to connect again [${retries}, ${delay+jitter}ms]...`, undefined, 'Redis');
 
 				return delay + jitter;
 			} else {
