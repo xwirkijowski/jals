@@ -1,9 +1,7 @@
 import { globalLogger as log } from './log.js';
 
-// Counter for telemetry
-let counter = 0;
-const incrementCounter = () => ++counter;
-export const getCounter = () => counter;
+// Counters for telemetry
+import Counters from './internalCounters.js';
 
 /**
  * InternalWarning
@@ -33,7 +31,7 @@ export default class InternalWarning {
 	 */
 	constructor(message, stack = undefined, domain = undefined, ...payload) {
 		// Increment error counter for current error
-		incrementCounter();
+		Counters.increment('warnings');
 
 		// Assign properties
 		this.name = 'InternalWarning';

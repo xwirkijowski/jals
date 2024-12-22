@@ -4,8 +4,7 @@ import { startStandaloneServer } from '@apollo/server/standalone';
 import { ulid } from 'ulid';
 
 // Error statistics counters
-import { getCounter as warningCounter } from './src/utilities/internalWarning.js';
-import { getCounter as errorCounter } from './src/utilities/internalError.js';
+import Counters from './src/utilities/internalCounters.js';
 
 // Import middleware
 import { extensionsPlugin } from "./src/middleware/extensionsPlugin.js";
@@ -48,9 +47,7 @@ const server = new ApolloServer({
 // Statistics collection
 const statistics = {
 	timeStartup: new Date(),
-	requestCount: 0,
-	warningCount: warningCounter,
-	errorCount: errorCounter,
+	counters: Counters,
 }
 
 // Launch the Apollo server
@@ -60,11 +57,13 @@ const { url } = await startStandaloneServer(server, {
 		host: config.server.host
 	},
 	context: async ({req}) => {
-		statistics.requestCount++;
+		statistics.counters.increment('requests');
 
-		const telemetryStart = performance.now(); // Request processing start
-		const timestampStart = new Date();
-		const requestId = ulid(); // Internal correlation / request ID
+		const telemetryRequest = {
+			requestId: ulid(),
+			requestPerformance: performance.now(),
+			requestTimestamp: new Date(),
+		}
 
 		// @todo Rate limit, max depth, complexity
 		// @todo Add check for client app to prevent direct use.
@@ -84,9 +83,7 @@ const { url } = await startStandaloneServer(server, {
 				auth: AuthService,
 			},
 			internal: {
-				telemetryStart,
-				timestampStart,
-				requestId,
+				...telemetryRequest,
 				statistics,
 			},
 			systemStatus: $S,

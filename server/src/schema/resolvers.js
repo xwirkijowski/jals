@@ -24,9 +24,9 @@ export default {
 	InternalStatus: {
 		database: (_, __, {systemStatus}) => systemStatus.db,
 		redis: (_, __, {systemStatus}) => systemStatus.redis,
-		requestCount: (_, __, {internal}) => internal.statistics.requestCount,
-		warningCount: (_, __, {internal}) => internal.statistics.warningCount(),
-		errorCount: (_, __, {internal}) => internal.statistics.errorCount(),
+		requestCount: (_, __, {internal}) => internal.statistics.counters.get('requests'),
+		warningCount: (_, __, {internal}) => internal.statistics.counters.get('warnings'),
+		errorCount: (_, __, {internal}) => internal.statistics.counters.get('errors'),
 		timeStartup: (_, __, {internal}) => internal.statistics.timeStartup,
 		timeOnline: (_, __, {internal}) => {
 			const start = DateTime.fromISO(internal.statistics.timeStartup.toISOString());

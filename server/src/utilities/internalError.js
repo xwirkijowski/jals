@@ -1,9 +1,7 @@
 import { globalLogger as log } from './log.js';
 
-// Counter for telemetry
-let counter = 0;
-const incrementCounter = () => ++counter;
-export const getCounter = () => counter;
+// Counters for telemetry
+import Counters from './internalCounters.js';
 
 /**
  * InternalError
@@ -13,7 +11,7 @@ export const getCounter = () => counter;
  * Logs both critical and non-critical errors.
  *
  * @prop	name		Internal name.
- * @prop	message		The error message.
+ * @prop	msg			The error message.
  * @prop	domain		The name of the module or domain, used in logs.
  * @prop	critical	If `true`, throw error;
  * 						if `silent`, log as critical but do not throw;
@@ -23,8 +21,8 @@ export const getCounter = () => counter;
  * @prop	stack		Trace to be used instead of default stack.
  */
 export default class InternalError extends Error {
-	name
-	message
+	name;
+	msg;
 	domain;
 	critical;
 	payload;
@@ -41,37 +39,35 @@ export default class InternalError extends Error {
 	 * 										handled internally by Eudoros package on logs.
 	 */
 	constructor(message, stack = undefined, domain = undefined, critical = true, ...payload) {
-		// Call `Error` constructor
-		super(message.toString())
+		// Capture base Error details
+		super();
 
 		// Capture stack if none provided
-		if (!stack)	Error.captureStackTrace(this, this.constructor)
+		if (stack === true) Error.captureStackTrace(this, this.constructor)
 
 		// Increment error counter for current error
-		incrementCounter();
+		Counters.increment('errors');
 
 		// Assign properties
 		this.name = 'InternalError';
+		this.msg = message;
 		this.domain = domain;
 		this.critical = ([true, false, 'silent'].includes(critical)) ? critical : true;
 		this.payload = payload;
+		if (!this.stack) this.stack = stack || undefined
 
 		// Prioritize supplied stack on logs to avoid clutter
 		// If stack is not string, convert to string
-		const logTrace =  stack || this.stack || undefined;
-		//
-		//	const logTrace =
-		// 		? stack?.toString() || this.stack || undefined
-		// 		: stack?.toString() || undefined;
+		const logTrace =  this.stack || undefined;
 
 		// Set the log level
 		const logLevel = this.critical ? 'critical' : 'error';
 
 		// Log error with Eudoros
 		if (this.domain) {
-			log.withDomain(logLevel, this.domain, this.message, ...this.payload, logTrace);
+			log.withDomain(logLevel, this.domain, message, ...this.payload, logTrace);
 		} else {
-			log[logLevel](this.message, ...this.payload, logTrace);
+			log[logLevel](message, ...this.payload, logTrace);
 		}
 
 		// @todo Implement Sentry.io
