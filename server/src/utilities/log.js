@@ -55,8 +55,8 @@ const config = {
 			label: 'audit',
 			method: 'audit',
 
-			prefix: '[A]',
-			format: [],
+			prefix: '\x1b[35m[\x1b[33m\u{1F441}\x1b[35m]\x1b[0m',
+			format: ['\x1b[35m', '\x1b[0m'],
 			logToFile: 'audit',
 		},
 		{ // Information
@@ -81,7 +81,7 @@ const config = {
 			formatToString: (payload) => {
 				payload = payload[0];
 
-				return `Request ${payload.requestId} finished in ${payload.time}ms, received at ${payload.timestampStart.toISOString()}, user ${payload?.userId||'UNAUTHENTICATED'}`
+				return `Request ${payload.requestId} finished in ${payload.time}ms, received at ${payload.timestampStart.toISOString()}, session: ${payload?.sessionId||false}`
 			}
 		},
 	]
