@@ -43,16 +43,18 @@ class AuthService {
 
 	// Session block
 
-	handleSession = async (request) => {
+	handleSession = async (request, rId) => {
 		if (request.headers?.authorization) {
 			const sessionId = request.headers.authorization.replace('Bearer ', '');
-			const session = await this.getSession(sessionId);
-			if (session?.userId !== null) {
+			const session = await Session.find(sessionId, rId);
 
+			if (session) {
+				await session.refresh(this.#config.auth.session.expiresIn);
+
+				return session;
 			} else {
 				return 'invalid';
 			}
-
 		} else return undefined;
 	}
 
@@ -82,18 +84,29 @@ class AuthService {
 		return parseInt(code, 10);
 	}
 
+
 	createCode = async (userId, userEmail, rId) => {
-		return await new AuthCode({userId, userEmail}, rId).save(this.#config.auth.code.expiresIn, rId).catch(_ => false); // Catch internal errors, return false on fail
+		return await new AuthCode({userId, userEmail}, rId).save(this.#config.auth.code.expiresIn, rId).catch(e => console.log('caught', e)); // Catch internal errors, return false on fail
 	}
 
 	sendEmail = async () => {
 
 	}
 
+	/**
+	 * Check if supplied code exists.
+	 *
+	 * @param 	userId
+	 * @param 	code
+	 * @param 	rId
+	 *
+	 * @returns	{Promise<AuthCode|boolean>}	If AuthCode found, return AuthCode instance;
+	 * 										If no AuthCode found, return false;
+	 */
 	checkCode = async (userId, code, rId) => {
 		const node = await AuthCode.find(userId, code, rId);
 
-		return (node?.code !== undefined && node?.code !== null) ? node : this.deny();
+		return (node?.code) ? node : false;
 	}
 }
 

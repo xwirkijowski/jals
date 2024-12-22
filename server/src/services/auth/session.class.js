@@ -1,5 +1,6 @@
 import {EntityId} from "redis-om";
 
+import {redisClient} from "../../../main.js";
 import InternalError from "../../utilities/internalError.js";
 import {getIP} from "../../utilities/helpers.js";
 
@@ -14,7 +15,6 @@ export default class Session {
 	createdAt;
 	updatedAt;
 	version;
-	ttl;
 
 	constructor(props, rId) {
 		if (!props?.userId) {
@@ -22,11 +22,34 @@ export default class Session {
 			return undefined;
 		}
 
+		this.sessionId = props?.sessionId;
 		this.userId = props.userId.toString();
 		this.userAgent = props?.userAgent?.toString() || props?.request.headers?.['user-agent'] || undefined;
 		this.userAddr = props?.userAddr?.toString() || getIP(props?.request)?.toString() || undefined;
-		this.updatedAt = undefined;
-		this.version = 0;
+		this.createdAt = props?.createdAt ? new Date(props.createdAt) : undefined;
+		this.updatedAt = props?.updatedAt ? new Date(props.updatedAt) : undefined;
+		this.version = props?.version || 0;
+
+		return this;
+	}
+
+	static async find(sessionId, rId){
+		const node = await model.fetch(sessionId);
+
+		node.sessionId = node[EntityId];
+
+		return (node?.userId) ? new Session(node, rId) : undefined;
+	}
+
+	refresh = async (expiresIn, rId) => {
+		if (!this.sessionId) return undefined;
+
+		this.updatedAt = new Date();
+		this.version++;
+
+		// Save updated session and update TTL
+		await model.save(this.sessionId, this)
+		await model.expire(this.sessionId, expiresIn);
 
 		return this;
 	}
@@ -41,7 +64,7 @@ export default class Session {
 		if (node.userId) {
 			this.sessionId = node[EntityId];
 
-			await model.expire(node[EntityId], expiresIn);
+			await model.expire(this.sessionId, expiresIn);
 
 			log.withDomain('audit', 'AuthService', "Session created", {userId: this.userId, sessionId: this.sessionId, requestId: rId});
 
