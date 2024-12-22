@@ -3,11 +3,11 @@
  *
  * @description Keeps track of operations, warnings and errors
  *
- * @param	warnings	{Number}	The number of warnings.
- * @param	errors		{Number}	The number of errors (all types).
- * @param	requests	{Number}	The number of requests serviced.
+ * @prop	warnings	{Number}	The number of warnings.
+ * @prop	errors		{Number}	The number of errors (all types).
+ * @prop	requests	{Number}	The number of requests serviced.
  *
- * @param	#validCounters	{Array<String>}	Valid `counter` argument values
+ * @prop	#validCounters	{Array<String>}	Valid `counter` argument values
  *
  * @method	increment	Increments a specified counter
  * @method	get			Retrieves a specified counter.
