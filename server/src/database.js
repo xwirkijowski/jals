@@ -78,16 +78,20 @@ export const redisClient = createClient({
 		reconnectStrategy: (retries, err) => {
 			$S.setRedis('connecting');
 
-			// Generate a random jitter between 0 – 200 ms:
-			const jitter = Math.floor(Math.random() * 200);
-			// Delay is an exponential back off, (times^2) * 50 ms, with a maximum value of 30 s:
-			const delay = Math.min(Math.pow(2, retries) * 50, 30000);
+			if (retries <= config.redis.reconnectAttempts) {
+				// Generate a random jitter between 0 – 200 ms:
+				const jitter = Math.floor(Math.random() * 200);
+				// Delay is an exponential back off, (times^2) * 50 ms, with a maximum value of 15 s:
+				const delay = Math.min(Math.pow(2, retries) * 50, 15000);
 
-			if (retries % 5 === 0) new InternalError('Cannot connect to the database. Check if the redis database is running!', undefined, 'Redis', false)
+				if (retries % 5 === 0) new InternalError('Cannot connect to the database. Check if the redis database is running!', false, 'Redis', false)
 
-			new InternalWarning(`Unexpected error, attempting to connect again [${retries}, ${delay+jitter}ms]...`, undefined, 'Redis');
+				new InternalWarning(`Unexpected error, attempting to connect again [${retries}, ${delay+jitter}ms]...`, undefined, 'Redis');
 
-			return delay + jitter;
+				return delay + jitter;
+			} else {
+				throw new InternalError('Reached reconnect attempts limit, shutting down!', false, 'Redis', true)
+			}
 		}
 	}
 });
@@ -105,6 +109,8 @@ const setupRedis = async (client) => {
 			// Handled by socket.reconnectStrategy
 		} else if (err.constructor.name === 'Error' && err.code === 'ECONNREFUSED' && $S.redis === 'connecting') {
 			// Handled by socket.reconnectStrategy
+		} else if (err.constructor.name === 'InternalError') {
+			throw err;
 		} else {
 			$S.setRedis('error');
 			new InternalError(`Code ${err.code}${err?.msg?', '+err.msg:''}`, undefined, 'Redis', true);

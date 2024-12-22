@@ -21,6 +21,7 @@ const defaults = {
     },
     redis: {
         port: 6379,
+        reconnectAttempts: 20,
     },
 }
 
@@ -45,6 +46,7 @@ if (!process.env?.REDIS_STRING) {
         db: process.env?.REDIS_DB ?? null,
         user: process.env?.REDIS_USER ?? null,
         password: process.env?.REDIS_PASSWORD ?? null,
+        reconnectAttempts: defaults.redis.reconnectAttempts,
     };
 
     !config.redis.host && new InternalWarning('No REDIS_HOST specified, sessions will not be available without a Redis database');
