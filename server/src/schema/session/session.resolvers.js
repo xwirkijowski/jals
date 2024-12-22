@@ -47,7 +47,7 @@ export default {
 			check.needs('redis');
 
 			// Check if user logged in
-			if (session) return new Result().addError('ALREADY_LOGGED_IN').response();
+			if (session && session !== 'invalid') return new Result().addError('ALREADY_LOGGED_IN').response();
 
 			const result = new Result();
 
@@ -79,7 +79,7 @@ export default {
 			check.needs('redis');
 
 			// Check if user logged in
-			if (session) return new Result().addError('ALREADY_LOGGED_IN').response();
+			if (session && session !== 'invalid') return new Result().addError('ALREADY_LOGGED_IN').response();
 
 			const result = new Result();
 
