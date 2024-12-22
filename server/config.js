@@ -1,6 +1,8 @@
 import InternalError from './src/utilities/internalError.js';
-import InternalWarning from './src/utilities/internalWarning.js';
+import {WarningAggregator} from './src/utilities/errors/warning.js';
 import {globalLogger as log} from "./src/utilities/log.js";
+
+const Warnings = new WarningAggregator();
 
 // Load configuration from environment variables
 log.info('Loading configuration...');
@@ -33,9 +35,9 @@ config.server = {
     env: process.env?.NODE_ENV.toLowerCase() ?? defaults.server.env
 }
 
-!process.env?.SERVER_PORT && new InternalWarning(`No SERVER_PORT specified, using default ${defaults.server.port}`);
-!process.env?.SERVER_HOST && new InternalWarning(`No SERVER_HOST specified, using default ${defaults.server.host}`);
-!process.env?.NODE_ENV && new InternalWarning(`No NODE_ENV specified, using default ${defaults.server.env}`);
+!process.env?.SERVER_PORT && Warnings.new(`No SERVER_PORT specified, using default ${defaults.server.port}`, 'SERVER_PORT_DEFAULT');
+!process.env?.SERVER_HOST && Warnings.new(`No SERVER_HOST specified, using default ${defaults.server.host}`, 'SERVER_HOST_DEFAULT');
+!process.env?.NODE_ENV && Warnings.new(`No NODE_ENV specified, using default ${defaults.server.env}`, 'ENV_DEFAULT');
 
 // Redis configuration block
 
@@ -49,11 +51,11 @@ if (!process.env?.REDIS_STRING) {
         reconnectAttempts: defaults.redis.reconnectAttempts,
     };
 
-    !config.redis.host && new InternalWarning('No REDIS_HOST specified, sessions will not be available without a Redis database');
-    !process.env?.REDIS_PORT && new InternalWarning(`No REDIS_PORT specified, using default ${defaults.redis.port}`);
-    !config.redis.db && new InternalWarning('No REDIS_DB specified');
-    !config.redis.user && new InternalWarning('No REDIS_USER specified');
-    config.redis.user && !config.redis.password && new InternalWarning('REDIS_USER specified but no REDIS_PASSWORD, access to database may be limited')
+    !config.redis.host && Warnings.new('No REDIS_HOST specified, sessions will not be available without a Redis database', 'REDIS_HOST_MISSING');
+    !process.env?.REDIS_PORT && Warnings.new(`No REDIS_PORT specified, using default ${defaults.redis.port}`, 'REDIS_PORT_DEFAULT');
+    !config.redis.db && Warnings.new('No REDIS_DB specified', 'REDIS_DB_MISSING');
+    !config.redis.user && Warnings.new('No REDIS_USER specified', 'REDIS_USER_MISSING');
+    config.redis.user && !config.redis.password && Warnings.new('REDIS_USER specified but no REDIS_PASSWORD, access to database may be limited', 'REDIS_PASSWORD_MISSING')
 } else {
     config.redis = {
         string: process.env.REDIS_STRING
@@ -89,8 +91,8 @@ if (!process.env.MONGO_STRING) {
     !config.mongo.host && new InternalError('No MONGO_HOST specified, no access to database!')
     !config.mongo.port && new InternalError('No MONGO_PORT specified, no access to database!')
     !config.mongo.db && new InternalError('No MONGO_DB specified, no database to access!')
-    !config.mongo.user && new InternalWarning('No MONGO_USER specified, access to database may be limited')
-    config.mongo.user && !config.mongo.password && new InternalWarning('MONGO_USER specified but no MONGO_PASSWORD, access to database may be limited')
+    !config.mongo.user && Warnings.new('No MONGO_USER specified, access to database may be limited', 'MONGO_USER_MISSING')
+    config.mongo.user && !config.mongo.password && Warnings.new('MONGO_USER specified but no MONGO_PASSWORD, access to database may be limited', 'MONGO_PASSWORD_MISSING')
 } else {
     config.mongo = {
         string: process.env.MONGO_STRING
