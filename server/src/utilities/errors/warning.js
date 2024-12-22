@@ -18,11 +18,12 @@ class Warning {
 	constructor(message, code, stack, domain, ...payload) {
 		this.name = 'Warning'
 
+		// Increment warnings counter
 		Counters.increment('warnings');
 
 		this.code = code;
 		this.message = message;
-		this.stack = (stack === true) ? Error.captureStackTrace(this, this.constructor) : undefined;
+		this.stack = (stack) ? Error.captureStackTrace(this, this.constructor) : undefined;
 		this.domain = domain;
 		this.payload = payload;
 
