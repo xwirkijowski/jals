@@ -74,7 +74,7 @@ export const check = {
 	 */
 	isOwner: (session, node) => {
 		// Handle no session
-		this.session(session)
+		check.session(session)
 
 		let authorized = false; // Default to false
 
@@ -103,9 +103,9 @@ export const check = {
 	 *
 	 * @return	Boolean|GraphQLError	If checks pass, return true, else error.
 	 */
-	isAdmin: (session, silent = false) => {
+	isAdmin: (session = undefined, silent = false) => {
 		// Handle no session
-		this.session(session)
+		check.session(session)
 
 		let authorized = false; // Default to false
 
