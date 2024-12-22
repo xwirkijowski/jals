@@ -50,9 +50,9 @@ class InternalError extends Error {
 
 	log() {
 		if (this.domain) {
-			log.withDomain(this.level, this.domain, this.code, this.msg, ...this.payload, undefined);
+			log.withDomain(this.level, this.domain, this.code, this.msg, ...this.payload, this.stack);
 		} else {
-			log[this.level](this.code, this.msg, ...this.payload, undefined);
+			log[this.level](this.code, this.msg, ...this.payload, this.stack);
 		}
 
 		return this;
