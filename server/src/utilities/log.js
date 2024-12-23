@@ -8,6 +8,18 @@ const config = {
 	},
 	levels: [
 		{ // Critical errors that cause performance degradation or shutdown
+			label: 'fatal',
+			consoleMethodName: 'fatal',
+			prefix: `\x1b[1m\x1b[31m[\u{2717}]\x1b[0m`, // Bold, red
+			format: ['\x1b[1m\x1b[31m', '\x1b[0m'], // Bold, red
+			trace: {
+				groupLabel: 'Fatal error occurred.',
+				groupPrefix: '\x1b[1m\x1b[31m[\x1b[33m\u{26A0}\x1b[31m]\x1b[0m',
+				format: ['\x1b[31m', '\x1b[0m'],
+			},
+			logToFile: true,
+		},
+		{ // Critical errors that cause performance degradation or shutdown
 			label: 'critical',
 			consoleMethodName: 'error',
 			prefix: `\x1b[1m\x1b[31m[\u{2717}]\x1b[0m`, // Bold, red
