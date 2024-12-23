@@ -1,13 +1,8 @@
-import InternalError from './src/utilities/internalError.js';
-import {WarningAggregator} from './src/utilities/errors/warning.js';
-import {globalLogger as log} from "./src/utilities/log.js";
+import { WarningAggregator, ErrorAggregator, CriticalError, FatalError } from "./src/utilities/errors/index.js";
+import { globalLogger as log } from "./src/utilities/log.js";
 
 const Warnings = new WarningAggregator();
-
-// Load configuration from environment variables
-log.info('Loading configuration...');
-
-const config = {}
+const Errors = new ErrorAggregator();
 
 // Defaults
 const defaults = {
@@ -26,6 +21,11 @@ const defaults = {
         reconnectAttempts: 20,
     },
 }
+
+// Load configuration from environment variables
+log.info('Loading configuration...');
+
+const config = {}
 
 // Server configuration block
 config.server = {
@@ -88,9 +88,9 @@ if (!process.env.MONGO_STRING) {
         opts: process.env?.MONGO_OPTS ?? null
     };
 
-    !config.mongo.host && new InternalError('No MONGO_HOST specified, no access to database!')
-    !config.mongo.port && new InternalError('No MONGO_PORT specified, no access to database!')
-    !config.mongo.db && new InternalError('No MONGO_DB specified, no database to access!')
+    !config.mongo.host && Errors.add(new FatalError('No MONGO_HOST specified, no access to database!', 'MONGO_HOST_MISSING', undefined, true));
+    !config.mongo.port && Errors.add(new FatalError('No MONGO_PORT specified, no access to database!', 'MONGO_PORT_MISSING', undefined, true));
+    !config.mongo.db && Errors.add(new FatalError('No MONGO_DB specified, no database to access!', 'MONGO_DB_MISSING', undefined, true));
     !config.mongo.user && Warnings.new('No MONGO_USER specified, access to database may be limited', 'MONGO_USER_MISSING')
     config.mongo.user && !config.mongo.password && Warnings.new('MONGO_USER specified but no MONGO_PASSWORD, access to database may be limited', 'MONGO_PASSWORD_MISSING')
 } else {
@@ -111,6 +111,12 @@ config.mongo.connection = () => {
     return `mongodb://${(userString)}${config.mongo.host}:${config.mongo.port}/${config.mongo.db}${config.mongo.opts||''}`
 };
 
+if (Errors.errorCount > 0) {
+    log.error('Fatal error during configuration loading! Cannot start application.')
+    console.error(Errors.errors)
+    process.exit(1)
+}
+
 log.success('Configuration loaded!')
 
-export default config;
+export {config};
