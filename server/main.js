@@ -1,23 +1,23 @@
+// Import logger
+import { globalLogger as log } from './src/utilities/log.js';
+
+// Load configuration
+import { config } from "./config.js";
+
+// Import database configuration and status
+import { setupMongo, redisClient, setupRedis, $S } from './src/database.js';
+
 // Import dependencies
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
 import { ulid } from 'ulid';
 
-// Error statistics counters
-import Counters from './src/utilities/internalCounters.js';
+// Import telemetry counters (requests, warnings, errors)
+import Counters from './src/utilities/telemetryCounters.js';
 
 // Import middleware
 import { telemetryPlugin } from "./src/middleware/telemetryPlugin.js";
 import { extensionsPlugin } from "./src/middleware/extensionsPlugin.js";
-
-// Load configuration
-import config from "./config.js";
-
-// Import database configuration and status
-import { setupMongo, redisClient, setupRedis, $S } from './src/database.js';
-
-// Import logger
-import { globalLogger as log } from './src/utilities/log.js';
 
 // Import final schema
 import schema from './src/schema.js';
@@ -31,8 +31,7 @@ import userModel from './src/models/user.model.js';
 import { service as AuthService } from "./src/services/auth/index.js";
 
 // Setup Redis client
-setupRedis(redisClient);
-export {redisClient};
+await setupRedis(redisClient);
 
 // Setup mongoose database connection
 await setupMongo();
