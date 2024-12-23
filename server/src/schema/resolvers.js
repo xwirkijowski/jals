@@ -41,18 +41,9 @@ export default {
 			return diff;
 		},
 	},
-	DomainStatus: {
-		user: (_, __, {systemStatus}) => (systemStatus.db === 'connected') ? 'available' : 'unavailable',
-		session: (_, __, {systemStatus}) => {
-			if (systemStatus.redis === 'connected') return 'available';
-			if (systemStatus.redis === 'connected' && systemStatus.db !== 'connected') return 'limited';
-			return 'unavailable';
-		},
-	},
 	HealthCheck: {
 		timestamp: () => new Date().toISOString(),
 		internal: () => true,
-		domains: () => true,
 	},
 	Query: {
 		healthCheck: () => true,
