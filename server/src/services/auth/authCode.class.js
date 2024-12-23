@@ -1,9 +1,9 @@
-import {EntityId} from "redis-om";
+import { EntityId } from "redis-om";
 
-import InternalError from "../../utilities/internalError.js";
+import { CriticalError } from './../../utilities/errors/index.js';
 
 import model from "./authCode.model.js";
-import {service, log} from "./index.js";
+import { service, log } from "./index.js";
 
 export default class AuthCode {
 	authCodeId;
@@ -22,7 +22,7 @@ export default class AuthCode {
 		} else { // New instance to insert
 			if (!props) return this; // Pass to `Find`
 			else if (!props?.userId || !props?.userEmail) {
-				new InternalError('Code creation failed, no userId and userEmail provided!', undefined, 'AuthService', false, props, {requestId: rId})
+				new CriticalError('Code creation failed, no userId and userEmail provided!', 'AUTHCODE_MISSING_ARGS', 'AuthService', true, {requestId: rId, props})
 				return undefined;
 			}
 
@@ -59,7 +59,7 @@ export default class AuthCode {
 
 			return this;
 		} else {
-			new InternalError("AuthCode save failed!", undefined, 'AuthService', false, {userId: this.userId, requestId: rId});
+			new CriticalError('AuthCode save failed!', 'AUTHCODE_SAVE_FAULT', 'AuthService', true, {requestId: rId, authCode: this})
 			return undefined;
 		}
 	}

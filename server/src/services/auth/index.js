@@ -2,9 +2,9 @@ import {GraphQLError} from "graphql";
 
 import crypto from 'node:crypto';
 
-import InternalError from "../../utilities/internalError.js";
+import { CriticalError } from './../../utilities/errors/index.js';
 import { globalLogger as log } from '../../utilities/log.js';
-export {log};
+export { log };
 
 import Session from "./session.class.js";
 import AuthCode from "./authCode.class.js";
@@ -53,6 +53,7 @@ class AuthService {
 
 				return session;
 			} else {
+				// Session expired or header malformed
 				return 'invalid';
 			}
 		} else return undefined;
@@ -69,7 +70,7 @@ class AuthService {
 		const length = this.#config.auth.code.length;
 
 		if (length <= 0) {
-			throw new InternalError("Auth length must be greater than 0! Cannot generate auth code.", undefined, 'AuthService', false, {requestId: rId});
+			throw new CriticalError("Auth length must be greater than 0! Cannot generate auth code.", 'AUTH_CONFIG_FAULT', 'AuthService', true, {requestId: rId});
 		}
 
 		let code = '';

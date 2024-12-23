@@ -1,11 +1,10 @@
-import {EntityId} from "redis-om";
+import { EntityId } from "redis-om";
 
-import {redisClient} from "../../../main.js";
-import InternalError from "../../utilities/internalError.js";
-import {getIP} from "../../utilities/helpers.js";
+import { CriticalError } from './../../utilities/errors/index.js';
+import { getIP } from "../../utilities/helpers.js";
 
 import model from "./session.model.js";
-import {service, log} from "./index.js";
+import { service, log } from "./index.js";
 
 export default class Session {
 	sessionId;
@@ -18,7 +17,7 @@ export default class Session {
 
 	constructor(props, rId) {
 		if (!props?.userId) {
-			new InternalError('Session creation failed, no userId provided!', undefined, 'AuthService', false, props, {requestId: rId})
+			new CriticalError('Session creation failed, no userId provided!', 'SESSION_MISSING_ARGS', 'AuthService', true, {requestId: rId, props})
 			return undefined;
 		}
 
@@ -70,7 +69,7 @@ export default class Session {
 
 			return this;
 		} else {
-			new InternalError("Session save failed!", undefined, 'AuthService', false, {userId: this.userId, requestId: rId});
+			new CriticalError("Session save failed!", 'SESSION_SAVE_FAULT', 'AuthService', true, {requestId: rId, session: this});
 			return undefined;
 		}
 	}
