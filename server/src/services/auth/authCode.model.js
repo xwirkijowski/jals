@@ -1,5 +1,5 @@
-import {Repository, Schema} from 'redis-om';
-import {redisClient} from "./../../../main.js";
+import { Repository, Schema } from 'redis-om';
+import { redisClient } from "../../database.js";
 
 const repository = new Repository(new Schema(
 	'authCode', {

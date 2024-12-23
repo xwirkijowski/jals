@@ -1,5 +1,5 @@
-import {Repository, Schema} from 'redis-om';
-import {redisClient} from "../../../main.js";
+import { Repository, Schema } from 'redis-om';
+import { redisClient } from "../../database.js";
 import crypto from 'node:crypto';
 
 const repository = new Repository(new Schema(
