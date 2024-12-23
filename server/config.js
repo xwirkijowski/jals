@@ -18,7 +18,7 @@ const defaults = {
     },
     redis: {
         port: 6379,
-        reconnectAttempts: 20,
+        reconnectAttempts: undefined, // 20
     },
 }
 
