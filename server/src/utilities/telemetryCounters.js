@@ -1,5 +1,5 @@
 /**
- * InternalCounters
+ * TelemetryCounters
  *
  * @description Keeps track of operations, warnings and errors
  *
@@ -12,7 +12,7 @@
  * @method	increment	Increments a specified counter
  * @method	get			Retrieves a specified counter.
  */
-class InternalCounters {
+class TelemetryCounters {
 	warnings = 0;
 	errors = 0;
 	requests = 0;
@@ -42,6 +42,6 @@ class InternalCounters {
 	}
 }
 
-export default new InternalCounters();
+export default new TelemetryCounters();
 
-export {InternalCounters}
+export {TelemetryCounters}

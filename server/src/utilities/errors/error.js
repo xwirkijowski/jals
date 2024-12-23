@@ -1,6 +1,6 @@
 import {globalLogger as log} from "../log.js";
 
-import Counters from '../internalCounters.js';
+import Counters from '../telemetryCounters.js';
 
 /**
  * InternalError
