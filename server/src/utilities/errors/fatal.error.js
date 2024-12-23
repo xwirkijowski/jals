@@ -1,11 +1,11 @@
 import {InternalError} from './error.js';
 
 class FatalError extends InternalError {
-	constructor(msg, code, domain, stack, ...payload) {
-		super(msg, code, domain, stack, payload);
+	constructor (msg, code, domain, stack, ...payload) {
+		super(msg, code, domain, stack, ...payload);
 
 		// Set FatalError specific data
-		this.name = 'FatalInternalError';
+		this.name = 'FatalError';
 		this.level = 'fatal';
 
 		// Log error
@@ -14,7 +14,7 @@ class FatalError extends InternalError {
 		// @todo: Integrate sentry.io
 		// @todo: Call shutdown function
 
-		throw this;
+		return this;
 	}
 }
 

@@ -22,7 +22,7 @@ class InternalError extends Error {
 	msg;
 	domain;
 	payload;
-	stack;
+	stack = undefined;
 
 	constructor(msg = undefined, code = 'UNKNOWN', domain = undefined, stack = false, ...payload) {
 		// Call Error constructor, capture base Error details
@@ -37,10 +37,11 @@ class InternalError extends Error {
 		this.domain = domain || undefined;
 
 		// If stack needs a stack trace, use built-in method and ignore current constructor
-		this.stack = (stack) ? Error.captureStackTrace(this, this.constructor) : undefined;
 
-		// Assign payload to property
-		this.payload = payload;
+		if (stack) Error.captureStackTrace(this, this.constructor);
+
+		// Assign payload to property if is not empty
+		this.payload = ((typeof payload === 'object' && payload.keys.length > 0) || (Array.isArray(payload) && payload.length > 0)) ? payload : undefined;
 
 		// Log only if used directly, let extends handle logging on their own
 		if (new.target.name === 'InternalError') this.log();
@@ -50,9 +51,9 @@ class InternalError extends Error {
 
 	log() {
 		if (this.domain) {
-			log.withDomain(this.level, this.domain, this.code, this.msg, ...this.payload, this.stack);
+			log.withDomain(this.level, this.domain, this.code, this.msg, this?.payload, this?.stack);
 		} else {
-			log[this.level](this.code, this.msg, ...this.payload, this.stack);
+			log[this.level](this.code, this.msg, this?.payload, this?.stack);
 		}
 
 		return this;
@@ -67,7 +68,7 @@ class ErrorAggregator {
 	errorCount = 0;
 	errorCodes = [];
 
-	constructor(domain) {
+	constructor (domain) {
 		this.domain = domain;
 		return this;
 	}

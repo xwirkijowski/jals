@@ -15,7 +15,7 @@ class Warning {
 	domain;
 	payload;
 
-	constructor(message, code, stack, domain, ...payload) {
+	constructor (message, code, domain, stack, ...payload) {
 		this.name = 'Warning'
 
 		// Increment warnings counter
@@ -52,13 +52,13 @@ class WarningAggregator {
 	warningCount = 0;
 	warningCodes = [];
 
-	constructor(domain) {
+	constructor (domain) {
 		this.domain = domain;
 		return this;
 	}
 
 	new = (message, code, stack, payload) => {
-		const warning = new Warning(message, code, stack, this.domain, payload);
+		const warning = new Warning(message, code, this.domain, stack, payload);
 
 		this.warningCount += 1;
 		this.warnings.push(warning);
