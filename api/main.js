@@ -82,7 +82,7 @@ const { url } = await startStandaloneServer(server, {
 		// @todo Rate limit, max depth, complexity
 		// @todo Add check for client app to prevent direct use.
 
-		const session = await AuthService.handleSession(req, telemetryRequest.requestId);
+		const session = await services.auth.handleSession(req, telemetryRequest.requestId);
 
 		return {
 			session,

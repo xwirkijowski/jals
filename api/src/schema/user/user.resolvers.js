@@ -14,15 +14,4 @@ export default {
 			return await user.findOne({id: args.userId});
 		},
 	},
-	Mutation: {
-		updateUser: async () => {
-
-		},
-		deleteUser: async () => {
-
-		},
-		register: async () => {
-
-		},
-	}
 }
