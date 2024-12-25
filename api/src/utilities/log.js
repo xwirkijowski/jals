@@ -3,7 +3,7 @@ import {Eudoros} from 'eudoros';
 const config = {
 	options: {
 		outputDirectory: './logs',
-		synchronize: true,
+		synchronous: true,
 		formatArgs: false,
 	},
 	levels: [
