@@ -5,7 +5,9 @@ import { globalLogger as log } from './src/utilities/log.js';
 import { config } from "./config.js";
 
 // Import database configuration and status
-import { setupMongo, redisClient, setupRedis, $S } from './src/database.js';
+import { redisClient, setupRedis, $S } from './src/database.js';
+
+import { setupMongo } from "./src/database/mongoose.js";
 
 // Import dependencies
 import { ApolloServer } from '@apollo/server';
@@ -34,7 +36,7 @@ import { service as AuthService } from "./src/services/auth/index.js";
 await setupRedis(redisClient);
 
 // Setup mongoose database connection
-await setupMongo();
+await setupMongo(config);
 
 // Construct Apollo server instance
 const server = new ApolloServer({

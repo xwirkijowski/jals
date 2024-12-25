@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+
 import { createClient } from "redis";
 
 import { globalLogger as log } from "./utilities/log.js";
@@ -30,44 +30,21 @@ class SystemStatus {
 // Create a System Status instance and export it
 export const $S = new SystemStatus();
 
-const setupMongo = async () => {
-	mongoose.set('debug', true);
+/**
+ * Redis block
+ */
 
-	mongoose.connection.on('connected', () => {
-		$S.setDB('connected');
-		log.withDomain('success','Mongoose', 'Database connection established!');
-	})
+const reconnectStrategy = (retries, err) => {
+	const reconnectLimit = config.redis.reconnectAttempts;
 
-	mongoose.connection.on('error', err => {
-		$S.setDB('error');
-		new CriticalError(err.errorResponse?.errmsg || err.errorResponse?.message || 'Unknown mongoose error occurred.', err.errorResponse?.code || 'UNKNOWN_MONGOOSE_ERROR', 'Mongoose', false);
-	})
+	if (reconnectLimit && retries <= reconnectLimit || !reconnectLimit) {
+		// Generate a random jitter between 0 – 200 ms:
+		const jitter = Math.floor(Math.random() * 200);
+		// Delay is an exponential back off, (times^2) * 50 ms, with a maximum value of 15 s:
+		const delay = Math.min(Math.pow(2, retries) * 50, 15000);
 
-	mongoose.connection.on('disconnect', e => {
-		$S.setDB('disconnected');
-		console.log(e);
-	})
-
-	// Attempt to connect
-	try {
-		$S.setDB('connecting');
-		log.withDomain('info', 'Mongoose', 'Attempting to establish database connection...');
-
-		await mongoose.connect(config.mongo.connection(), {
-			heartbeatFrequencyMS: 10000,
-		})
-	} catch (err) {
-		// Handle initial errors
-
-		$S.setDB('error');
-
-		if (err instanceof mongoose.Error.MongooseServerSelectionError) {
-			// Error while looking for the server. Possibly server is unreachable or disabled.
-			new FatalError(`Cannot connect to the database.`, err.reason.type, 'Mongoose', true)
-		} else {
-			// Server is found but cannot connect.
-			new FatalError(`Connection error. ${err.errorResponse?.errmsg}`, err.errorResponse?.code, 'Mongoose', true);
-		}
+		// Log warning
+		new Warning(`Connection lost or failed to connect, attempting again [${retries}, ${delay+jitter}ms]...`, undefined, 'Redis', false);
 	}
 }
 
@@ -154,4 +131,4 @@ const setupRedis = async (config) => {
 	return client;
 }
 
-export {setupMongo, setupRedis}
+export {setupRedis}
