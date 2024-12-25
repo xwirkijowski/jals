@@ -1,7 +1,7 @@
 import { Repository, Schema } from 'redis-om';
-import { redisClient } from "../../database.js";
+import { client } from '../../utilities/database/redis.js';
 
-const repository = new Repository(new Schema(
+export const repository = new Repository(new Schema(
 	'authCode', {
 		userId: { type: 'string' },
 		userEmail: { type: 'string' },
@@ -11,9 +11,9 @@ const repository = new Repository(new Schema(
 	{
 		dataStructure: 'JSON'
 	}
-), redisClient);
+), client);
 
-redisClient.on('ready', async () => {
+client.on('ready', async () => {
 	await repository.createIndex();
 })
 

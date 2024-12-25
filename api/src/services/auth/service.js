@@ -6,11 +6,11 @@ import { CriticalError } from './../../utilities/errors/index.js';
 import { globalLogger as log } from '../../utilities/log.js';
 export { log };
 
-import Session from "./session.class.js";
-import AuthCode from "./authCode.class.js";
+import Session from "./session.js";
+import AuthCode from "./authCode.js";
 
-class AuthService {
-	#config = {
+export class AuthService {
+	#default_config = {
 		mail: {
 			senderAddr: "jals@wirkijowski.dev",
 			senderName: "Just Another Link Shortener",
@@ -26,9 +26,14 @@ class AuthService {
 		}
 	}
 
-	constructor() {
-		log.withDomain('success', 'AuthService', 'AuthService started!')
+	config = {};
 
+	constructor (config) {
+		log.withDomain('info', 'AuthService', 'Loading AuthService configuration...');
+
+		this.config = {...this.#default_config, ...config}
+
+		log.withDomain('success', 'AuthService', 'AuthService started!')
 		return this;
 	}
 
@@ -49,7 +54,7 @@ class AuthService {
 			const session = await Session.find(sessionId, rId);
 
 			if (session) {
-				await session.refresh(this.#config.auth.session.expiresIn);
+				await session.refresh(this.config.auth.session.expiresIn);
 
 				return session;
 			} else {
@@ -60,14 +65,14 @@ class AuthService {
 	}
 
 	createSession = async (userId, request, rId) => {
-		return await new Session({userId, request}, rId).save(this.#config.auth.session.expiresIn, rId).catch(_ => false); // Catch internal errors, return false on fail
+		return await new Session({userId, request}, rId).save(this.config.auth.session.expiresIn, rId).catch(_ => false); // Catch internal errors, return false on fail
 	}
 
 
 	// Authentication code block
 
-	generateCode = (rId) => {
-		const length = this.#config.auth.code.length;
+	static generateCode = (rId) => {
+		const length = this.config.auth.code.length;
 
 		if (length <= 0) {
 			throw new CriticalError("Auth length must be greater than 0! Cannot generate auth code.", 'AUTH_CONFIG_FAULT', 'AuthService', true, {requestId: rId});
@@ -87,7 +92,7 @@ class AuthService {
 
 
 	createCode = async (userId, userEmail, rId) => {
-		return await new AuthCode({userId, userEmail}, rId).save(this.#config.auth.code.expiresIn, rId).catch(e => console.log('caught', e)); // Catch internal errors, return false on fail
+		return await new AuthCode({userId, userEmail}, rId).save(this.config.auth.code.expiresIn, rId).catch(e => console.log('caught', e)); // Catch internal errors, return false on fail
 	}
 
 	sendEmail = async () => {
@@ -110,5 +115,3 @@ class AuthService {
 		return (node?.code) ? node : false;
 	}
 }
-
-export const service = new AuthService();

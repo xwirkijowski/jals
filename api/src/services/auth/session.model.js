@@ -1,15 +1,15 @@
-import { Repository, Schema } from 'redis-om';
-import { redisClient } from "../../database.js";
 import crypto from 'node:crypto';
+import { Repository, Schema } from 'redis-om';
+import { client } from '../../utilities/database/redis.js';
 
-const repository = new Repository(new Schema(
+export const repository = new Repository(new Schema(
 	'session', {
-		userId: { type: 'string' },
-		userAgent: { type: 'string' },
-		userAddr: { type: 'string' },
-		createdAt: { type: 'date' },
-		updatedAt: { type: 'date'} ,
-		version: { type: 'number' },
+		userId: {type: 'string'},
+		userAgent: {type: 'string'},
+		userAddr: {type: 'string'},
+		createdAt: {type: 'date'},
+		updatedAt: {type: 'date'},
+		version: {type: 'number'},
 	},
 	{
 		dataStructure: 'JSON',
@@ -17,10 +17,8 @@ const repository = new Repository(new Schema(
 			return crypto.randomBytes(64).toString('hex');
 		}
 	}
-), redisClient);
+), client);
 
-redisClient.on('ready', async () => {
+client.on('ready', async () => {
 	await repository.createIndex();
 })
-
-export default repository;

@@ -2,8 +2,8 @@ import { EntityId } from "redis-om";
 
 import { CriticalError } from './../../utilities/errors/index.js';
 
-import model from "./authCode.model.js";
-import { service, log } from "./index.js";
+import { repository as model } from "./authCode.model.js";
+import { AuthService, log } from "./service.js";
 
 export default class AuthCode {
 	authCodeId;
@@ -28,7 +28,7 @@ export default class AuthCode {
 
 			this.userId = props.userId.toString();
 			this.userEmail = props.userEmail.toString();
-			this.code = service.generateCode();
+			this.code = AuthService.generateCode(rId);
 		}
 
 		return this;

@@ -26,8 +26,8 @@ f.prepPagination = (args, pagination) => {
 export default f;
 
 
-import {GraphQLError} from "graphql";
-import {$S} from "../database.js";
+import { GraphQLError} from "graphql";
+import { $DB } from "./database/status.js";
 
 export const check = {
 	/**
@@ -46,9 +46,9 @@ export const check = {
 		else throw new GraphQLError('Input empty or wrong type', { extensions: { code: 'BAD_USER_INPUT' } });
 	},
 	needs: (system) => {
-		if (system === 'db' && $S.db !== 'connected') {
+		if (system === 'mongo' && $DB.mongo !== 'connected') {
 			throw new GraphQLError('Database unavailable.', { extensions: { code: 'INTERNAL_SERVER_ERROR' } });
-		} else if (system === 'redis' && $S.redis !== 'connected') {
+		} else if (system === 'redis' && $DB.redis !== 'connected') {
 			throw new GraphQLError('Session database unavailable.', { extensions: { code: 'INTERNAL_SERVER_ERROR' } });
 		}
 	},

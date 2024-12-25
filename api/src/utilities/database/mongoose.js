@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
-import { globalLogger as log } from "../utilities/log.js";
-import { CriticalError, FatalError } from '../utilities/errors/index.js';
+import { globalLogger as log } from "../log.js";
+import { CriticalError, FatalError } from '../errors/index.js';
 
 import { $DB } from './status.js';
 
@@ -43,12 +43,13 @@ export const setupMongo = async (config) => {
 	mongoose.connection.on('disconnected', () => {
 		// Set status and time to start tracking outage
 		$DB.setMongo('disconnected').setMongoTime();
-		new CriticalError('Disconnected from MongoDB!', 'MONGO_CONN_LOST', 'Mongo', false)
+		//new CriticalError('Disconnected from MongoDB!', 'MONGO_CONN_LOST', 'Mongo', false)
+		log.withDomain('info', 'Mongo', 'Disconnected from MongoDB.');
 	})
 
 	mongoose.connection.on('closed', () => {
 		$DB.setMongo('closed');
-		log.withDomain('info', 'Mongo', 'Mongoose client closed.');
+		log.withDomain('info', 'Mongo', 'Mongoose client closed successfully.');
 	})
 
 	mongoose.connection.on('error', err => {
@@ -69,7 +70,7 @@ const handleError = (err, origin) => {
 	console.trace(origin, err)
 
 	if (origin === 'initial') {
-		new CriticalError('Error during initial MongoDB connection', err.code||'UNKNOWN', 'Mongo')
+		new FatalError('Error during initial MongoDB connection.', err.code||'UNKNOWN', 'Mongo')
 	} else {
 		new CriticalError(`MongoDB error. ${err.errorResponse?.errmsg}`, err.errorResponse?.code, 'Mongoose');
 	}

@@ -3,8 +3,8 @@ import { EntityId } from "redis-om";
 import { CriticalError } from './../../utilities/errors/index.js';
 import { getIP } from "../../utilities/helpers.js";
 
-import model from "./session.model.js";
-import { service, log } from "./index.js";
+import { repository as model } from "./session.model.js";
+import { log } from "./service.js";
 
 export default class Session {
 	sessionId;

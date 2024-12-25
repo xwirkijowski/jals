@@ -5,9 +5,11 @@ import { globalLogger as log } from './src/utilities/log.js';
 import { config } from "./config.js";
 
 // Import database configuration and status
-import { redisClient, setupRedis, $S } from './src/database.js';
+import { $DB } from './src/utilities/database/status.js';
+import { setupMongo } from "./src/utilities/database/mongoose.js";
 
-import { setupMongo } from "./src/database/mongoose.js";
+// Setup mongoose database connection
+await setupMongo(config);
 
 // Import dependencies
 import { ApolloServer } from '@apollo/server';
@@ -30,13 +32,7 @@ import linkModel from "./src/models/link.model.js";
 import userModel from './src/models/user.model.js';
 
 // Import services
-import { service as AuthService } from "./src/services/auth/index.js";
-
-// Setup Redis client
-await setupRedis(redisClient);
-
-// Setup mongoose database connection
-await setupMongo(config);
+import { AuthService } from "./src/services/auth/service.js";
 
 // Construct Apollo server instance
 const server = new ApolloServer({
@@ -61,6 +57,11 @@ export const stopServer = async () => {
 const statistics = {
 	timeStartup: new Date(),
 	counters: Counters,
+}
+
+// Services
+const services = {
+	auth: new AuthService(config),
 }
 
 // Launch the Apollo server
@@ -92,14 +93,12 @@ const { url } = await startStandaloneServer(server, {
 				link: linkModel,
 				click: clickModel,
 			},
-			services: {
-				auth: AuthService,
-			},
+			services,
 			internal: {
 				...telemetryRequest,
 				statistics,
 			},
-			systemStatus: $S,
+			systemStatus: $DB,
 		}
 	},
 	cors: {

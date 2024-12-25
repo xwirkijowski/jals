@@ -15,7 +15,7 @@ export class DatabaseStatus {
 	}
 
 	setMongoTime () {
-		this.mongoTime = performance.now();
+		if (!this.mongoTime) this.mongoTime = performance.now();
 		return this;
 	}
 
@@ -31,7 +31,7 @@ export class DatabaseStatus {
 	}
 
 	setRedisTime () {
-		this.redisTime = performance.now();
+		if (!this.redisTime) this.redisTime = performance.now();
 		return this;
 	}
 

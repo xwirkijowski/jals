@@ -37,7 +37,6 @@ class InternalError extends Error {
 		this.domain = domain || undefined;
 
 		// If stack needs a stack trace, use built-in method and ignore current constructor
-
 		if (stack) Error.captureStackTrace(this, this.constructor);
 
 		// Assign payload to property if is not empty
