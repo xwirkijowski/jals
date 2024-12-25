@@ -1,0 +1,1 @@
+- [x] Error rework (implement more types and add codes)
