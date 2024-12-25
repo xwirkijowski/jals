@@ -1,8 +1,8 @@
 import { WarningAggregator, ErrorAggregator, CriticalError, FatalError } from "./src/utilities/errors/index.js";
 import { globalLogger as log } from "./src/utilities/log.js";
 
-const Warnings = new WarningAggregator();
-const Errors = new ErrorAggregator();
+const Warnings = new WarningAggregator('Config');
+const Errors = new ErrorAggregator('Config');
 
 // Defaults
 const defaults = {
@@ -23,7 +23,7 @@ const defaults = {
 }
 
 // Load configuration from environment variables
-log.info('Loading configuration...');
+log.withDomain('info', 'Config', 'Loading configuration...');
 
 const config = {}
 
@@ -112,11 +112,11 @@ config.mongo.connection = () => {
 };
 
 if (Errors.errorCount > 0) {
-    log.error('Fatal error during configuration loading! Cannot start application.')
+    log.withDomain('fatal', 'config', 'Fatal error during configuration loading! Cannot start application.')
     console.error(Errors.errors)
     process.exit(1)
 }
 
-log.success('Configuration loaded!')
+log.withDomain('success', 'Config', 'Configuration loaded');
 
 export {config};
