@@ -6,6 +6,7 @@ import { WarningAggregator, FatalError } from '../errors/index.js';
 
 const Warnings = new WarningAggregator('Redis')
 
+import { $CMDR } from '../commander.js';
 import { $DB } from './status.js';
 
 // Construct client
@@ -45,6 +46,8 @@ export const client = createClient({
 	}
 })
 
+$CMDR.applyRedisClient(client);
+
 client.connect()
 	.then()
 	.catch(err => {
@@ -73,7 +76,8 @@ client.on('reconnecting', () => {
 
 client.on('error', err => {
 	if ($DB.redis === 'connecting-limit') {
-		handleFatalError()
+		// `connecting-limit` status is set only when reconnection attempt limit is reached
+		$CMDR.shutdown('REDIS_RECONN_LIMIT'); // Initiate shutdown
 		return;
 	}
 
@@ -84,22 +88,3 @@ client.on('error', err => {
 })
 
 client.on('end', err => console.log('END', err)) // Test implementation
-
-const handleFatalError = async () => {
-	Warnings.new(`Attempting to gracefully close client...`, 'REDIS_FATAL', false, {redisStatus: $DB.redis})
-
-	await client.disconnect().catch(err => {
-		if (err.constructor.name === 'ClientClosedError') log.withDomain('info', 'Redis', 'Disconnected from Redis successfully.');
-		else Warnings.new('Unexpected result of \'disconnect()\'!', 'UNKNOWN', true, err);
-	})
-
-	await client.quit().catch(err => {
-		if (err.constructor.name === 'ClientClosedError') {
-			$DB.setRedis('closed');
-			log.withDomain('info', 'Redis', 'Redis client closed successfully.');
-		}
-		else Warnings.new('Unexpected result of \'quit()\'!', 'UNKNOWN', true, err);
-	});
-
-	// @todo: Signal to main to shutdown GraphQL and other clients
-}

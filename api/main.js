@@ -4,6 +4,9 @@ import { globalLogger as log } from './src/utilities/log.js';
 // Load configuration
 import { config } from "./config.js";
 
+// Load process commander
+import { $CMDR } from './src/utilities/commander.js';
+
 // Import database configuration and status
 import { $DB } from './src/utilities/database/status.js';
 import { setupMongo } from "./src/utilities/database/mongoose.js";
@@ -45,13 +48,7 @@ const server = new ApolloServer({
 	introspection: (config.server.env === 'development')
 })
 
-export const stopServer = async () => {
-	log.critical('Stopping server...')
-
-	// Disconnect databases
-
-	return server.stop();
-}
+$CMDR.applyServer(server)
 
 // Statistics collection
 const statistics = {

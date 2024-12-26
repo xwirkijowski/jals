@@ -4,6 +4,7 @@ import { globalLogger as log } from "../log.js";
 import { CriticalError, FatalError } from '../errors/index.js';
 
 import { $DB } from './status.js';
+import { $CMDR } from '../commander.js';
 
 export const setupMongo = async (config) => {
 	mongoose.set('debug', (config.server.env === 'development'));
@@ -65,6 +66,8 @@ export const setupMongo = async (config) => {
 		handleError(err, 'initial');
 	})
 }
+
+$CMDR.applyMongoClient(mongoose.connection);
 
 const handleError = (err, origin) => {
 	console.trace(origin, err)
