@@ -1,6 +1,6 @@
 # Inputs
 
-input ClickInput {
+input CreateClickInput {
 	linkId: ID!
 	userAgent: String
 	platform: String
@@ -18,7 +18,7 @@ input RemoveAllClicksInput {
 
 # Payloads
 
-type AddClickPayload {
+type CreateClickPayload {
 	result: Result!
 	click: Click
 }
@@ -35,7 +35,7 @@ type RemoveAllClicksPayload {
 # Extends
 
 extend type Mutation {
-	addClick(input: ClickInput): AddClickPayload
+	createClick(input: CreateClickInput): CreateClickPayload
 	removeClick(input: RemoveClickInput): RemoveClickPayload
 
 	removeAllClicks(input: RemoveAllClicksInput): RemoveAllClicksPayload

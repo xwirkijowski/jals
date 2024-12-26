@@ -3,7 +3,7 @@ import {Result} from "../../utilities/result.js";
 
 export default {
 	Mutation: {
-		addClick: async (_, {input}, {session, req, models: {click}}) => {
+		createClick: async (_, {input}, {session, req, models: {click}}) => {
 			check.needs('mongo');
 			const result = new Result();
 
@@ -16,17 +16,16 @@ export default {
 
 			const node = await click.create(input)
 
-			if (node) { // @todo: Add proper checks
+			if (node?._id) {
 				return result.response(true, {click: node});
 			} else {
-				return {
-					result: false
-				}
+				return result.addError('CREATE_CLICK_FAILED').response(true);
 			}
 		},
 		removeClick: async (_, {input}, {session, models: {click}}) => {
 			check.needs('mongo');
 			check.isAdmin(session);
+
 			const result = new Result();
 
 			const node = await click.deleteOne({_id: input.clickId});
@@ -34,14 +33,13 @@ export default {
 			if (node.deletedCount === 1) {
 				return result.response(true)
 			} else {
-				return {
-					result: false
-				}
+				return result.addError('REMOVE_CLICK_FAILED').response(true);
 			}
 		},
 		removeAllClicks: async (_, {input}, {session, models: {click, link}}) => {
-			check.needs('db');
+			check.needs('mongo');
 			check.isOwner(session, await link.findOne({_id: input.linkId}));
+
 			const result = new Result();
 
 			const nodeCounts = await click.countDocuments({linkId: input.linkId});
@@ -50,9 +48,7 @@ export default {
 			if (nodeCounts === node.deletedCount) {
 				return result.response(true, {deletedCount: node.deletedCount});
 			} else {
-				return {
-					result: false
-				}
+				return result.addError('REMOVE_CLICK_ALL_FAILED').response(true);
 			}
 		}
 	},
