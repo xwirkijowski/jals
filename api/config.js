@@ -18,7 +18,7 @@ const defaults = {
     },
     redis: {
         port: 6379,
-        reconnectAttempts: undefined, // 20
+        reconnectAttempts: 5, // 20
     },
 }
 
@@ -41,14 +41,19 @@ config.server = {
 
 // Redis configuration block
 
+config.redis = {
+    reconnectAttempts: defaults.redis.reconnectAttempts,
+}
+
 if (!process.env?.REDIS_STRING) {
     config.redis = {
+        ...config.redis,
         host: process.env?.REDIS_HOST ?? null,
         port: Number(process.env?.REDIS_PORT) ?? defaults.redis.port,
         db: process.env?.REDIS_DB ?? null,
         user: process.env?.REDIS_USER ?? null,
         password: process.env?.REDIS_PASSWORD ?? null,
-        reconnectAttempts: defaults.redis.reconnectAttempts,
+
     };
 
     !config.redis.host && Warnings.new('No REDIS_HOST specified, sessions will not be available without a Redis database', 'REDIS_HOST_MISSING');
@@ -58,6 +63,7 @@ if (!process.env?.REDIS_STRING) {
     config.redis.user && !config.redis.password && Warnings.new('REDIS_USER specified but no REDIS_PASSWORD, access to database may be limited', 'REDIS_PASSWORD_MISSING')
 } else {
     config.redis = {
+        ...config.redis,
         string: process.env.REDIS_STRING
     }
 
