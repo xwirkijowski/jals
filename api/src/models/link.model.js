@@ -11,11 +11,11 @@ export default mongoose.model('Links', new mongoose.Schema({
 			type: String,
 			required: true
 		},
-		createdAt: {
-			type: String,
-		},
 		createdBy: {
 			type: mongoose.ObjectId,
+		},
+		createdAt: {
+			type: String,
 		},
 	}],
 	active: {

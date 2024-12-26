@@ -37,7 +37,7 @@ input DeleteLinkInput {
 
 input FlagLinkInput {
 	linkId: ID!
-	note: String
+	note: String!
 }
 
 # Extend
