@@ -21,7 +21,7 @@ export default {
 
 			const node = await models.link.create(input)
 
-			if (node) {
+			if (node?._id) {
 				return result.response(true, { link: node });
 			} else {
 				return result.addError('CREATE_LINK_FAILED').response(true);
