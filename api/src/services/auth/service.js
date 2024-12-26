@@ -10,7 +10,7 @@ import Session from "./session.js";
 import AuthCode from "./authCode.js";
 
 export class AuthService {
-	#default_config = {
+	default_config = {
 		mail: {
 			senderAddr: "jals@wirkijowski.dev",
 			senderName: "Just Another Link Shortener",
@@ -31,7 +31,7 @@ export class AuthService {
 	constructor (config) {
 		log.withDomain('info', 'AuthService', 'Loading AuthService configuration...');
 
-		this.config = {...this.#default_config, ...config}
+		this.config = {...this.default_config, ...config}
 
 		log.withDomain('success', 'AuthService', 'AuthService started!')
 		return this;
@@ -64,14 +64,14 @@ export class AuthService {
 		} else return undefined;
 	}
 
-	createSession = async (userId, request, rId) => {
-		return await new Session({userId, request}, rId).save(this.config.auth.session.expiresIn, rId).catch(_ => false); // Catch internal errors, return false on fail
+	createSession = async (userId, isAdmin, request, rId) => {
+		return await new Session({userId, isAdmin, request}, rId).save(this.config.auth.session.expiresIn, rId).catch(_ => false); // Catch internal errors, return false on fail
 	}
 
 
 	// Authentication code block
 
-	static generateCode = (rId) => {
+	generateCode = (rId) => {
 		const length = this.config.auth.code.length;
 
 		if (length <= 0) {
@@ -87,12 +87,12 @@ export class AuthService {
 			}
 		}
 
-		return parseInt(code, 10);
+		return code;
 	}
 
 
 	createCode = async (userId, userEmail, rId) => {
-		return await new AuthCode({userId, userEmail}, rId).save(this.config.auth.code.expiresIn, rId).catch(e => console.log('caught', e)); // Catch internal errors, return false on fail
+		return await new AuthCode({userId, userEmail}, rId, this.generateCode).save(this.config.auth.code.expiresIn, rId).catch(e => console.log('caught', e)); // Catch internal errors, return false on fail
 	}
 
 	sendEmail = async () => {

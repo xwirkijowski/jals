@@ -9,6 +9,7 @@ import { log } from "./service.js";
 export default class Session {
 	sessionId;
 	userId;
+	isAdmin;
 	userAgent;
 	userAddr;
 	createdAt;
@@ -17,12 +18,13 @@ export default class Session {
 
 	constructor(props, rId) {
 		if (!props?.userId) {
-			new CriticalError('Session creation failed, no userId provided!', 'SESSION_MISSING_ARGS', 'AuthService', true, {requestId: rId, props})
+			new CriticalError('Session creation failed, no userId provided!', 'SESSION_MISSING_ARGS', 'AuthService', true, {requestId: rId, ...props})
 			return undefined;
 		}
 
 		this.sessionId = props?.sessionId;
 		this.userId = props.userId.toString();
+		this.isAdmin = Boolean(props?.isAdmin)||false;
 		this.userAgent = props?.userAgent?.toString() || props?.request.headers?.['user-agent'] || undefined;
 		this.userAddr = props?.userAddr?.toString() || getIP(props?.request)?.toString() || undefined;
 		this.createdAt = props?.createdAt ? new Date(props.createdAt) : undefined;

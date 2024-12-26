@@ -5,6 +5,7 @@ import { client } from '../../utilities/database/redis.js';
 export const repository = new Repository(new Schema(
 	'session', {
 		userId: {type: 'string'},
+		isAdmin: {type: 'boolean'},
 		userAgent: {type: 'string'},
 		userAddr: {type: 'string'},
 		createdAt: {type: 'date'},
