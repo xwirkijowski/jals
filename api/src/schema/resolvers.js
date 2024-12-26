@@ -22,7 +22,7 @@ export default {
 		errors: (obj) => (typeof obj === 'boolean' && obj === true) ? [] : obj?.errors,
 	},
 	InternalStatus: {
-		database: (_, __, {systemStatus}) => systemStatus.db,
+		mongo: (_, __, {systemStatus}) => systemStatus.mongo,
 		redis: (_, __, {systemStatus}) => systemStatus.redis,
 		requestCount: (_, __, {internal}) => internal.statistics.counters.get('requests'),
 		warningCount: (_, __, {internal}) => internal.statistics.counters.get('warnings'),

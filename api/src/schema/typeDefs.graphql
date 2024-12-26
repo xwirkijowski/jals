@@ -10,7 +10,7 @@ type HealthCheck {
 }
 
 type InternalStatus {
-    database: String!
+    mongo: String!
     redis: String!
 
     requestCount: Int
