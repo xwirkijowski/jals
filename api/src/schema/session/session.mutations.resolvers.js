@@ -72,7 +72,7 @@ export default {
 
 			// Create a session
 
-			const sessionNode = await services.auth.createSession(userNode._id, req, requestId);
+			const sessionNode = await services.auth.createSession(userNode._id, userNode.isAdmin, req, requestId);
 
 			if (sessionNode) {
 				return result.response(true, {
