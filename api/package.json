@@ -9,13 +9,10 @@
   "main": "main.js",
   "type": "module",
   "scripts": {
-    "start": "babel-node main.js",
-    "dev": "nodemon --exec babel-node --presets=@babel/preset-env -- main.js"
+    "start": "main.js",
+    "dev": "nodemon main.js"
   },
   "devDependencies": {
-    "@babel/core": "^7.16.0",
-    "@babel/node": "^7.16.0",
-    "@babel/preset-env": "^7.16.0",
     "nodemon": "^2.0.15"
   },
   "dependencies": {
