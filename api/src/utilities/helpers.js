@@ -1,3 +1,5 @@
+import mongoose from 'mongoose';
+
 const f = {};
 
 /**
@@ -25,7 +27,6 @@ f.prepPagination = (args, pagination) => {
 
 export default f;
 
-
 import { GraphQLError} from "graphql";
 import { $DB } from "./database/status.js";
 
@@ -35,15 +36,21 @@ export const check = {
 	 *
 	 * @param	input					Input field.
 	 * @param	type					Expected type of input.
+	 * @param	optional				If it's optional.
 	 * @return 	Boolean|GraphQLError	If valid return true, if invalid throw input error.
 	 */
-	validate: (input, type) => {
-		if (input !== undefined // Is defined
-			&& input !== null // Is not null
-			&& (typeof input === type || type === 'array' && Array.isArray(input)) // Equals expected type
-			&& ((typeof input === 'string' && input.length > 0) || true) // String is not empty
-			&& ((type === 'array' && input.length > 0) || true)) return true; // Array is not empty
-		else throw new GraphQLError('Input empty or wrong type', { extensions: { code: 'BAD_USER_INPUT' } });
+	validate: (input, type, optional = false) => {
+		const nonNull = (input !== undefined && input !== null);
+
+		if (nonNull && type === 'string' && typeof input === type && input.length > 0) return true; // Check string
+		else if (nonNull && type === 'boolean' && typeof input === 'boolean') return true; // Check boolean
+		else if (nonNull && type === 'array' && Array.isArray(input) && input.length > 0) return true; // Check array
+		else if (nonNull && type === 'object' && typeof input === 'object') return true; // Check object
+		else if (nonNull && type === 'ObjectId' && mongoose.isValidObjectId(input)) return true; // Check ObjectId
+		else {
+			if (optional) return false
+			else throw new GraphQLError('Input empty or wrong type', {extensions: {code: 'BAD_USER_INPUT'}});
+		}
 	},
 	needs: (system) => {
 		if (system === 'mongo' && $DB.mongo !== 'connected') {
@@ -78,7 +85,7 @@ export const check = {
 
 		let authorized = false; // Default to false
 
-		if (session.user._id === node.createdBy || session.user.isAdmin === true) authorized = true;
+		if (session.userId === node.createdBy || session.isAdmin === true) authorized = true;
 
 		// Handle user not authorized
 		if (!authorized) {
@@ -109,7 +116,7 @@ export const check = {
 
 		let authorized = false; // Default to false
 
-		if (session.user.isAdmin === true) authorized = true;
+		if (session.isAdmin === true) authorized = true;
 
 		// Handle user not authorized
 		if (!authorized && silent === false) {
@@ -158,12 +165,14 @@ export const setupMeta = (session, input, node = undefined) => {
 	if (!node) {
 		input.createdBy = session?.userId||null;
 		input.createdAt = timestamp;
+		input.version = 0;
+
+		return input;
 	} else {
-		input.updatedBy = session?.userId||null;
-		input.updatedAt = timestamp;
+		node.updatedBy = session?.userId||null;
+		node.updatedAt = timestamp;
+		node.version = node.version + 1;
+
+		return node;
 	}
-
-	input.version = (node?.version)?node.version+1:0;
-
-	return input;
 }
