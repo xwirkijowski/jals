@@ -49,6 +49,10 @@ const Home = () => {
 		}
 	});
 
+	const handleSubmit = () => {
+		addLink()
+	}
+
 	return (
 		<Container>
 			{(loading) && <Notification color={"info"}>Shortening in progress...</Notification>}
@@ -57,7 +61,7 @@ const Home = () => {
 			{(message) && <Notification dismissible onClick={()=>navigate('/', {replace: true})} color={message.type}>{message.content}</Notification>}
 			<h2>Paste the URL you want to shorten below</h2>
 			<p className={`${'big'}`}>Your URL will be exchanged for a unique short URL code.</p>
-			<Form onSubmit={e => { e.preventDefault(); addLink() }}>
+			<Form onSubmit={e => { e.preventDefault(); handleSubmit() }}>
 				<InputGroup>
 					<Input required type="text" value={state.url} onChange={(e) => setState({ ...state, linkToShorten: e.target.value })} placeholder="Your link..." />
 					<Button disabled={(loading)} element="button" type="submit" label="Shorten" inline />
