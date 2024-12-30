@@ -24,8 +24,11 @@ export default {
 		node: (obj) => { return obj; }
 	},
 	Query: {
-		link: () => {
+		link: async (_, args, {models: {link}}) => {
+			check.needs('mongo');
+			check.validate(args.linkId, 'ObjectId', false);
 
+			return await link.findOne({_id: args.linkId});
 		},
 		links: async (_, args, {config, session, models: {link}}) => {
 			check.isAdmin(session);
