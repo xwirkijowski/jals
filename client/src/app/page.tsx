@@ -1,8 +1,8 @@
-import {Fragment} from "react";
+// Components
+import {Shorten} from "@comp/logic/Shorten/Shorten";
+import {ApolloWrapper} from "./ApolloWrapper";
 
 const Page = () => {
-
-
     return (
         <div className="flex flex-col justify-center items-center flex-1 gap-8">
             <div className="text-center">
@@ -10,24 +10,10 @@ const Page = () => {
                 </h2>
             </div>
 
-
             <div className="flex flex-col gap-4 justify-center text-center w-full max-w-xl">
-                <form className="flex w-full shadow-md shadow-zinc-900/20 rounded-xl transition-all duration-150 focus-within:shadow-lg">
-                    <input className="
-                        peer
-                        bg-white
-                        transition-all duration-150
-                        text-zinc-600 text-md caret-orange-500
-                        outline-none
-                        rounded-xl
-                        border border-transparent border-r-0 px-4 py-2 pr-7 -mr-3
-                        placeholder:text-zinc-600/50
-                        focus:border-orange-500
-                        flex-1" placeholder="Paste your link here"/>
-                    <button className="bg-zinc-900 peer-focus:bg-orange-500 peer-focus:hover:bg-orange-400 hover:bg-zinc-800 transition-all duration-150 text-white text-sm font-bold px-5 py-3 rounded-xl flex-0">
-                        Shorten
-                    </button>
-                </form>
+                <ApolloWrapper>
+                    <Shorten />
+                </ApolloWrapper>
                 <p className="text-zinc-600">or get information about an <a href="/" className="border-b border-b-current text-orange-500 hover:text-orange-400 transition-all duration-150 font-bold">existing link</a></p>
                 <div className="flex flex-col gap-4 text-left w-full max-w-xl mt-8 text-zinc-600 text-md bg-white p-8 shadow-md shadow-zinc-900/20 rounded-xl">
                     <h3 className={"text-zinc-900 font-bold text-lg/tight sm:text-xl/tight"}>So what does this do?</h3>

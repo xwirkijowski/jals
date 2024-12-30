@@ -2,7 +2,7 @@
   "compilerOptions": {
     "baseUrl": "src/",
     "paths": {
-      "@/comp/*": ["components/*"],
+      "@comp/*": ["components/*"],
     },
     "target": "ES2017",
     "lib": [

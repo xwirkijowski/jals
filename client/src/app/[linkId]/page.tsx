@@ -1,11 +1,12 @@
-import { Metadata } from 'next';
 
+// Metadata
+import { Metadata } from 'next';
 export const metadata: Metadata = {
     title: 'Redirecting...'
 }
 
 const LinkPage = async (
-    {params}: Promise<{linkId: string}>
+    {params}
 ) => {
     const linkId = (await params).linkId;
 
