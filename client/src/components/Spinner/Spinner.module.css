@@ -1,0 +1,22 @@
+.spinner {
+	display: inline-block;
+	position: relative;
+	height: 1em;
+	width: 1em;
+	font-size: 1em;
+	overflow: hidden;
+
+	&:after {
+		content: "";
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		position: absolute;
+		display: block;
+		border-radius: 100%;
+		border: transparent solid .25em;
+		border-right-color: currentColor;
+		border-top-color: currentColor;
+	}
+}
