@@ -11,17 +11,29 @@ import {CREATE_LINK} from './Shorten.queries';
 import {Spinner} from "@comp/Spinner/Spinner";
 import Link from "next/link";
 
+type DataInterface = {
+    link: {
+        id: string,
+        target: string,
+    },
+    result: {
+        success: boolean,
+        errors: Array<object>,
+        errorCodes: Array<string>,
+    }
+}
+
 export const Shorten = () => {
+    const inputRef = useRef<HTMLInputElement>(null);
     const [loading, setLoading] = useState(false);
-    const inputRef = useRef({});
-    const [data, setData] = useState(null);
+    const [data, setData] = useState<DataInterface|null>(null);
 
     const [mutate] = useMutation(CREATE_LINK);
 
     const handleSubmit = () => {
         setLoading(true);
 
-        if (inputRef.current.value && inputRef.current.value !== '') {
+        if (inputRef !== null && inputRef?.current?.value && inputRef.current.value !== '') {
             mutate({variables: {input: {target: inputRef.current.value}}}).then(res=>{
                 console.log(res)
                 if (res) setData(res.data.createLink);
@@ -39,7 +51,7 @@ export const Shorten = () => {
                 onSubmit={(e) => {
                     e.preventDefault();
                     handleSubmit();
-                    inputRef.current.value = '';
+                    if (inputRef !== null && inputRef?.current?.value) inputRef.current.value = '';
                 }}
 
                 className={cx(
@@ -52,7 +64,7 @@ export const Shorten = () => {
                     'relative',
                     'shadow-zinc-900/20',
                     'focus-within:shadow-lg hover:shadow-lg',
-                    )}>
+                )}>
                 {data && data?.result?.success ? (
                     <Fragment>
                         <p className={cx(
@@ -67,10 +79,13 @@ export const Shorten = () => {
                             'placeholder:text-zinc-600/50',
                             'border-green-500')}>
                             {data.link.id}
+                            <a className={cx('float-end border-b border-b-current cursor-pointer text-orange-500 hover:text-orange-400 transition-all duration-150 text-sm font-bold')} onClick={e => {
+                                navigator.clipboard.writeText(window.location.href + data.link.id)
+                            }}>Copy link</a>
                         </p>
                         <Link passHref
-                            href={'/'+data.link.id+'/+'}
-                            className={cx("bg-green-500 hover:bg-green-400 transition-all duration-150 text-white text-sm font-bold px-5 py-3 rounded-xl flex-0")}>
+                              href={'/' + data.link.id + '/+'}
+                              className={cx("bg-green-500 hover:bg-green-400 transition-all duration-150 text-white text-sm font-bold px-5 py-3 rounded-xl flex-0")}>
                             Inspect your link
                         </Link>
                     </Fragment>
