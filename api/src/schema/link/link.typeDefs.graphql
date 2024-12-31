@@ -6,7 +6,7 @@ type Link {
 	clickCount: Int
 	flags: [LinkFlag!]
 	flagCount: Int
-	active: Boolean
+	active: Boolean!
 
 	createdBy: User
 	createdAt: DateTime!

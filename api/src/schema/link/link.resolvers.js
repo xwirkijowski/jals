@@ -3,6 +3,7 @@ import { check } from "../../utilities/helpers.js";
 export default {
 	Link: {
 		id: ({_id}) => _id,
+		active: ({active}) => active ?? false,
 		clickCount: async (obj, _, {session, models: {click}}) =>
 			await click.countDocuments({linkId: obj._id})??0,
 		flagCount: (obj) =>  obj.flags.length??0,
