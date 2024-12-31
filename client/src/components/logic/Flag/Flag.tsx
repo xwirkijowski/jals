@@ -10,7 +10,6 @@ import {FLAG_LINK} from './Flag.queries';
 
 import {Spinner} from "@comp/Spinner/Spinner";
 import Link from "next/link";
-import {LinkContext} from "app/inspect/[linkId]/context";
 
 type DataInterface = {
     result: {
@@ -30,18 +29,27 @@ export const Flag = ({link, mode}) => {
     const handleSubmit = () => {
         setLoading(true);
 
-        mutate({variables: {input: {target: link}}}).then(res=>{
-            console.log(res)
-            if (res) setData(res.data.flagLink);
+        if (inputRef !== null && inputRef?.current?.value && inputRef.current.value !== '') {
+            mutate({variables: {input: {linkId: link.id, note: inputRef.current.value}}}).then(res => {
+                console.log(res)
+                if (res) setData(res.data.flagLink);
 
-            setLoading(false);
-        });
+                setLoading(false);
+            });
+        }
 
         setLoading(false);
     };
 
     return (
-        <div className="w-full max-w-xl flex flex-col bg-white shadow-xl rounded-xl">
+        <form
+            onSubmit={(e) => {
+                e.preventDefault();
+                handleSubmit();
+                if (inputRef !== null && inputRef?.current?.value) inputRef.current.value = '';
+            }}
+
+            className="w-full max-w-xl flex flex-col bg-white shadow-xl rounded-xl">
             <div className={"p-8"}>
                 <h2 className="font-bold text-zinc-900 text-2xl/tight sm:text-2xl/tight float-start">
                     Flag for moderation
@@ -58,8 +66,7 @@ export const Flag = ({link, mode}) => {
                     {link.id}
                 </p>
             </div>
-            <form
-                onSubmit={(e) => e.preventDefault()}
+            <div
                 className={cx(
                     'relative p-8 border-y border-zinc-900/15 grid grid-cols-2 w-full gap-4',
                 )}>
@@ -83,7 +90,7 @@ export const Flag = ({link, mode}) => {
                         'group-focus-within:border-orange-500',
                         'disabled:border-orange-500',
                     )} placeholder="Provide short reason for flag..."/>
-            </form>
+            </div>
             <div className={"col-span-full flex gap-8 p-8 justify-between items-center"}>
                 <Link href={`/inspect/${link.id}`}
                       className={cx(
@@ -93,10 +100,16 @@ export const Flag = ({link, mode}) => {
                           "text-base text-nowrap rounded-xl font-bold",
                           "hover:bg-zinc-200"
                       )}>Back to inspection</Link>
-                <Link href={`/inspect/${link.id}/flag`}
-                      className={"duration-150 transition-all px-4 py-3 text-base bg-red-500 text-white block text-nowrap rounded-xl font-bold shadow-xl shadow-red-500/20 hover:scale-[0.975] hover:bg-red-400 hover:shadow-md"}>Flag
-                    for moderation</Link>
+                <button
+                    type={"submit"}
+                    disabled={loading}
+                    className={cx(
+                        "duration-150 transition-all px-4 py-3 text-base bg-red-500 text-white block text-nowrap rounded-xl font-bold shadow-xl shadow-red-500/20",
+                        "hover:scale-[0.975] hover:bg-red-400 hover:shadow-md",
+                        "disabled:hover:scale-100 disabled:bg-red-300 disabled:shadow-md")}>
+                    {loading ? (<Spinner />) : ("Send flag")}
+                </button>
             </div>
-        </div>
+        </form>
     )
 }
