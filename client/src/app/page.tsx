@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 // Components
 import {Shorten} from "@comp/logic/Shorten/Shorten";
 import {ApolloWrapper} from "./ApolloWrapper";
@@ -14,7 +16,7 @@ const Page = () => {
                 <ApolloWrapper>
                     <Shorten />
                 </ApolloWrapper>
-                <p className="text-zinc-600">or get information about an <a href="/" className="border-b border-b-current text-orange-500 hover:text-orange-400 transition-all duration-150 font-bold">existing link</a></p>
+                <p className="text-zinc-600">or get information about an <Link href="/inspect" className="border-b border-b-current text-orange-500 hover:text-orange-400 transition-all duration-150 font-bold">existing link</Link></p>
                 <div className="flex flex-col gap-4 text-left w-full max-w-xl mt-8 text-zinc-600 text-md bg-white p-8 shadow-md shadow-zinc-900/20 rounded-xl">
                     <h3 className={"text-zinc-900 font-bold text-lg/tight sm:text-xl/tight"}>So what does this do?</h3>
                     <p className={""}>You input your long URL into <span className={"font-bold"}>JALS</span>, and in return, you receive a unique short identifier. This is especially convenient for UTM tagging!</p>
