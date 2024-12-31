@@ -1,10 +1,8 @@
 'use client'
 
-import {Fragment, useRef} from "react";
-import cx from "classnames";
-import Link from "next/link";
-import {Spinner} from "@comp/Spinner/Spinner";
+import {useRef} from "react";
 import {redirect} from "next/navigation";
+import cx from "classnames";
 
 export const Inspect = () => {
     const inputRef = useRef<HTMLInputElement>(null);
@@ -43,7 +41,7 @@ export const Inspect = () => {
                         'border border-transparent border-r-0 px-4 py-2 pr-7 -mr-3',
                         'placeholder:text-zinc-600/50',
                         'group-focus-within:border-orange-500',
-                    )} placeholder="Input your URL code"/>
+                    )} placeholder="Input your URL code or paste the full link"/>
                 <button
                     type="submit"
                     className={cx("bg-zinc-900 group-focus-within:bg-orange-500 group-focus-within:hover:bg-orange-400 hover:bg-zinc-700 transition-all duration-150 text-white text-sm font-bold px-5 py-3 rounded-xl flex-0")}>
