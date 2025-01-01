@@ -1,7 +1,10 @@
 import cx from 'classnames';
-import React from "react";
+import React from 'react';
+
+// Types
 
 enum CalloutTypeEnum {
+    primary = 'primary',
     success = 'success',
     info = 'info',
     warning = 'warning',
@@ -12,7 +15,10 @@ enum CalloutTypeEnum {
 
 type CalloutType = keyof typeof CalloutTypeEnum;
 
+// Styles
+
 const typeStyles: Record<CalloutType, string> = {
+    primary: 'text-white bg-orange-500  shadow-orange-500/20',
     success: 'text-white bg-green-500  shadow-green-500/20',
     info: 'text-white bg-blue-500  shadow-blue-500/20',
     warning: 'text-white bg-orange-500  shadow-orange-500/20',
