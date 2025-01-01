@@ -14,6 +14,7 @@ export default {
 
 			// Normalize user input
 			input.target = input.target.normalize('NFKD');
+			input.active = true;
 
 			// Validate target as URL
 

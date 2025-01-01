@@ -3,10 +3,10 @@ type Link {
 	target: String!
 
 	clicks: ClickConnection
-	clickCount: Int!
+	clickCount: Int
 	flags: [LinkFlag!]
-	flagCount: Int!
-	active: Boolean
+	flagCount: Int
+	active: Boolean!
 
 	createdBy: User
 	createdAt: DateTime!

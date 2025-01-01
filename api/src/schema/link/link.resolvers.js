@@ -3,9 +3,10 @@ import { check } from "../../utilities/helpers.js";
 export default {
 	Link: {
 		id: ({_id}) => _id,
-		clicks: async (obj, _, {session, models: {click}}) =>
-			check.isOwner(session, obj) ? await click.countDocuments({linkId: obj._id}) : null,
-		flagCount: (obj) =>  obj.flags.length,
+		active: ({active}) => active ?? false,
+		clickCount: async (obj, _, {session, models: {click}}) =>
+			await click.countDocuments({linkId: obj._id})??0,
+		flagCount: (obj) =>  obj.flags.length??0,
 		createdBy: async ({createdBy}, _, {session, models: {user}}) => {
 			check.isAdmin(session);
 			return (createdBy) ? await user.findOne({_id: createdBy}) : null;
@@ -24,8 +25,11 @@ export default {
 		node: (obj) => { return obj; }
 	},
 	Query: {
-		link: () => {
+		link: async (_, args, {models: {link}}) => {
+			check.needs('mongo');
+			check.validate(args.linkId, 'ObjectId', false);
 
+			return await link.findOne({_id: args.linkId});
 		},
 		links: async (_, args, {config, session, models: {link}}) => {
 			check.isAdmin(session);
