@@ -1,16 +1,12 @@
 "use client"
 
-import Link from "next/link";
-
-// Components
-import cx from "classnames";
-import {Tooltip} from "@comp/Tooltip/Tooltip";
-
 import {useContext, useRef} from "react";
 import {LinkContext} from "../context";
+
+// Components
 import {Flag} from "@comp/logic/Flag/Flag";
 
-const Page = async () => {
+export default () => {
     const {data} = useContext(LinkContext);
 
     return (
@@ -19,5 +15,3 @@ const Page = async () => {
         </div>
     )
 }
-
-export default Page;

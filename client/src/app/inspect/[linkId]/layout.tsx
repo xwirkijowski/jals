@@ -36,15 +36,23 @@ const LINK = gql`
     }
 `;
 
-
-export default async ({children, params}: { children: React.ReactNode, params: any }) => {
-    const linkId = (await params).linkId;
+export default async ({
+    modal,
+    children,
+    params,
+}: {
+    modal: React.ReactNode,
+    children: React.ReactNode,
+    params: any
+}) => {
+    const linkId: string = (await params).linkId;
     const {data} = await getClient().query({query: LINK, variables: {linkId: linkId}});
 
     console.log(data)
 
     return (
         <LinkContextWrapper value={{data}}>
+            {modal}
             {children}
         </LinkContextWrapper>
     )

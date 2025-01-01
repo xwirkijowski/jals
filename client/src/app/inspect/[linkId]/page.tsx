@@ -5,6 +5,7 @@ import cx from 'classnames';
 // Components
 import {Tooltip} from "@comp/Tooltip/Tooltip";
 import Callout from "@comp/Callout/Callout";
+import Button from "@comp/Button/Button";
 
 // Context
 import {useContext} from "react";
@@ -77,7 +78,7 @@ const LinkPage = async () => {
                 </div>
                 <div className={"col-span-full flex gap-8 p-8 justify-between items-center"}>
                     <p className={"text-zinc-900"}>Is this link malicious or inappropriate?</p>
-                    <Link href={`/inspect/${data.link.id}/flag`} className={"duration-150 transition-all px-4 py-3 text-base bg-red-500 text-white block text-nowrap rounded-xl font-bold shadow-xl shadow-red-500/20 hover:scale-[0.975] hover:bg-red-400 hover:shadow-md"}>Flag for moderation</Link>
+                    <Link href={`/inspect/${data.link.id}/flag`} passHref><Button type={"danger"} effects={true}>Flag for moderation</Button></Link>
                 </div>
             </div>
         </div>
