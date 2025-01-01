@@ -27,35 +27,43 @@ type DataInterface = {
 }
 
 export const Shorten = () => {
-    const inputRef = useRef<HTMLInputElement>(null);
+    const [input, setInput] = useState<string|null>(null);
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState<DataInterface|null>(null);
 
     const [mutate] = useMutation(CREATE_LINK);
 
-    const handleSubmit = () => {
+    const handleSubmit = (e) => {
+        e.preventDefault();
         setLoading(true);
 
-        if (inputRef !== null && inputRef?.current?.value && inputRef.current.value !== '') {
-            mutate({variables: {input: {target: inputRef.current.value}}}).then(res=>{
-                console.log(res)
-                if (res) setData(res.data.createLink);
-
-                setLoading(false);
-            });
+        if (input !== null && input !== '') {
+            mutate({
+                variables: {
+                    input: {
+                        target: input,
+                    }
+                }
+            })
+                .then(res =>{
+                    // @todo Validate response, check for errors
+                    setData(res.data.createLink);
+                })
+                .catch(err => {
+                    console.log(err);
+                })
+                .finally(() => {
+                    setLoading(false);
+                    setInput('');
+                });
         }
 
-        setLoading(false);
     };
 
     return (
         <div className={cx('flex w-full flex-col gap-8')}>
             <form
-                onSubmit={(e) => {
-                    e.preventDefault();
-                    handleSubmit();
-                    if (inputRef !== null && inputRef?.current?.value) inputRef.current.value = '';
-                }}
+                onSubmit={(e) => handleSubmit(e)}
 
                 className={cx(
                     'flex group',
@@ -95,7 +103,7 @@ export const Shorten = () => {
                         <input
                             required
                             type={"url"}
-                            ref={inputRef}
+                            onChange={(e) => setInput(e.target.value)}
                             disabled={loading}
                             className={cx(
                                 'flex-1',
