@@ -8,7 +8,9 @@ import cx from "classnames";
 // Mutation
 import {FLAG_LINK} from './Flag.queries';
 
+// Components
 import {Spinner} from "@comp/Spinner/Spinner";
+import Button from "@comp/Button/Button";
 import Link from "next/link";
 
 type DataInterface = {
@@ -92,23 +94,10 @@ export const Flag = ({link, mode}) => {
                     )} placeholder="Provide short reason for flag..."/>
             </div>
             <div className={"col-span-full flex gap-8 p-8 justify-between items-center"}>
-                <Link href={`/inspect/${link.id}`}
-                      className={cx(
-                          "duration-150 transition-all",
-                          "px-4 py-3",
-                          "bg-zinc-100 text-zinc-900 block",
-                          "text-base text-nowrap rounded-xl font-bold",
-                          "hover:bg-zinc-200"
-                      )}>Back to inspection</Link>
-                <button
-                    type={"submit"}
-                    disabled={loading}
-                    className={cx(
-                        "duration-150 transition-all px-4 py-3 text-base bg-red-500 text-white block text-nowrap rounded-xl font-bold shadow-xl shadow-red-500/20",
-                        "hover:scale-[0.975] hover:bg-red-400 hover:shadow-md",
-                        "disabled:hover:scale-100 disabled:bg-red-300 disabled:shadow-md")}>
+                <Link href={`/inspect/${link.id}`} passHref><Button type={'light'}>Back to inspection</Button></Link>
+                <Button type={"danger"} buttonType={'submit'} disabled={loading} effects={true}>
                     {loading ? (<Spinner />) : ("Send flag")}
-                </button>
+                </Button>
             </div>
         </form>
     )

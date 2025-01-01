@@ -1,8 +1,11 @@
 'use client'
 
+import cx from "classnames";
+
 import {useRef} from "react";
 import {redirect} from "next/navigation";
-import cx from "classnames";
+
+import Button from "@comp/Button/Button";
 
 export const Inspect = () => {
     const inputRef = useRef<HTMLInputElement>(null);
@@ -42,11 +45,18 @@ export const Inspect = () => {
                         'placeholder:text-zinc-600/50',
                         'group-focus-within:border-orange-500',
                     )} placeholder="Input your URL code or paste the full link"/>
-                <button
-                    type="submit"
-                    className={cx("bg-zinc-900 group-focus-within:bg-orange-500 group-focus-within:hover:bg-orange-400 hover:bg-zinc-700 transition-all duration-150 text-white text-sm font-bold px-5 py-3 rounded-xl flex-0")}>
+                <Button
+                    type={"dark"}
+                    buttonType="submit"
+                    className={cx(
+                        'flex-0',
+                        'group-focus-within:bg-orange-500 group-focus-within:hover:bg-orange-400',
+                        'disabled:bg-orange-500',
+                        'hover:bg-zinc-700',
+                    )}
+                >
                     Inspect
-                </button>
+                </Button>
             </form>
         </div>
     )

@@ -1,14 +1,17 @@
 'use client';
 
 import {useMutation} from "@apollo/client";
-import {Fragment, use, useCallback, useRef, useState} from "react";
+import {Fragment, useRef, useState} from "react";
 
 import cx from "classnames";
+
+// Components
+import {Spinner} from "@comp/Spinner/Spinner";
+import Button from "@comp/Button/Button";
 
 // Mutation
 import {CREATE_LINK} from './Shorten.queries';
 
-import {Spinner} from "@comp/Spinner/Spinner";
 import Link from "next/link";
 
 type DataInterface = {
@@ -83,10 +86,8 @@ export const Shorten = () => {
                                 navigator.clipboard.writeText(window.location.href + data.link.id)
                             }}>Copy link</a>
                         </p>
-                        <Link passHref
-                              href={'/' + data.link.id + '/+'}
-                              className={cx("bg-green-500 hover:bg-green-400 transition-all duration-150 text-white text-sm font-bold px-5 py-3 rounded-xl flex-0")}>
-                            Inspect your link
+                        <Link href={'/' + data.link.id + '/+'} passHref>
+                            <Button type={"success"} className={cx("flex-0")}>Inspect your link</Button>
                         </Link>
                     </Fragment>
                 ) : (
@@ -108,13 +109,19 @@ export const Shorten = () => {
                                 'group-focus-within:border-orange-500',
                                 'disabled:border-orange-500',
                             )} placeholder="Paste your link here"/>
-                        <button
-                            type="submit"
+                        <Button
+                            type={"dark"}
+                            buttonType="submit"
                             disabled={loading}
-                            className={cx("bg-zinc-900 group-focus-within:bg-orange-500 group-focus-within:hover:bg-orange-400 hover:bg-zinc-700 transition-all duration-150 text-white text-sm font-bold px-5 py-3 rounded-xl flex-0",
-                                'disabled:bg-orange-500')}>
+                            className={cx(
+                                'flex-0',
+                                'group-focus-within:bg-orange-500 group-focus-within:hover:bg-orange-400',
+                                'disabled:bg-orange-500',
+                                'hover:bg-zinc-700',
+                            )}
+                        >
                             {loading ? (<Spinner/>) : ("Shorten")}
-                        </button>
+                        </Button>
                     </Fragment>
                 )}
             </form>
