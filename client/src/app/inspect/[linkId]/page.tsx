@@ -4,6 +4,7 @@ import cx from 'classnames';
 
 // Components
 import {Tooltip} from "@comp/Tooltip/Tooltip";
+import Callout from "@comp/Callout/Callout";
 
 // Context
 import {useContext} from "react";
@@ -16,11 +17,10 @@ const LinkPage = async () => {
     return (
         <div className="flex flex-col justify-center items-center text-left flex-1 gap-8">
             {data.link.flagCount > 0 ? (
-                    <div
-                        className="max-w-xl  text-white bg-orange-500 p-4 items-center shadow-xl shadow-orange-500/20 rounded-xl w-full flex gap-4">
-                        <h3 className={"font-bold uppercase text-sm"}>Warning</h3> |
-                        <p>This link has been flagged {data.link.flagCount} {data.link.flagCount === 1 ? 'time' : 'times'}!</p>
-                    </div>
+                    <Callout title={"Warning"} type={"warning"}>
+                        <p>This link has been
+                            flagged {data.link.flagCount} {data.link.flagCount === 1 ? 'time' : 'times'}!</p>
+                    </Callout>
                 ) :
                 null
             }
