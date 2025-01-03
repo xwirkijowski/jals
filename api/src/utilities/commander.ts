@@ -1,18 +1,24 @@
 import process from 'node:process';
 import EventEmitter from 'events';
 
-import {$DB} from "./database/status.js";
-import {globalLogger as log} from "./log.js";
+import {$DB} from "./database/status";
+import {globalLogger as log} from "./log";
 
-import {Warning, FatalError} from "./errors/index.js";
+import {Warning, FatalError} from "./errors";
+
+// Types
+import {ContextInterface} from "../types/context.types";
+import {ApolloServer} from "@apollo/server/src/ApolloServer";
+import {RedisClientType} from "redis";
+import mongoose from "mongoose";
 
 class Commander extends EventEmitter {
-	status = 'not-initialized';
-	DB;
+	status: string = 'not-initialized';
+	DB: typeof $DB;
 
-	redis; // Redis client
-	mongo; // MongoDB client
-	server; // GraphQL server
+	redis?: RedisClientType; // Redis client
+	mongo?: mongoose.Connection; // MongoDB client
+	server?: ApolloServer<ContextInterface>; // GraphQL server
 
 	constructor () {
 		super();
@@ -21,41 +27,42 @@ class Commander extends EventEmitter {
 		this.DB = $DB;
 	}
 
-	#isReady = () => {
+	#isReady = (): void => {
 		if (this.mongo && this.redis && this.server) {
 			this.emit('ready');
 			this.status = 'ready';
 		}
 	}
 
-	applyMongoClient (client) {
+	applyMongoClient (client: mongoose.Connection): this {
 		this.mongo = client;
 		this.emit('applied', 'Mongo');
 		this.#isReady();
 		return this;
 	}
 
-	applyRedisClient (client) {
+	applyRedisClient (client: RedisClientType): this {
 		this.redis = client;
 		this.emit('applied', 'Redis');
 		this.#isReady();
 		return this;
 	}
 
-	applyServer (server) {
+	applyServer (server: ApolloServer<ContextInterface>): this {
 		this.server = server;
 		this.emit('applied', 'Apollo');
 		this.#isReady();
 		return this;
 	};
 
-	#closeServer = async () => {
+	#closeServer = async (): Promise<boolean> => {
 		if (!this.server) throw new FatalError('Cannot close GraphQL server, no server on commander instance!', 'CMDR_CLOSE_SERVER_FAILED', 'Commander', true);
 
 		new Warning('Attempting to gracefully shutdown GraphQL server...', 'APOLLO_STOP', 'Apollo', false);
 
 		await this.server.stop();
 
+		// @ts-ignore - It is available
 		if (this.server.internals.state.phase === 'stopped') {
 			log.withDomain('info', 'Apollo', 'GraphQL server stopped successfully.');
 			return true;
@@ -65,7 +72,7 @@ class Commander extends EventEmitter {
 		}
 	}
 
-	#closeRedis = async () => {
+	#closeRedis = async (): Promise<boolean> => {
 		if (!this.redis) throw new FatalError('Cannot close Redis client, no client on commander instance!', 'CMDR_CLOSE_REDIS_FAILED', 'Commander', true);
 
 		new Warning(`Attempting to gracefully close client...`, 'REDIS_STOP', 'Redis', false, {redisStatus: this.DB.redis})
@@ -94,7 +101,7 @@ class Commander extends EventEmitter {
 		return (disconnect === true && quit === true);
 	}
 
-	#closeMongo = async () => {
+	#closeMongo = async (): Promise<boolean> => {
 		if (!this.mongo) throw new FatalError('Cannot close MongoDB client, no client on commander instance!', 'CMDR_CLOSE_MONGO_FAILED', 'Commander', true);
 
 		new Warning(`Attempting to gracefully close client...`, 'MONGO_STOP', 'Mongo', false, {mongoStatus: this.DB.mongo})
@@ -111,7 +118,7 @@ class Commander extends EventEmitter {
 		}
 	}
 
-	async shutdown (cause) {
+	async shutdown (cause: string): Promise<void> {
 		// Add pooling if commander not ready
 		if (this.status !== 'ready') throw new FatalError('Cannot initiate graceful shutdown! Commander not ready!', 'CMDR_NOT_READY', 'Commander', true);
 
@@ -126,7 +133,7 @@ class Commander extends EventEmitter {
 		// Step 3 — Stop MongoDB client
 		const closeMongo = await this.#closeMongo();
 
-		if (stopServer === true && closeRedis === true && closeMongo === true) {
+		if (stopServer && closeRedis && closeMongo) {
 			log.success('Graceful shutdown complete! Goodbye.')
 
 			process.exitCode = 1;

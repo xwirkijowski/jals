@@ -4,45 +4,7 @@ import { globalLogger as log } from "./src/utilities/log";
 const Warnings = new WarningAggregator('Config');
 const Errors = new ErrorAggregator('Config');
 
-interface ConnectionStringBuilder {
-    (): string
-}
-
-type ConfigType = {
-    server: {
-        port: number
-        host: string
-        protocol: string
-        env: string
-        pagination: {
-            perPageDefault: number
-            perPageMax: number
-        }
-    }
-    redis: {
-        host: string
-        port: number
-        db?: string
-        user?: string
-        password?: string
-        string?: string
-        connectionString: ConnectionStringBuilder
-        socket: {
-            connectTimeout: number
-            reconnectAttempts: number|undefined
-        }
-    }
-    mongo: {
-        host: string
-        port: number
-        db: string
-        user: string
-        password: string
-        opts?: string
-        string?: string
-        connectionString: ConnectionStringBuilder
-    }
-};
+import {ConfigType} from "./src/types/config.types";
 
 // Defaults
 const defaults = {
@@ -106,15 +68,15 @@ log.withDomain('info', 'Config', 'Building configuration object...')
 
 const config: ConfigType = {
     server: {
-        host: process.env?.SERVER_HOST ?? defaults.server.host,
-        port: Number(process.env?.SERVER_PORT) ?? defaults.server.port,
-        protocol: process.env?.SERVER_PROTO ?? defaults.server.protocol,
-        env: process.env?.NODE_ENV?.toLowerCase() ?? defaults.server.env,
+        host: process.env?.SERVER_HOST || defaults.server.host,
+        port: Number(process.env?.SERVER_PORT) || defaults.server.port,
+        protocol: process.env?.SERVER_PROTO || defaults.server.protocol,
+        env: process.env?.NODE_ENV?.toLowerCase() || defaults.server.env,
         pagination: defaults.server.pagination, // @todo Implement environmental variables or json
     },
     redis: {
-        host: process.env?.REDIS_HOST ?? defaults.redis.host,
-        port: Number(process.env?.REDIS_PORT) ?? defaults.redis.port,
+        host: process.env?.REDIS_HOST || defaults.redis.host,
+        port: Number(process.env?.REDIS_PORT) || defaults.redis.port,
         db: process.env?.REDIS_DB,
         user: process.env?.REDIS_USER,
         password: process.env?.REDIS_PASSWORD,
