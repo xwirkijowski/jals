@@ -1,3 +1,5 @@
+type Counter = 'warnings'|'errors'|'requests';
+
 /**
  * TelemetryCounters
  *
@@ -13,17 +15,17 @@
  * @method	get			Retrieves a specified counter.
  */
 class TelemetryCounters {
-	warnings = 0;
-	errors = 0;
-	requests = 0;
+	warnings: number = 0;
+	errors: number = 0;
+	requests: number = 0;
 
-	#validCounters = ['warnings', 'errors', 'requests'];
+	#validCounters: Array<Counter> = ['warnings', 'errors', 'requests'];
 
-	constructor() {
+	constructor () {
 		return this;
 	}
 
-	increment(counter) {
+	increment(counter:Counter):this|Error {
 		if (this.#validCounters.includes(counter)) {
 			this[counter]++;
 
@@ -33,7 +35,7 @@ class TelemetryCounters {
 		}
 	}
 
-	get = (counter) => {
+	get = (counter:Counter):number|Error => {
 		if (this.#validCounters.includes(counter)) {
 			return this[counter];
 		} else {

@@ -1,7 +1,10 @@
-import {InternalError} from './error.js';
+import {InternalError} from './error';
 
 class FatalError extends InternalError {
-	constructor (msg, code, domain, stack, ...payload) {
+	name: string;
+	level: string;
+
+	constructor (msg: string, code: string, domain?: string, stack?: any, ...payload: any[]) {
 		super(msg, code, domain, stack, ...payload);
 
 		// Set FatalError specific data

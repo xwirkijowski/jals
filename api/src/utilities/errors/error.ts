@@ -1,6 +1,6 @@
-import {globalLogger as log} from "../log.js";
+import {globalLogger as log} from "../log";
 
-import Counters from '../telemetryCounters.js';
+import Counters from '../telemetryCounters';
 
 /**
  * InternalError
@@ -16,15 +16,15 @@ import Counters from '../telemetryCounters.js';
  * @prop	stack		Stack trace of the error's point of origin.
  */
 class InternalError extends Error {
-	name = 'InternalError';
-	level = 'error';
-	code;
-	msg;
-	domain;
-	payload;
-	stack = undefined;
+	name: string = 'InternalError';
+	level: string = 'error';
+	code: string;
+	msg?: string;
+	domain?: string;
+	stack?: string;
+	payload?: any;
 
-	constructor(msg = undefined, code = 'UNKNOWN', domain = undefined, stack = false, ...payload) {
+	constructor(msg?: string, code = 'UNKNOWN', domain?: string, stack?: string, ...payload: any[]) {
 		// Call Error constructor, capture base Error details
 		super();
 
@@ -62,17 +62,17 @@ class InternalError extends Error {
 export {InternalError};
 
 class ErrorAggregator {
-	domain;
-	errors = [];
-	errorCount = 0;
-	errorCodes = [];
+	domain: string;
+	errors: InternalError[] = [];
+	errorCount: number = 0;
+	errorCodes: string[] = [];
 
-	constructor (domain) {
+	constructor (domain: string) {
 		this.domain = domain;
 		return this;
 	}
 
-	new = (message, code, stack, payload) => {
+	new = (message?: string, code?: string, stack?: string, payload?: any): InternalError => {
 		const error = new InternalError(message, code, this.domain, stack, payload);
 
 		this.errorCount += 1;
@@ -82,7 +82,7 @@ class ErrorAggregator {
 		return error;
 	}
 
-	add = (error) => {
+	add = (error: InternalError): InternalError => {
 		this.errorCount += 1;
 		this.errors.push(error);
 
@@ -91,11 +91,11 @@ class ErrorAggregator {
 		return error;
 	}
 
-	getArray = () => this.errors;
-	getCount = () => this.errorCount;
-	getCodes = () => this.errorCodes;
-	setDomain = (domain) => { this.domain = domain; return this;}
-	getDomain = () => this.domain;
+	getArray = (): InternalError[]|[] => this.errors;
+	getCount = (): number => this.errorCount;
+	getCodes = (): string[]|[] => this.errorCodes;
+	setDomain = (domain: string): this => { this.domain = domain; return this;}
+	getDomain = (): string => this.domain;
 }
 
 export {ErrorAggregator}

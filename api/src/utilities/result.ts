@@ -1,7 +1,12 @@
-import { globalLogger as log } from "./log.js";
+import { globalLogger as log } from "./log";
 
 export class Result {
-	constructor (result, errors) {
+	success: boolean;
+	errors: Array<ResultError|null>;
+	errorCodes: Array<string>
+
+
+	constructor (result: boolean, errors: Array<ResultError>) {
 		this.success = result||true;
 		this.errors = errors||[];
 		this.errorCodes = (Array.isArray(errors)) ? errors?.map(err => err.code)||[] : [];
@@ -9,28 +14,39 @@ export class Result {
 		return this;
 	}
 
-	#pushErrorCode = (code) => {
+	#pushErrorCode = (code: string): void => {
 		if (!this.errorCodes.includes(code)) this.errorCodes.push(code);
 	}
 
-	hasErrors = () => {
+	hasErrors = ():boolean => {
 		return (this.errors.length > 0);
 	}
 
-	addError = (code, path, message) => {
-		if (this.success === true) this.success = false;
+	addError = (
+		code: string,
+		path?: string,
+		message?: string
+	): this => {
+		if (this.success) this.success = false;
 		this.errors.push(new ResultError(code, path, message));
 		this.#pushErrorCode(code);
 
 		return this;
 	}
 
-	addErrorAndLog = (code, path, message, type, note, component = undefined) => { // @todo: Refactor due to new logger
-		if (this.success === true) this.success = false;
+	addErrorAndLog = (
+		code: string,
+		path: string,
+		message: string,
+		type: string,
+		note: string,
+		component?: string
+	): this => {
+		if (this.success) this.success = false;
 		this.errors.push(new ResultError(code, path, message));
 		this.#pushErrorCode(code);
 
-		if (typeof type === 'string' && ['request', 'audit'].includes(type)) {
+		if (['request', 'audit'].includes(type)) {
 			log.withDomain(type, component, `${note?note+' ':''}Code: ${code}`);
 		}
 
@@ -45,12 +61,12 @@ export class Result {
 	 *
 	 * @returns 	{*|{result: {success: (*|boolean), errors: (*|*[])}}|{success: (*|boolean), errors: (*|*[])}}
 	 */
-	response = (full = true, include = {}) => {
+	response = (full = true, include = {}): {result: Partial<Result>}|Partial<Result> => {
 		if (this.errors.length !== 0) {
 			this.success = false;
 		}
 
-		return (full === true ) ? {
+		return full ? {
 			result: {
 				success: this.success,
 				errors: this.errors,
@@ -62,14 +78,14 @@ export class Result {
 }
 
 export class ResultError {
-	code;
-	path;
-	msg;
+	code: string;
+	path?: string;
+	msg?: string;
 
-	constructor(code, path = undefined, message = undefined) {
+	constructor(code: string, path?: string, message?: string) {
 		this.code = code;
-		this.path = path || null;
-		this.msg = message || null;
+		this.path = path || undefined;
+		this.msg = message || undefined;
 
 		return this;
 	}
