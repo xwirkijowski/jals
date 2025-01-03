@@ -9,7 +9,7 @@ export const extensionsPlugin = () => {
 				responseForOperation: () => {},
 				executionDidStart: () => {},
 				didEncounterErrors: () => {},
-				willSendResponse(requestContext) {
+				willSendResponse(requestContext: any): void {
 					const requestId = requestContext.contextValue.internal.requestId;
 
 					const session = requestContext.contextValue.session;
