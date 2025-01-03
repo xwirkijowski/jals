@@ -1,41 +1,41 @@
 export class DatabaseStatus {
-	mongo
-	mongoTime
-	redis
-	redisTime
+	mongo: string;
+	mongoTime?: number;
+	redis: string;
+	redisTime?: number;
 
 	constructor () {
-		this.mongo = false;
-		this.redis = false;
+		this.mongo = 'unknown';
+		this.redis = 'unknown';
 	}
 
-	setMongo (status) {
+	setMongo (status: string) {
 		this.mongo = status;
 		return this;
 	}
 
-	setMongoTime () {
+	setMongoTime (): this {
 		if (!this.mongoTime) this.mongoTime = performance.now();
 		return this;
 	}
 
-	getMongoTime () {
+	getMongoTime (): number|undefined {
 		const time = this.mongoTime;
 		this.mongoTime = undefined;
 		return time;
 	}
 
-	setRedis (status) {
+	setRedis (status: string): this {
 		this.redis = status;
 		return this;
 	}
 
-	setRedisTime () {
+	setRedisTime (): this {
 		if (!this.redisTime) this.redisTime = performance.now();
 		return this;
 	}
 
-	getRedisTime () {
+	getRedisTime (): number|undefined {
 		const time = this.redisTime;
 		this.redisTime = undefined;
 		return time;

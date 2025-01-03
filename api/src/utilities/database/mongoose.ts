@@ -1,12 +1,14 @@
 import mongoose from "mongoose";
 
-import { globalLogger as log } from "../log.js";
-import { CriticalError, FatalError } from '../errors/index.js';
+import {ConfigType} from "../../types/config.types";
 
-import { $DB } from './status.js';
-import { $CMDR } from '../commander.js';
+import { globalLogger as log } from "../log";
+import { CriticalError, FatalError } from '../errors/index';
 
-export const setupMongo = async (config) => {
+import { $DB } from './status';
+import { $CMDR } from '../commander';
+
+export const setupMongo = async (config: ConfigType) => {
 	mongoose.set('debug', (config.server.env === 'development'));
 
 	// Set up listeners
@@ -24,7 +26,7 @@ export const setupMongo = async (config) => {
 	mongoose.connection.on('open', () => {
 		// If this is set, there was a loss of connection
 		if ($DB.mongoTime) {
-			const time = ((performance.now() - $DB.getMongoTime()) / 1000).toFixed(2);
+			const time = ((performance.now() - ($DB.getMongoTime() as number)) / 1000).toFixed(2);
 			log.withDomain('success', 'Mongo', `MongoDB connection restored, open and ready! Outage lasted ${time}s.`);
 		} else {
 			log.withDomain('success', 'Mongo', 'MongoDB connection established, open and ready!');
@@ -59,7 +61,7 @@ export const setupMongo = async (config) => {
 	})
 
 	// Connection
-	await mongoose.connect(config.mongo.connection(), {
+	await mongoose.connect(config.mongo.connectionString(), {
 		heartbeatFrequencyMS: 5000,
 	}).catch(err => {
 		$DB.setMongo('error');
@@ -69,7 +71,8 @@ export const setupMongo = async (config) => {
 
 $CMDR.applyMongoClient(mongoose.connection);
 
-const handleError = (err, origin) => {
+// @todo Identify specific `err` types
+const handleError = (err: any, origin: string) => {
 	console.trace(origin, err)
 
 	if (origin === 'initial') {

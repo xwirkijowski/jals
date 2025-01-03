@@ -1,41 +1,39 @@
-import { createClient } from "redis";
+import {createClient, RedisClientType} from "redis";
 
-import { config } from '../../../config.js';
-import { globalLogger as log } from "../log.js";
-import { WarningAggregator, FatalError } from '../errors/index.js';
+import { config } from '../../../config';
+import { globalLogger as log } from "../log";
+import { WarningAggregator, FatalError } from '../errors/index';
 
 const Warnings = new WarningAggregator('Redis')
 
-import { $CMDR } from '../commander.js';
-import { $DB } from './status.js';
+import { $CMDR } from '../commander';
+import { $DB } from './status';
 
 // Construct client
-export const client = createClient({
-	url: config.redis.connection(),
+export const client: RedisClientType = createClient({
+	url: config.redis.connectionString(),
 	socket: {
 		...config.redis.socket,
-		reconnectStrategy: (retries, cause) => {
-			const retriesLimit = config.redis.reconnectAttempts;
+		reconnectStrategy: (retries: number, cause: Error) => {
+			const retriesLimit: number|undefined = config.redis.socket.reconnectAttempts;
 
 			if (retriesLimit && retries <= retriesLimit || !retriesLimit) {
 				$DB.setRedis('connecting').setRedisTime();
 
 				// Generate a random jitter between 0 – 200 ms:
-				const jitter = Math.floor(Math.random() * 200);
+				const jitter: number = Math.floor(Math.random() * 200);
 				// Delay is an exponential back off, (times^2) * 50 ms, with a maximum value of 15 s:
-				const delay = Math.min(Math.pow(2, retries) * 50, 15000);
+				const delay: number = Math.min(Math.pow(2, retries) * 50, 15000);
 
 				// Construct payload
-				let payload;
-				if (cause.constructor.name === 'Error' && cause.code === 'ECONNREFUSED') {
-					payload = [`Failed to connect, will attempt again [${retries}/${retriesLimit}, ${delay+jitter}ms]...`, 'REDIS_CONN_REFUSED', false];
+				// @ts-ignore - Redis client errors contain code field but no type
+				if (cause.constructor.name === 'Error' && cause?.code === 'ECONNREFUSED') {
+					Warnings.new(`Failed to connect, will attempt again [${retries}/${retriesLimit}, ${delay+jitter}ms]...`, 'REDIS_CONN_REFUSED', false);
 				} else if (cause.constructor.name === 'SocketClosedUnexpectedlyError') {
-					payload = [`Connection lost, socket closed unexpectedly, attempting to reconnect...`, 'REDIS_CONN_DROPPED', false];
+					Warnings.new(`Connection lost, socket closed unexpectedly, attempting to reconnect...`, 'REDIS_CONN_DROPPED', false);
 				} else {
-					payload = [`Connection lost, will attempt to reconnect [${retries}/${retriesLimit}, ${delay+jitter}ms]...`, 'REDIS_CONN_UNKNOWN', false];
+					Warnings.new(`Connection lost, will attempt to reconnect [${retries}/${retriesLimit}, ${delay+jitter}ms]...`, 'REDIS_CONN_UNKNOWN', false);
 				}
-				// Log warning with payload
-				Warnings.new(...payload);
 
 				return delay + jitter;
 			} else {
