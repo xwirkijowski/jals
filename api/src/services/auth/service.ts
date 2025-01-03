@@ -1,16 +1,20 @@
-import {GraphQLError} from "graphql";
-
+import { GraphQLError } from "graphql";
 import crypto from 'node:crypto';
 
-import { CriticalError } from './../../utilities/errors/index.js';
-import { globalLogger as log } from '../../utilities/log.js';
+import { CriticalError } from '../../utilities/errors/index';
+import { globalLogger as log } from '../../utilities/log';
 export { log };
 
-import Session from "./session.js";
-import AuthCode from "./authCode.js";
+import Session from "./session";
+import AuthCode from "./authCode";
+
+// Types
+import {IncomingMessage} from "node:http";
+import {AuthServiceConfig, AuthCodeGenerator} from "./types";
+import {ContextSessionUnion} from "../../types/context.types";
 
 export class AuthService {
-	default_config = {
+	default_config: AuthServiceConfig = {
 		mail: {
 			senderAddr: "jals@wirkijowski.dev",
 			senderName: "Just Another Link Shortener",
@@ -26,9 +30,9 @@ export class AuthService {
 		}
 	}
 
-	config = {};
+	config: AuthServiceConfig;
 
-	constructor (config) {
+	constructor (config?: AuthServiceConfig) {
 		log.withDomain('info', 'AuthService', 'Loading AuthService configuration...');
 
 		this.config = {...this.default_config, ...config}
@@ -48,13 +52,13 @@ export class AuthService {
 
 	// Session block
 
-	handleSession = async (request, rId) => {
-		if (request.headers?.authorization) {
-			const sessionId = request.headers.authorization.replace('Bearer ', '');
-			const session = await Session.find(sessionId, rId);
+	handleSession = async (request: IncomingMessage, rId: string): Promise<ContextSessionUnion> => {
+		if (request && request.headers.authorization) {
+			const sessionId: string = request.headers.authorization.replace('Bearer ', '');
+			const session: Session|undefined = await Session.find(sessionId, rId);
 
 			if (session) {
-				await session.refresh(this.config.auth.session.expiresIn);
+				await session.refresh(this.config.auth.session.expiresIn, rId);
 
 				return session;
 			} else {
@@ -64,14 +68,14 @@ export class AuthService {
 		} else return undefined;
 	}
 
-	createSession = async (userId, isAdmin, request, rId) => {
-		return await new Session({userId, isAdmin, request}, rId).save(this.config.auth.session.expiresIn, rId).catch(_ => false); // Catch internal errors, return false on fail
+	createSession = async (userId: string, isAdmin: boolean, request: IncomingMessage, rId: string) => {
+		// Catch internal errors, return false on fail to avoid propagation to public API
+		return await new Session({userId, isAdmin}, rId, request).save(this.config.auth.session.expiresIn, rId).catch((_: Error): boolean => false);
 	}
-
 
 	// Authentication code block
 
-	generateCode = (rId) => {
+	generateCode: AuthCodeGenerator = (rId: string): string => {
 		const length = this.config.auth.code.length;
 
 		if (length <= 0) {
@@ -91,7 +95,7 @@ export class AuthService {
 	}
 
 
-	createCode = async (userId, userEmail, rId) => {
+	createCode = async (userId: string, userEmail: string, rId: string) => {
 		return await new AuthCode({userId, userEmail}, rId, this.generateCode).save(this.config.auth.code.expiresIn, rId).catch(e => console.log('caught', e)); // Catch internal errors, return false on fail
 	}
 
@@ -106,10 +110,14 @@ export class AuthService {
 	 * @param 	code
 	 * @param 	rId
 	 *
-	 * @returns	{Promise<AuthCode|boolean>}	If AuthCode found, return AuthCode instance;
+	 * @returns	{Promise<AuthCode|false>}	If AuthCode found, return AuthCode instance;
 	 * 										If no AuthCode found, return false;
 	 */
-	checkCode = async (userId, code, rId) => {
+	checkCode = async (userId: string, code: string, rId: string): Promise<AuthCode|false> => {
+		if (!userId || !code || !rId) {
+			throw new CriticalError('Missing arguments, cannot check AuthCode', 'AUTH_CHECK_CODE_FAULT', 'AuthService', true, {userId, code, requestId: rId});
+		}
+
 		const node = await AuthCode.find(userId, code, rId);
 
 		return (node?.code) ? node : false;

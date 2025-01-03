@@ -1,5 +1,5 @@
 import { Repository, Schema } from 'redis-om';
-import { client } from '../../utilities/database/redis.js';
+import { client } from '../../utilities/database/redis';
 
 export const repository = new Repository(new Schema(
 	'authCode', {

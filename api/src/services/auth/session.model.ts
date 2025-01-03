@@ -1,6 +1,6 @@
 import crypto from 'node:crypto';
 import { Repository, Schema } from 'redis-om';
-import { client } from '../../utilities/database/redis.js';
+import { client } from '../../utilities/database/redis';
 
 export const repository = new Repository(new Schema(
 	'session', {
@@ -14,9 +14,7 @@ export const repository = new Repository(new Schema(
 	},
 	{
 		dataStructure: 'JSON',
-		idStrategy: () => {
-			return crypto.randomBytes(64).toString('hex');
-		}
+		idStrategy: async () =>  crypto.randomBytes(64).toString('hex'),
 	}
 ), client);
 
