@@ -1,4 +1,4 @@
-type Counter = 'warnings'|'errors'|'requests';
+type ValidCounter = 'warnings'|'errors'|'requests';
 
 /**
  * TelemetryCounters
@@ -19,13 +19,13 @@ class TelemetryCounters {
 	errors: number = 0;
 	requests: number = 0;
 
-	#validCounters: Array<Counter> = ['warnings', 'errors', 'requests'];
+	#validCounters: Array<ValidCounter> = ['warnings', 'errors', 'requests'];
 
 	constructor () {
 		return this;
 	}
 
-	increment(counter:Counter):this|Error {
+	increment(counter:ValidCounter):this|Error {
 		if (this.#validCounters.includes(counter)) {
 			this[counter]++;
 
@@ -35,7 +35,7 @@ class TelemetryCounters {
 		}
 	}
 
-	get = (counter:Counter):number|Error => {
+	get = (counter:ValidCounter):number|Error => {
 		if (this.#validCounters.includes(counter)) {
 			return this[counter];
 		} else {

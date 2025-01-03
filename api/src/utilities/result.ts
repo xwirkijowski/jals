@@ -6,7 +6,7 @@ export class Result {
 	errorCodes: Array<string>
 
 
-	constructor (result: boolean, errors: Array<ResultError>) {
+	constructor (result?: boolean, errors?: Array<ResultError>) {
 		this.success = result||true;
 		this.errors = errors||[];
 		this.errorCodes = (Array.isArray(errors)) ? errors?.map(err => err.code)||[] : [];
@@ -36,8 +36,8 @@ export class Result {
 
 	addErrorAndLog = (
 		code: string,
-		path: string,
-		message: string,
+		path: string|undefined,
+		message: string|undefined,
 		type: string,
 		note: string,
 		component?: string
