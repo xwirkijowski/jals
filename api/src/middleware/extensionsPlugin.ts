@@ -1,15 +1,11 @@
-export const extensionsPlugin = () => {
+import {ApolloServerPlugin, GraphQLRequestContextWillSendResponse, GraphQLRequestListener} from "@apollo/server";
+import {ContextInterface} from "../types/context.types";
+
+export function extensionsPlugin (): ApolloServerPlugin<ContextInterface> {
 	return {
-		requestDidStart: () => {
+		async requestDidStart(): Promise<void | GraphQLRequestListener<ContextInterface>> {
 			return {
-				didResolveSource: () => {},
-				parsingDidStart: () => {},
-				validationDidStart: () => {},
-				didResolveOperation: () => {},
-				responseForOperation: () => {},
-				executionDidStart: () => {},
-				didEncounterErrors: () => {},
-				willSendResponse(requestContext: any): void {
+				async willSendResponse(requestContext: GraphQLRequestContextWillSendResponse<ContextInterface>): Promise<void> {
 					const requestId = requestContext.contextValue.internal.requestId;
 
 					const session = requestContext.contextValue.session;
@@ -17,16 +13,17 @@ export const extensionsPlugin = () => {
 						? true
 						: session;
 
-					requestContext.response.body.singleResult = {
-						...requestContext.response.body.singleResult,
-						extensions: {
-							...requestContext.response.body?.extensions,
-							requestId,
-							auth: sessionStatus,
-						},
-					};
-				},
+					if (requestContext.response.body.kind === 'single' && 'data' in requestContext.response.body.singleResult) {
+						requestContext.response.body.singleResult = {
+							...requestContext.response.body.singleResult,
+							extensions: {
+								requestId,
+								auth: sessionStatus,
+							},
+						}
+					}
+				}
 			}
 		}
 	}
-};
+}
