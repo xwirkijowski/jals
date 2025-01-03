@@ -4,7 +4,7 @@ class CriticalError extends InternalError {
 	name: string;
 	level: string;
 
-	constructor (msg: string, code: string, domain?: string, stack?: any, ...payload: any[]) {
+	constructor (msg: string, code: string, domain?: string, stack?: string|boolean, ...payload: any[]) {
 		super(msg, code, domain, stack, ...payload);
 
 		// Set CriticalError specific data

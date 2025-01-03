@@ -1,6 +1,7 @@
 import {globalLogger as log} from "../log";
 
 import Counters from '../telemetryCounters';
+import {ulid} from "ulid";
 
 /**
  * InternalError
@@ -15,7 +16,7 @@ import Counters from '../telemetryCounters';
  * @prop	payload		The payload to be used on the logging function, contains additional metadata like requestId.
  * @prop	stack		Stack trace of the error's point of origin.
  */
-class InternalError extends Error {
+class InternalError extends Error implements Partial<Error> {
 	name: string = 'InternalError';
 	level: string = 'error';
 	code: string;
@@ -23,11 +24,11 @@ class InternalError extends Error {
 	domain?: string;
 	stack?: string;
 	payload?: any;
+	errorId: string;
 
-	constructor(msg?: string, code = 'UNKNOWN', domain?: string, stack?: string, ...payload: any[]) {
+	constructor(msg?: string, code = 'UNKNOWN', domain?: string, stack?: string|boolean, ...payload: any[]) {
 		// Call Error constructor, capture base Error details
 		super();
-
 		// Increment error counter
 		Counters.increment('errors');
 
@@ -36,11 +37,14 @@ class InternalError extends Error {
 		this.msg = msg || undefined;
 		this.domain = domain || undefined;
 
+		// Set unique error ID
+		this.errorId = ulid();
+
 		// If stack needs a stack trace, use built-in method and ignore current constructor
 		if (stack) Error.captureStackTrace(this, this.constructor);
 
 		// Assign payload to property if is not empty
-		this.payload = ((typeof payload === 'object' && payload.keys.length > 0) || (Array.isArray(payload) && payload.length > 0)) ? payload : undefined;
+		this.payload = ((typeof payload === 'object' && Object.keys(payload).length > 0) || (Array.isArray(payload) && payload.length > 0)) ? payload : undefined;
 
 		// Log only if used directly, let extends handle logging on their own
 		if (new.target.name === 'InternalError') this.log();
@@ -50,9 +54,9 @@ class InternalError extends Error {
 
 	log() {
 		if (this.domain) {
-			log.withDomain(this.level, this.domain, this.code, this.msg, this?.payload, this?.stack);
+			log.withDomain(this.level, this.domain, this.code, this.msg, this?.payload, {errorId: this.errorId}, this?.stack);
 		} else {
-			log[this.level](this.code, this.msg, this?.payload, this?.stack);
+			log[this.level](this.code, this.msg, this?.payload, {errorId: this.errorId}, this?.stack);
 		}
 
 		return this;
@@ -72,7 +76,7 @@ class ErrorAggregator {
 		return this;
 	}
 
-	new = (message?: string, code?: string, stack?: string, payload?: any): InternalError => {
+	new = (message?: string, code?: string, stack?: string|boolean, payload?: any): InternalError => {
 		const error = new InternalError(message, code, this.domain, stack, payload);
 
 		this.errorCount += 1;

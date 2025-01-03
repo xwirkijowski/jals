@@ -17,7 +17,7 @@ class Warning {
 	domain?: string;
 	payload: any[];
 
-	constructor (message: string, code?: string, domain?: string, stack?: string, ...payload: any[]) {
+	constructor (message: string, code?: string, domain?: string, stack?: string|boolean, ...payload: any[]) {
 		// Increment warnings counter
 		Counters.increment('warnings');
 
@@ -57,7 +57,7 @@ class WarningAggregator {
 		return this;
 	}
 
-	new = (message: string, code?: string, stack?: string, payload?: any): Warning => {
+	new = (message: string, code?: string, stack?: string|boolean, payload?: any): Warning => {
 		const warning: Warning = new Warning(message, code, this.domain, stack, payload);
 
 		this.warningCount += 1;
