@@ -56,6 +56,9 @@ process.env?.REDIS_USER && !process.env?.REDIS_PASS&& Warnings.new('REDIS_USER s
 !process.env?.MONGO_USER && Errors.add(new FatalError('No MONGO_USER specified, unsecure database access is forbidden!', 'MONGO_USER_MISSING', undefined, true));
 !process.env?.MONGO_PASS && Errors.add(new FatalError('No MONGO_PASS specified, unsecure database access is forbidden!', 'MONGO_PASS_MISSING', undefined, true));
 
+// Secrets
+!process.env?.SENTRY_SECRET && Warnings.new('No SENTRY_SECRET specified, Sentry.io disabled!', 'SENTRY_DISABLED');
+
 // Check for errors
 if (Errors.errorCount > 0) {
     log.withDomain('fatal', 'config', 'Fatal error during configuration loading! Cannot start application.')
@@ -116,6 +119,9 @@ const config: ConfigType = {
             return `mongodb://${(userString)}${this.host}:${this.port}/${this.db}${this.opts||''}`
         },
     },
+    secrets: {
+        sentry: process.env.SENTRY_SECRET || undefined
+    }
 };
 
 log.withDomain('success', 'Config', 'Configuration loaded');

@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import { GraphQLError } from "graphql";
 
 import { $DB } from "./database/status";
-import Session from "../services/auth/session";
+import {SessionType} from "../services/auth/session";
 import {ContextInterface} from "../types/context.types";
 import {IncomingMessage} from "node:http";
 
@@ -65,7 +65,7 @@ export const check = {
 			throw new GraphQLError('Session database unavailable.', { extensions: { code: 'INTERNAL_SERVER_ERROR' } });
 		}
 	},
-	isSessionValid: (session: ContextInterface["session"]): session is Session => (!!session && session !== 'invalid'),
+	isSessionValid: (session: ContextInterface["session"]): session is SessionType => (!!session && session !== 'invalid'),
 	session: (session: ContextInterface["session"]): true|GraphQLError => {
 		if (check.isSessionValid(session)) return true;
 
@@ -92,7 +92,7 @@ export const check = {
 
 		let authorized: boolean = false; // Default to false
 
-		if ((session as Session).userId === createdBy || (session as Session).isAdmin) authorized = true;
+		if ((session as SessionType).userId === createdBy || (session as SessionType).isAdmin) authorized = true;
 
 		// Handle user not authorized
 		if (!authorized) {
@@ -125,7 +125,7 @@ export const check = {
 
 		let authorized: boolean = false; // Default to false
 
-		if ((session as Session).isAdmin) authorized = true;
+		if ((session as SessionType).isAdmin) authorized = true;
 
 		// Handle user not authorized
 		if (!authorized && !silent) {

@@ -36,5 +36,8 @@ export type ConfigType = {
         string?: string
         connectionString: ConnectionStringBuilder
     }
+    secrets: {
+        sentry?: string
+    }
 };
 
