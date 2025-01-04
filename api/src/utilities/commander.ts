@@ -8,7 +8,7 @@ import {Warning, FatalError} from "./errors";
 
 // Types
 import {ContextInterface} from "../types/context.types";
-import {ApolloServer} from "@apollo/server/src/ApolloServer";
+import {ApolloServer} from "@apollo/server";
 import {RedisClientType} from "redis";
 import mongoose from "mongoose";
 
@@ -48,7 +48,7 @@ class Commander extends EventEmitter {
 		return this;
 	}
 
-	applyServer (server: ApolloServer<ContextInterface>): this {
+	applyServer(server: ApolloServer<ContextInterface>): this {
 		this.server = server;
 		this.emit('applied', 'Apollo');
 		this.#isReady();

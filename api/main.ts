@@ -1,15 +1,15 @@
 // Import logger
-import { globalLogger as log } from './src/utilities/log.js';
+import { globalLogger as log } from './src/utilities/log';
 
 // Load configuration
-import { config } from "./config.js";
+import { config } from "./config";
 
 // Load process commander
-import { $CMDR } from './src/utilities/commander.js';
+import { $CMDR } from './src/utilities/commander';
 
 // Import database configuration and status
-import { $DB } from './src/utilities/database/status.js';
-import { setupMongo } from "./src/utilities/database/mongoose.js";
+import { $DB } from './src/utilities/database/status';
+import { setupMongo } from "./src/utilities/database/mongoose";
 
 // Setup mongoose database connection
 await setupMongo(config);
@@ -20,25 +20,29 @@ import { startStandaloneServer } from '@apollo/server/standalone';
 import { ulid } from 'ulid';
 
 // Import telemetry counters (requests, warnings, errors)
-import Counters from './src/utilities/telemetryCounters.js';
+import Counters from './src/utilities/telemetryCounters';
 
 // Import middleware
-import { telemetryPlugin } from "./src/middleware/telemetryPlugin.js";
-import { extensionsPlugin } from "./src/middleware/extensionsPlugin.js";
+import { telemetryPlugin } from "./src/middleware/telemetryPlugin";
+import { extensionsPlugin } from "./src/middleware/extensionsPlugin";
 
 // Import final schema
-import schema from './src/schema.js';
+import schema from './src/schema';
 
 // Import data models
-import clickModel from './src/models/click.model.js';
-import linkModel from "./src/models/link.model.js";
-import userModel from './src/models/user.model.js';
+import clickModel from './src/models/click.model';
+import linkModel from "./src/models/link.model";
+import userModel from './src/models/user.model';
 
 // Import services
-import { AuthService } from "./src/services/auth/service.js";
+import { AuthService } from "./src/services/auth/service";
+
+// Types
+import { ConfigType } from "./src/types/config.types";
+import {ContextInterface} from "./src/types/context.types";
 
 // Construct Apollo server instance
-const server = new ApolloServer({
+const server = new ApolloServer<ContextInterface>({
 	schema,
 	plugins: [
 		telemetryPlugin(),
@@ -58,7 +62,7 @@ const statistics = {
 
 // Services
 const services = {
-	auth: new AuthService(config),
+	auth: new AuthService(),
 }
 
 // Launch the Apollo server
@@ -67,7 +71,7 @@ const { url } = await startStandaloneServer(server, {
 		port: config.server.port,
 		host: config.server.host
 	},
-	context: async ({req}) => {
+	context: async ({req}): Promise<ContextInterface> => {
 		statistics.counters.increment('requests');
 
 		const telemetryRequest = {
@@ -98,10 +102,12 @@ const { url } = await startStandaloneServer(server, {
 			systemStatus: $DB,
 		}
 	},
+	/* @todo Migrate to Express.js
 	cors: {
 		origin: ['https://sandbox.embed.apollographql.com', `${config.server.protocol}://${config.server.host}:${config.server.port}`],
 		credentials: true
 	},
-})
+	*/
+});
 
 log.success(`Ready at ${url}, running in ${config.server.env.toLowerCase()} environment...`);
