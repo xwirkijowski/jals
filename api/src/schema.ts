@@ -7,7 +7,7 @@ import { loadFilesSync, loadFiles } from "@graphql-tools/load-files";
 import { mergeTypeDefs } from "@graphql-tools/merge";
 
 // Root resolvers
-import resolvers from "./schema/resolvers.js";
+import resolvers from "./schema/resolvers";
 
 // `__dirname` workaround for ES modules
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -18,7 +18,7 @@ const typeDefs = readFileSync(path.join(__dirname, './schema/typeDefs.graphql'),
 // Import type definitions and resolvers from all domains
 const typeDefsArr = loadFilesSync(path.join(__dirname, './schema/**/*'), { extensions: ['graphql']});
 const resolversArr = await loadFiles(path.join(__dirname, './schema/**/*.resolvers.js'), {
-	requireMethod: async (p) => { return await import(pathToFileURL(p)); }
+	requireMethod: async (p: string) => { return await import(pathToFileURL(p).pathname); }
 });
 
 // Create a final schema object form merged root and domain-specific type definitions and their resolvers
