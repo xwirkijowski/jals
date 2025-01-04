@@ -11,7 +11,7 @@ import {IncomingMessage} from "node:http";
 
 export default class Session {
 	sessionId?: string;
-	userId: string;
+	userId: SessionInterface["userId"];
 	isAdmin: boolean = false;
 	userAgent?: string;
 	userAddr?: string;
@@ -28,7 +28,7 @@ export default class Session {
 		this.userId = props.userId.toString();
 		this.isAdmin = Boolean(props?.isAdmin)||false;
 		this.userAgent = props?.userAgent?.toString() || request?.headers?.['user-agent'] || undefined;
-		this.userAddr = props?.userAddr?.toString() || getIP(request)?.toString() || undefined;
+		this.userAddr = props?.userAddr?.toString() || request && getIP(request)?.toString() || undefined;
 		this.createdAt = props?.createdAt ? new Date(props.createdAt) : undefined;
 		this.updatedAt = props?.updatedAt ? new Date(props.updatedAt) : undefined;
 		this.version = props?.version || 0;
@@ -78,3 +78,6 @@ export default class Session {
 		}
 	}
 }
+
+// Export class type
+export type SessionType = InstanceType<typeof Session>;

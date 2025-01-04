@@ -9,7 +9,7 @@ import {AuthCodeGenerator, AuthCodeInterface} from './types';
 
 export default class AuthCode {
 	authCodeId?: string
-	userId?: string
+	userId?: AuthCodeInterface["userId"]
 	userEmail?: string
 	code?: string
 	createdAt?: string|Date
@@ -39,7 +39,7 @@ export default class AuthCode {
 		return this;
 	}
 
-	static async find (userId: string, code: string, rId: string) {
+	static async find (userId: AuthCodeInterface["userId"], code: string, rId: string) {
 		const node = await model.search()
 			.where('userId').equals(userId.toString())
 			.and('code').equals(code.toString())
@@ -68,3 +68,6 @@ export default class AuthCode {
 		}
 	}
 }
+
+// Export class type
+export type AuthCodeType = InstanceType<typeof AuthCode>;

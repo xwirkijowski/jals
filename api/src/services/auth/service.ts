@@ -5,12 +5,12 @@ import { CriticalError } from '../../utilities/errors/index';
 import { globalLogger as log } from '../../utilities/log';
 export { log };
 
-import Session from "./session";
-import AuthCode from "./authCode";
+import Session, {SessionType} from "./session";
+import AuthCode, {AuthCodeType} from "./authCode";
 
 // Types
 import {IncomingMessage} from "node:http";
-import {AuthServiceConfig, AuthCodeGenerator} from "./types";
+import {AuthServiceConfig, AuthCodeGenerator, SessionInterface, AuthCodeInterface} from "./types";
 import {ContextSessionUnion} from "../../types/context.types";
 
 export class AuthService {
@@ -55,7 +55,7 @@ export class AuthService {
 	handleSession = async (request: IncomingMessage, rId: string): Promise<ContextSessionUnion> => {
 		if (request && request.headers.authorization) {
 			const sessionId: string = request.headers.authorization.replace('Bearer ', '');
-			const session: Session|undefined = await Session.find(sessionId, rId);
+			const session: SessionType|undefined = await Session.find(sessionId, rId);
 
 			if (session) {
 				await session.refresh(this.config.auth.session.expiresIn, rId);
@@ -68,7 +68,7 @@ export class AuthService {
 		} else return undefined;
 	}
 
-	createSession = async (userId: string, isAdmin: boolean, request: IncomingMessage, rId: string) => {
+	createSession = async (userId: SessionInterface["userId"], isAdmin: boolean, request: IncomingMessage, rId: string) => {
 		// Catch internal errors, return false on fail to avoid propagation to public API
 		return await new Session({userId, isAdmin}, rId, request).save(this.config.auth.session.expiresIn, rId).catch((_: Error): boolean => false);
 	}
@@ -95,7 +95,7 @@ export class AuthService {
 	}
 
 
-	createCode = async (userId: string, userEmail: string, rId: string) => {
+	createCode = async (userId: AuthCodeInterface["userId"], userEmail: string, rId: string) => {
 		return await new AuthCode({userId, userEmail}, rId, this.generateCode).save(this.config.auth.code.expiresIn, rId).catch(e => console.log('caught', e)); // Catch internal errors, return false on fail
 	}
 
@@ -113,13 +113,15 @@ export class AuthService {
 	 * @returns	{Promise<AuthCode|false>}	If AuthCode found, return AuthCode instance;
 	 * 										If no AuthCode found, return false;
 	 */
-	checkCode = async (userId: string, code: string, rId: string): Promise<AuthCode|false> => {
+	checkCode = async (userId: AuthCodeInterface["userId"], code: string, rId: string): Promise<AuthCode|false> => {
 		if (!userId || !code || !rId) {
 			throw new CriticalError('Missing arguments, cannot check AuthCode', 'AUTH_CHECK_CODE_FAULT', 'AuthService', true, {userId, code, requestId: rId});
 		}
 
-		const node = await AuthCode.find(userId, code, rId);
+		const node: AuthCodeType|undefined = await AuthCode.find(userId, code, rId);
 
 		return (node?.code) ? node : false;
 	}
 }
+
+export type AuthServiceType = InstanceType<typeof AuthService>;
