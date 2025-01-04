@@ -1,6 +1,5 @@
-import { EntityId } from 'redis-om'
 import { Result } from "../result";
-import { check, getIP } from "../../utilities/helpers";
+import { check } from "../../utilities/helpers";
 
 // Types
 import {ContextInterface as CtxI} from "../../types/context.types";
