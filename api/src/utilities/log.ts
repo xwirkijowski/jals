@@ -1,6 +1,6 @@
-import {Eudoros} from 'eudoros';
+import {Eudoros, Config} from 'eudoros';
 
-const config = {
+const config: Config = {
 	options: {
 		outputDirectory: './logs',
 		synchronous: true,
@@ -9,7 +9,7 @@ const config = {
 	levels: [
 		{ // Critical errors that cause performance degradation or shutdown
 			label: 'fatal',
-			consoleMethodName: 'fatal',
+			consoleMethodName: 'error',
 			prefix: `\x1b[1m\x1b[31m[\u{2717}]\x1b[0m`, // Bold, red
 			format: ['\x1b[1m\x1b[31m', '\x1b[0m'], // Bold, red
 			trace: {
@@ -59,14 +59,12 @@ const config = {
 		{ // Standard logging
 			label: 'log',
 			prefix: '[>]',
-			format: [],
 			logToFile: true,
-			method: 'std'
+			methodName: 'std'
 		},
 		{ // Authentication and authorization logging
 			label: 'audit',
-			method: 'audit',
-
+			methodName: 'audit',
 			prefix: '\x1b[35m[\x1b[33m\u{1F441}\x1b[35m]\x1b[0m',
 			format: ['\x1b[35m', '\x1b[0m'],
 			logToFile: 'audit',
@@ -82,13 +80,11 @@ const config = {
 			label: 'debug',
 			consoleMethodName: 'debug',
 			prefix: '[D]',
-			format: [],
 			logToFile: 'debug',
 		},
 		{ // Request logging
 			label: 'request',
 			prefix: '[>]',
-			format: [],
 			logToFile: 'request',
 			formatToString: (payload) => {
 				payload = payload[0];
