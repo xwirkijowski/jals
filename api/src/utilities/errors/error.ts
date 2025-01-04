@@ -69,10 +69,10 @@ class InternalError extends Error implements Partial<Error> {
 
 	sentry() {
 		Sentry.captureException(this, {
-			...(!!this.payload[0]?.userId && {user: {id: this.payload[0]?.userId as string}}),
+			...(!!this?.payload?.[0]?.userId && {user: {id: this.payload[0]?.userId as string}}),
 			extra: {
-				...(!!this.payload[0]?.requestId && {requestId: this.payload[0]?.requestId as string}),
-				...(!!this.payload[0]?.sessionId && {sessionId: this.payload[0]?.sessionId as string}),
+				...(!!this?.payload?.[0]?.requestId && {requestId: this.payload[0]?.requestId as string}),
+				...(!!this?.payload?.[0]?.sessionId && {sessionId: this.payload[0]?.sessionId as string}),
 			},
 			tags: {
 				code: this.code,
