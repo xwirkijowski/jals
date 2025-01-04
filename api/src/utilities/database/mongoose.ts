@@ -2,8 +2,8 @@ import mongoose from "mongoose";
 
 import {ConfigType} from "../../types/config.types";
 
-import { globalLogger as log } from "../log";
-import { CriticalError, FatalError } from '../errors/index';
+import { globalLogger as log } from "../logging/log";
+import {CriticalError, FatalError, Warning} from '../errors/index';
 
 import { $DB } from './status';
 import { $CMDR } from '../commander';
@@ -67,18 +67,28 @@ export const setupMongo = async (config: ConfigType) => {
 		$DB.setMongo('error');
 		handleError(err, 'initial');
 	})
+
+	// @todo Reconnect strategy
 }
 
 $CMDR.applyMongoClient(mongoose.connection);
 
 // @todo Identify specific `err` types
 const handleError = (err: any, origin: string) => {
-	console.trace(origin, err)
+	console.trace($DB.mongo, origin, err)
 
 	if (origin === 'initial') {
-		new FatalError('Error during initial MongoDB connection.', err.code||'UNKNOWN', 'Mongo')
+		if (err.constructor.name === 'MongooseServerSelectionError') {
+			new Warning('Failed to connect, will attempt again...', 'REDIS_CONN_REFUSED', 'Mongo')
+		} else {
+			new FatalError('Error during initial MongoDB connection. Attempting to try again...', err.code||'UNKNOWN', 'Mongo', err)
+		}
 	} else {
-		new CriticalError(`MongoDB error. ${err.errorResponse?.errmsg}`, err.errorResponse?.code, 'Mongoose');
+		if (err.constructor.name === 'MongooseServerSelectionError') {
+			new CriticalError('Cannot connect to the MongoDB server!', 'REDIS_CONN_UNKNOWN', 'Mongo')
+		} else {
+			new CriticalError(`Unexpected MongoDB error occured!`, 'UNKNOWN', 'Mongo', err);
+		}
 	}
 
 }
