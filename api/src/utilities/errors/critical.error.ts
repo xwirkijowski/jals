@@ -10,6 +10,7 @@ class CriticalError extends InternalError {
 		// Log error and call sentry
 		super.log();
 		super.sentry();
+		super.axiom();
 
 		return this;
 	}

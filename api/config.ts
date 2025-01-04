@@ -26,13 +26,11 @@ const defaults = {
             connectTimeout: 0, // 10 s
         },
     },
-    mongo: {
-
-    }
 };
 
 // Load configuration from environment variables
 log.withDomain('info', 'Config', 'Loading configuration...');
+let timer: number = performance.now();
 
 // Stage 1 - Check variables
 log.withDomain('info', 'Config', 'Checking environment variables...')
@@ -57,7 +55,8 @@ process.env?.REDIS_USER && !process.env?.REDIS_PASS&& Warnings.new('REDIS_USER s
 !process.env?.MONGO_PASS && Errors.add(new FatalError('No MONGO_PASS specified, unsecure database access is forbidden!', 'MONGO_PASS_MISSING', undefined, true));
 
 // Secrets
-!process.env?.SENTRY_SECRET && Warnings.new('No SENTRY_SECRET specified, Sentry.io disabled!', 'SENTRY_DISABLED');
+!process.env?.SECRET_SENTRY && Warnings.new('No SECRET_SENTRY specified, Sentry.io disabled!', 'SENTRY_DISABLED');
+!process.env?.SECRET_AXIOM && Warnings.new('No SECRET_AXIOM specified, Sentry.io disabled!', 'AXIOM_DISABLED');
 
 // Check for errors
 if (Errors.errorCount > 0) {
@@ -68,6 +67,12 @@ if (Errors.errorCount > 0) {
 
 // Stage 2 - Build configuration object
 log.withDomain('info', 'Config', 'Building configuration object...')
+// Stage 2 - Load extra configuration from file
+
+import {settings} from './settings.json';
+
+// Stage 3 - Build configuration object
+log.withDomain('log', 'Config', 'Building configuration object...')
 
 const config: ConfigType = {
     server: {
@@ -120,10 +125,23 @@ const config: ConfigType = {
         },
     },
     secrets: {
-        sentry: process.env.SENTRY_SECRET || undefined
+        sentry: process.env.SECRET_SENTRY || undefined,
+        axiom: process.env.SECRET_AXIOM || undefined,
+    },
+    settings: {
+        axiom: {
+            dataset: settings?.axiom?.dataset
+        }
     }
 };
 
-log.withDomain('success', 'Config', 'Configuration loaded');
+log.withDomain('success', 'Config', `Configuration loaded in ${(performance.now()-timer).toFixed(2)}ms!`);
+timer = undefined;
+
+// Logging integrations setup
+import {setupAxiom} from './src/utilities/logging/axiom';
+import {setupSentry} from './src/utilities/logging/sentry';
+setupAxiom(config);
+setupSentry(config);
 
 export {config};

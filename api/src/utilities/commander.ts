@@ -2,7 +2,7 @@ import process from 'node:process';
 import EventEmitter from 'events';
 
 import {$DB} from "./database/status";
-import {globalLogger as log} from "./log";
+import {globalLogger as log} from "./logging/log";
 
 import {Warning, FatalError} from "./errors";
 
@@ -144,4 +144,4 @@ class Commander extends EventEmitter {
 export const $CMDR = new Commander();
 
 $CMDR.on('ready', () => log.withDomain('success', 'Commander', 'Commander ready!'));
-$CMDR.on('applied', (arg) => log.withDomain('info', 'Commander', `Applied ${arg} to commander instance.`))
+$CMDR.on('applied', (arg) => log.withDomain('log', 'Commander', `Applied ${arg} to commander instance.`))

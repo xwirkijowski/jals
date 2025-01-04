@@ -10,6 +10,7 @@ class FatalError extends InternalError {
 		// Log error and call sentry
 		super.log();
 		super.sentry();
+		super.axiom();
 
 		// @todo: Call shutdown function
 

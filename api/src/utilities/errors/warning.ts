@@ -1,6 +1,7 @@
-import { globalLogger as log } from '../log';
-
+import {ulid} from "ulid";
+import { globalLogger as log } from '../logging/log';
 import Counters from '../telemetryCounters';
+import {axiomClient as axiom, dataset as AXIOM_DATASET} from '../logging/axiom';
 
 /**
  * Warning
@@ -10,10 +11,10 @@ import Counters from '../telemetryCounters';
  */
 class Warning {
 	name: string = 'Warning';
-
+	warnId: string;
 	message: string;
 	code?: string;
-	stack?: string|void;
+	stack?: string;
 	domain?: string;
 	payload: any[];
 
@@ -21,19 +22,46 @@ class Warning {
 		// Increment warnings counter
 		Counters.increment('warnings');
 
-		this.code = code;
+		// Set unique error ID
+		this.warnId = ulid();
+
 		this.message = message;
-		this.stack = (stack) ? Error.captureStackTrace(this, this.constructor) : undefined;
-		this.domain = domain;
+		this.code = code || undefined;
+		this.domain = domain || undefined;
+
+		// If stack needs a stack trace, use built-in method and ignore current constructor
+		if (stack === true) Error.captureStackTrace(this, this.constructor);
+		else if (!!stack && typeof stack === 'string') this.stack = stack;
+
 		this.payload = payload;
 
-		// Log reported warning
+		// Log and call reporting utilities
+		this.log();
+		this.axiom();
+	}
+
+	log() {
 		if (this.domain) {
-			log.withDomain('warn', `${this.domain}`, this.code, this.message, ...this.payload, this.stack);
+			log.withDomain('warn', this.domain, this.code, this.message, ...this?.payload, this.stack);
 		} else {
-			log.warn(this.code, this.message, ...this.payload, this.stack)
+			log['warn'](this.code, this.message, ...this?.payload, this.stack);
 		}
 
+		return this;
+	}
+
+	axiom() {
+		if (axiom) {
+			axiom.ingest(AXIOM_DATASET, {
+				level: 'warning',
+				warnId: this.warnId,
+				domain: this.domain||null,
+				msg: this.message,
+				...(this.code && {code: this.code}),
+				...(this.payload && {payload: this.payload}),
+				...(this.stack && {stack: this.stack}),
+			})
+		}
 	}
 }
 

@@ -1,5 +1,5 @@
 // Import logger
-import { globalLogger as log } from './src/utilities/log';
+import { globalLogger as log } from './src/utilities/logging/log';
 
 // Load configuration
 import { config } from "./config";
@@ -18,7 +18,7 @@ await setupMongo(config);
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
 import { ulid } from 'ulid';
-import * as Sentry from '@sentry/node';
+
 
 // Import telemetry counters (requests, warnings, errors)
 import Counters from './src/utilities/telemetryCounters';
@@ -64,15 +64,6 @@ const statistics = {
 const services = {
 	auth: new AuthService(),
 }
-
-// Sentry.io
-Sentry.init({
-	dsn: config.secrets?.sentry,
-	enabled: !!(config.secrets.sentry),
-	integrations: [],
-	tracesSampleRate: 1.0, //  Capture 100% of the transactions
-	environment: config.server.env
-});
 
 // Launch the Apollo server
 const { url } = await startStandaloneServer(server, {

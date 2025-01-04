@@ -1,8 +1,9 @@
 import * as Sentry from "@sentry/node";
 import {ulid} from "ulid";
 
-import {globalLogger as log} from "../log";
+import {globalLogger as log} from "../logging/log";
 import Counters from '../telemetryCounters';
+import {axiomClient as axiom, dataset as AXIOM_DATASET} from '../logging/axiom';
 
 /**
  * InternalError
@@ -20,12 +21,12 @@ import Counters from '../telemetryCounters';
 class InternalError extends Error implements Partial<Error> {
 	name: string = 'InternalError';
 	level: string = 'error';
+	errorId: string;
 	code: string;
 	msg?: string;
 	domain?: string;
 	stack?: string;
 	payload?: any;
-	errorId: string;
 
 	constructor(msg?: string, code = 'UNKNOWN', domain?: string, stack?: string|boolean, ...payload: any[]) {
 		// Call Error constructor, capture base Error details
@@ -33,25 +34,26 @@ class InternalError extends Error implements Partial<Error> {
 		// Increment error counter
 		Counters.increment('errors');
 
+		// Set unique error ID
+		this.errorId = ulid();
+
 		// Assign arguments to properties
 		this.code = code || 'UNKNOWN';
 		this.msg = msg || undefined;
 		this.domain = domain || undefined;
 
-		// Set unique error ID
-		this.errorId = ulid();
-
 		// If stack needs a stack trace, use built-in method and ignore current constructor
-		if (stack) Error.captureStackTrace(this, this.constructor);
+		if (stack === true) Error.captureStackTrace(this, this.constructor);
+		else if (!!stack && typeof stack === 'string') this.stack = stack;
 
 		// Assign payload to property if is not empty
 		this.payload = ((typeof payload === 'object' && Object.keys(payload).length > 0) || (Array.isArray(payload) && payload.length > 0)) ? payload : undefined;
 
-		// Log only if used directly, let extends handle logging on their own
-		// Also call Sentry
+		// Log and call reporting utilities only if used directly, let extends handle it on their own
 		if (new.target.name === 'InternalError') {
 			this.log();
 			this.sentry();
+			this.axiom();
 		}
 
 		return this;
@@ -79,6 +81,20 @@ class InternalError extends Error implements Partial<Error> {
 				id: this.errorId,
 			}
 		})
+	}
+
+	axiom() {
+		if (axiom) {
+			axiom.ingest(AXIOM_DATASET, {
+				level: this.level,
+				errorId: this.errorId,
+				domain: this.domain||null,
+				code: this.code,
+				msg: this.msg,
+				...(this.payload && {payload: this.payload}),
+				...(this.stack && {stack: this.stack}),
+			})
+		}
 	}
 }
 

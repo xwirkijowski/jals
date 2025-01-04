@@ -11,7 +11,7 @@ const config: Config = {
 			label: 'fatal',
 			consoleMethodName: 'error',
 			prefix: `\x1b[1m\x1b[31m[\u{2717}]\x1b[0m`, // Bold, red
-			format: ['\x1b[1m\x1b[31m', '\x1b[0m'], // Bold, red
+			format: ['\x1b[5m\x1b[1m\x1b[31m', '\x1b[0m', '\x1b[1m\x1b[31m', '\x1b[0m'], // Bold, red
 			trace: {
 				groupLabel: 'Fatal error occurred.',
 				groupPrefix: '\x1b[1m\x1b[31m[\x1b[33m\u{26A0}\x1b[31m]\x1b[0m',
@@ -23,7 +23,7 @@ const config: Config = {
 			label: 'critical',
 			consoleMethodName: 'error',
 			prefix: `\x1b[1m\x1b[31m[\u{2717}]\x1b[0m`, // Bold, red
-			format: ['\x1b[1m\x1b[31m', '\x1b[0m'], // Bold, red
+			format: ['\x1b[5m\x1b[1m\x1b[31m', '\x1b[0m', '\x1b[1m\x1b[31m', '\x1b[0m'], // Bold, red
 			trace: {
 				groupLabel: 'Critical error occurred.',
 				groupPrefix: '\x1b[1m\x1b[31m[\u{26A0}]\x1b[0m',
@@ -58,7 +58,8 @@ const config: Config = {
 		},
 		{ // Standard logging
 			label: 'log',
-			prefix: '[>]',
+			prefix: '\x1b[90m[-]\x1b[0m',
+			format: ['\x1b[90m', '\x1b[0m'],
 			logToFile: true,
 			methodName: 'std'
 		},
@@ -82,11 +83,11 @@ const config: Config = {
 			prefix: '[D]',
 			logToFile: 'debug',
 		},
-		{ // Request logging
+		{ // Request logging @todo Types
 			label: 'request',
 			prefix: '[>]',
 			logToFile: 'request',
-			formatToString: (payload) => {
+			formatToString: (payload: any) => {
 				payload = payload[0];
 
 				return `Request ${payload.requestId} finished in ${payload.time}ms, received at ${payload.timestampStart.toISOString()}, session: ${payload?.sessionId||false}`
