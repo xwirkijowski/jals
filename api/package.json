@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@apollo/server": "^4.11.2",
+    "@axiomhq/js": "^1.3.1",
     "@graphql-tools/load-files": "^7.0.0",
     "@graphql-tools/merge": "^9.0.8",
     "@graphql-tools/schema": "^10.0.7",
@@ -32,7 +33,7 @@
     "inigo-windows-amd64": "^0.30.11",
     "inigo.js": "^0.30.11",
     "luxon": "^3.5.0",
-    "mongoose": "^8.8.0",
+    "mongoose": "^8.9.3",
     "redis": "^4.7.0",
     "redis-om": "^0.4.7",
     "resend": "^4.0.1",
