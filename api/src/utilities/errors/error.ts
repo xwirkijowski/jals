@@ -1,7 +1,8 @@
-import {globalLogger as log} from "../log";
-
-import Counters from '../telemetryCounters';
+import * as Sentry from "@sentry/node";
 import {ulid} from "ulid";
+
+import {globalLogger as log} from "../log";
+import Counters from '../telemetryCounters';
 
 /**
  * InternalError
@@ -47,7 +48,11 @@ class InternalError extends Error implements Partial<Error> {
 		this.payload = ((typeof payload === 'object' && Object.keys(payload).length > 0) || (Array.isArray(payload) && payload.length > 0)) ? payload : undefined;
 
 		// Log only if used directly, let extends handle logging on their own
-		if (new.target.name === 'InternalError') this.log();
+		// Also call Sentry
+		if (new.target.name === 'InternalError') {
+			this.log();
+			this.sentry();
+		}
 
 		return this;
 	}
@@ -60,6 +65,20 @@ class InternalError extends Error implements Partial<Error> {
 		}
 
 		return this;
+	}
+
+	sentry() {
+		Sentry.captureException(this, {
+			...(!!this.payload[0]?.userId && {user: {id: this.payload[0]?.userId as string}}),
+			extra: {
+				...(!!this.payload[0]?.requestId && {requestId: this.payload[0]?.requestId as string}),
+				...(!!this.payload[0]?.sessionId && {sessionId: this.payload[0]?.sessionId as string}),
+			},
+			tags: {
+				code: this.code,
+				id: this.errorId,
+			}
+		})
 	}
 }
 

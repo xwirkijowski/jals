@@ -1,20 +1,15 @@
 import {InternalError} from './error';
 
 class CriticalError extends InternalError {
-	name: string;
-	level: string;
+	name: string = 'CriticalError';
+	level: string = 'critical';
 
 	constructor (msg: string, code: string, domain?: string, stack?: string|boolean, ...payload: any[]) {
 		super(msg, code, domain, stack, ...payload);
 
-		// Set CriticalError specific data
-		this.name = 'CriticalError';
-		this.level = 'critical';
-
-		// Log error
+		// Log error and call sentry
 		super.log();
-
-		// @todo: Integrate sentry.io
+		super.sentry();
 
 		return this;
 	}

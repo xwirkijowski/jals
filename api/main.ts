@@ -18,6 +18,7 @@ await setupMongo(config);
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
 import { ulid } from 'ulid';
+import * as Sentry from '@sentry/node';
 
 // Import telemetry counters (requests, warnings, errors)
 import Counters from './src/utilities/telemetryCounters';
@@ -38,7 +39,6 @@ import userModel from './src/models/user.model';
 import { AuthService } from "./src/services/auth/service";
 
 // Types
-import { ConfigType } from "./src/types/config.types";
 import {ContextInterface} from "./src/types/context.types";
 
 // Construct Apollo server instance
@@ -64,6 +64,15 @@ const statistics = {
 const services = {
 	auth: new AuthService(),
 }
+
+// Sentry.io
+Sentry.init({
+	dsn: config.secrets?.sentry,
+	enabled: !!(config.secrets.sentry),
+	integrations: [],
+	tracesSampleRate: 1.0, //  Capture 100% of the transactions
+	environment: config.server.env
+});
 
 // Launch the Apollo server
 const { url } = await startStandaloneServer(server, {
