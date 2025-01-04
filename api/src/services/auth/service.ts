@@ -2,7 +2,7 @@ import { GraphQLError } from "graphql";
 import crypto from 'node:crypto';
 
 import { CriticalError } from '../../utilities/errors/index';
-import { globalLogger as log } from '../../utilities/log';
+import { globalLogger as log } from '../../utilities/logging/log';
 export { log };
 
 import Session, {SessionType} from "./session";
@@ -33,7 +33,7 @@ export class AuthService {
 	config: AuthServiceConfig;
 
 	constructor (config?: AuthServiceConfig) {
-		log.withDomain('info', 'AuthService', 'Loading AuthService configuration...');
+		log.withDomain('log', 'AuthService', 'Loading AuthService configuration...');
 
 		this.config = {...this.default_config, ...config}
 

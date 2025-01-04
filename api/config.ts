@@ -1,13 +1,13 @@
 import { WarningAggregator, ErrorAggregator, CriticalError, FatalError } from "./src/utilities/errors";
-import { globalLogger as log } from "./src/utilities/log";
+import { globalLogger as log } from "./src/utilities/logging/log";
 
 const Warnings = new WarningAggregator('Config');
 const Errors = new ErrorAggregator('Config');
 
-import {ConfigType} from "./src/types/config.types";
+import {ConfigType, ConfigDefaultsType} from "./src/types/config.types";
 
 // Defaults
-const defaults = {
+const defaults: ConfigDefaultsType = {
     server: {
         port: 4000,
         host: '127.0.0.1',
@@ -29,11 +29,11 @@ const defaults = {
 };
 
 // Load configuration from environment variables
-log.withDomain('info', 'Config', 'Loading configuration...');
+log.withDomain('log', 'Config', 'Loading configuration...');
 let timer: number = performance.now();
 
 // Stage 1 - Check variables
-log.withDomain('info', 'Config', 'Checking environment variables...')
+log.withDomain('log', 'Config', 'Checking environment variables...')
 
 // Server block
 !process.env?.SERVER_PORT && Warnings.new(`No SERVER_PORT specified, using default ${defaults.server.port}`, 'SERVER_PORT_DEFAULT');
@@ -65,14 +65,19 @@ if (Errors.errorCount > 0) {
     process.exit(1)
 }
 
-// Stage 2 - Build configuration object
-log.withDomain('info', 'Config', 'Building configuration object...')
 // Stage 2 - Load extra configuration from file
 
 import {settings} from './settings.json';
 
 // Stage 3 - Build configuration object
 log.withDomain('log', 'Config', 'Building configuration object...')
+
+// Password encoding function
+const credentials = (user: string, password: string): string => {
+    if (!!user && !!password) {
+        return `${user}:${/(:\|\/\|\?\|#\|\[\|]\|@)/.test(password) && encodeURIComponent(password) || password}@`;
+    } else return '';
+}
 
 const config: ConfigType = {
     server: {
@@ -88,16 +93,14 @@ const config: ConfigType = {
         db: process.env?.REDIS_DB,
         user: process.env?.REDIS_USER,
         password: process.env?.REDIS_PASSWORD,
-        string: process.env.REDIS_STRING,
+        string: process.env?.REDIS_STRING,
         connectionString: function(): string {
             if (this.string) {
                 log.std('Using Redis connection string');
                 return this.string;
             }
 
-            if (this.password) if (/(:\|\/\|\?\|#\|\[\|]\|@)/.test(this.password)) this.password = encodeURIComponent(this.password);
-
-            const userString = (this.user) ? `${this.user}:${this.password}@` : '';
+            const userString = credentials(this.user, this.password);
 
             return `redis://${(userString)}${this.host}:${this.port}${this.db?'/'+this.db:''}`
         },
@@ -117,11 +120,9 @@ const config: ConfigType = {
                 return this.string;
             }
 
-            if (/(:\|\/\|\?\|#\|\[\|]\|@)/.test(this.password)) this.password = encodeURIComponent(this.password);
+            const userString = credentials(this.user, this.password);
 
-            const userString = (this.user) ? `${this.user}:${this.password}@` : '';
-
-            return `mongodb://${(userString)}${this.host}:${this.port}/${this.db}${this.opts||''}`
+            return `mongodb://${userString}${this.host}:${this.port}/${this.db}${this.opts||''}`
         },
     },
     secrets: {

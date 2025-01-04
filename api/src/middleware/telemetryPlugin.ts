@@ -1,4 +1,4 @@
-import {globalLogger as log} from '../utilities/log';
+import {globalLogger as log} from '../utilities/logging/log';
 import {ApolloServerPlugin, GraphQLRequestContextWillSendResponse, GraphQLRequestListener} from "@apollo/server";
 import {ContextInterface} from "../types/context.types";
 

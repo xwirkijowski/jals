@@ -1,10 +1,11 @@
 import mongoose from 'mongoose';
 import { GraphQLError } from "graphql";
 
+import {IncomingMessage} from "node:http";
 import { $DB } from "./database/status";
 import {SessionType} from "../services/auth/session";
 import {ContextInterface} from "../types/context.types";
-import {IncomingMessage} from "node:http";
+import {IdType} from "../types/id.types";
 
 export const h = {
 	/**
@@ -86,7 +87,7 @@ export const check = {
 	 *
 	 * @return	Boolean|GraphQLError	If checks pass, return true, else error.
 	 */
-	isOwner: (session:ContextInterface["session"] = undefined, createdBy: string): true|GraphQLError => {
+	isOwner: (session:ContextInterface["session"] = undefined, createdBy: IdType): true|GraphQLError => {
 		// Handle no session
 		check.session(session)
 

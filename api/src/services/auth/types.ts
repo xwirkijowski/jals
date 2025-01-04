@@ -1,5 +1,5 @@
 import {EntityId} from "redis-om";
-import {Types} from "mongoose";
+import {IdType} from "../../types/id.types";
 
 export type AuthServiceConfig = {
     mail: {
@@ -24,7 +24,7 @@ export interface AuthCodeGenerator {
 export type AuthCodeInterface = {
     [EntityId]?: string
     authCodeId?: string
-    userId: string|Types.ObjectId;
+    userId: IdType;
     userEmail: string
     code?: string
     createdAt?: Date | string
@@ -33,7 +33,7 @@ export type AuthCodeInterface = {
 export interface SessionInterface {
     [EntityId]?: string
     sessionId?: string
-    userId: string|Types.ObjectId;
+    userId: IdType;
     isAdmin: boolean
     userAgent?: string
     userAddr?: string

@@ -1,10 +1,9 @@
-import { globalLogger as log } from "../utilities/log";
+import { globalLogger as log } from "../utilities/logging/log";
 
 export class Result {
 	success: boolean;
 	errors: Array<ResultError|null>;
 	errorCodes: Array<string>
-
 
 	constructor (result?: boolean, errors?: Array<ResultError>) {
 		this.success = result||true;

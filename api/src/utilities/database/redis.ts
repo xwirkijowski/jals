@@ -1,7 +1,7 @@
 import {createClient, RedisClientType} from "redis";
 
 import { config } from '../../../config';
-import { globalLogger as log } from "../log";
+import { globalLogger as log } from "../logging/log";
 import { WarningAggregator, FatalError } from '../errors/index';
 
 const Warnings = new WarningAggregator('Redis')
