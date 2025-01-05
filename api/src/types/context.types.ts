@@ -8,8 +8,9 @@ import {DatabaseStatusType} from "../utilities/database/status";
 import {UserInterface} from "./models/user.types";
 import {LinkInterface} from "./models/link.types";
 import {ClickInterface} from "./models/click.types";
-import {AuthServiceType} from "../services/auth/service";
 import {SessionType} from "../services/auth/session";
+import {AuthServiceType} from "../services/auth/service";
+import {MailServiceType} from "../services/mail/service";
 
 export type ContextSessionUnion = SessionType|'invalid'|undefined;
 
@@ -24,6 +25,7 @@ export interface ContextInterface {
     }
     services: {
         auth: AuthServiceType
+        mail: MailServiceType
     }
     internal: {
         requestId: string
