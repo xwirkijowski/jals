@@ -9,6 +9,10 @@ import { log } from "./service";
 import {SessionInterface} from "./types";
 import {IncomingMessage} from "node:http";
 
+/**
+ * @todo Implement check for expires
+ */
+
 export default class Session {
 	sessionId?: string;
 	userId: SessionInterface["userId"];

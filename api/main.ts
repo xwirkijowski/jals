@@ -37,9 +37,10 @@ import userModel from './src/models/user.model';
 
 // Import services
 import { AuthService } from "./src/services/auth/service";
+import { MailService } from "./src/services/mail/service";
 
 // Types
-import {ContextInterface} from "./src/types/context.types";
+import { ContextInterface } from "./src/types/context.types";
 
 // Construct Apollo server instance
 const server = new ApolloServer<ContextInterface>({
@@ -62,7 +63,8 @@ const statistics = {
 
 // Services
 const services = {
-	auth: new AuthService(),
+	auth: new AuthService(config.settings.auth),
+	mail: new MailService(config.settings.mail, config.secrets.resend),
 }
 
 // Launch the Apollo server

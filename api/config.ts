@@ -45,7 +45,7 @@ log.withDomain('log', 'Config', 'Checking environment variables...')
 !process.env?.REDIS_PORT && Warnings.new(`No REDIS_PORT specified, using default ${defaults.redis.port}`, 'REDIS_PORT_DEFAULT');
 !process.env?.REDIS_DB && Warnings.new('No REDIS_DB specified', 'REDIS_DB_MISSING');
 !process.env?.REDIS_USER && Warnings.new('No REDIS_USER specified', 'REDIS_USER_MISSING');
-process.env?.REDIS_USER && !process.env?.REDIS_PASS&& Warnings.new('REDIS_USER specified but no REDIS_PASSWORD, access to database may be limited', 'REDIS_PARTIAL_CREDENTIALS');
+process.env?.REDIS_USER && !process.env?.REDIS_PASS && Warnings.new('REDIS_USER specified but no REDIS_PASSWORD, access to database may be limited', 'REDIS_PARTIAL_CREDENTIALS');
 
 // Mongo block
 !process.env?.MONGO_HOST && Errors.add(new FatalError('No MONGO_HOST specified, no access to database!', 'MONGO_HOST_MISSING', undefined, true));
@@ -56,7 +56,8 @@ process.env?.REDIS_USER && !process.env?.REDIS_PASS&& Warnings.new('REDIS_USER s
 
 // Secrets
 !process.env?.SECRET_SENTRY && Warnings.new('No SECRET_SENTRY specified, Sentry.io disabled!', 'SENTRY_DISABLED');
-!process.env?.SECRET_AXIOM && Warnings.new('No SECRET_AXIOM specified, Sentry.io disabled!', 'AXIOM_DISABLED');
+!process.env?.SECRET_AXIOM && Warnings.new('No SECRET_AXIOM specified, Axiom logging disabled!', 'AXIOM_DISABLED');
+!process.env?.SECRET_RESEND && Warnings.new('No SECRET_RESEND specified, transactional emails disabled!', 'RESEND_DISABLED');
 
 // Check for errors
 if (Errors.errorCount > 0) {
@@ -66,7 +67,6 @@ if (Errors.errorCount > 0) {
 }
 
 // Stage 2 - Load extra configuration from file
-
 import {settings} from './settings.json';
 
 // Stage 3 - Build configuration object
@@ -128,12 +128,9 @@ const config: ConfigType = {
     secrets: {
         sentry: process.env.SECRET_SENTRY || undefined,
         axiom: process.env.SECRET_AXIOM || undefined,
+        resend: process.env.SECRET_RESEND || undefined,
     },
-    settings: {
-        axiom: {
-            dataset: settings?.axiom?.dataset
-        }
-    }
+    settings: settings
 };
 
 log.withDomain('success', 'Config', `Configuration loaded in ${(performance.now()-timer).toFixed(2)}ms!`);

@@ -1,5 +1,6 @@
-import { GraphQLError } from "graphql";
+import EventEmitter from "events";
 import crypto from 'node:crypto';
+import { GraphQLError } from "graphql";
 
 import { CriticalError } from '../../utilities/errors/index';
 import { globalLogger as log } from '../../utilities/logging/log';
@@ -13,29 +14,25 @@ import {IncomingMessage} from "node:http";
 import {AuthServiceConfig, AuthCodeGenerator, SessionInterface, AuthCodeInterface} from "./types";
 import {ContextSessionUnion} from "../../types/context.types";
 
-export class AuthService {
+export class AuthService extends EventEmitter {
 	default_config: AuthServiceConfig = {
-		mail: {
-			senderAddr: "jals@wirkijowski.dev",
-			senderName: "Just Another Link Shortener",
+		code: {
+			length: 6,
+			expiresIn: 60 * 5,
 		},
-		auth: {
-			code: {
-				length: 6,
-				expiresIn: 60 * 5,
-			},
-			session: {
-				expiresIn: 60 * 30,
-			},
-		}
+		session: {
+			expiresIn: 60 * 30,
+		},
 	}
 
 	config: AuthServiceConfig;
 
 	constructor (config?: AuthServiceConfig) {
+		super();
+
 		log.withDomain('log', 'AuthService', 'Loading AuthService configuration...');
 
-		this.config = {...this.default_config, ...config}
+		this.config = {...this.default_config, ...config} // @todo Deep join
 
 		log.withDomain('success', 'AuthService', 'AuthService started!')
 		return this;
@@ -58,7 +55,7 @@ export class AuthService {
 			const session: SessionType|undefined = await Session.find(sessionId, rId);
 
 			if (session) {
-				await session.refresh(this.config.auth.session.expiresIn, rId);
+				await session.refresh(this.config.session.expiresIn, rId);
 
 				return session;
 			} else {
@@ -70,13 +67,13 @@ export class AuthService {
 
 	createSession = async (userId: SessionInterface["userId"], isAdmin: boolean, request: IncomingMessage, rId: string) => {
 		// Catch internal errors, return false on fail to avoid propagation to public API
-		return await new Session({userId, isAdmin}, rId, request).save(this.config.auth.session.expiresIn, rId).catch((_: Error): boolean => false);
+		return await new Session({userId, isAdmin}, rId, request).save(this.config.session.expiresIn, rId).catch((_: Error): boolean => false);
 	}
 
 	// Authentication code block
 
 	generateCode: AuthCodeGenerator = (rId: string): string => {
-		const length = this.config.auth.code.length;
+		const length = this.config.code.length;
 
 		if (length <= 0) {
 			throw new CriticalError("Auth length must be greater than 0! Cannot generate auth code.", 'AUTH_CONFIG_FAULT', 'AuthService', true, {requestId: rId});
@@ -96,7 +93,7 @@ export class AuthService {
 
 
 	createCode = async (userId: AuthCodeInterface["userId"], userEmail: string, rId: string) => {
-		return await new AuthCode({userId, userEmail}, rId, this.generateCode).save(this.config.auth.code.expiresIn, rId).catch(e => console.log('caught', e)); // Catch internal errors, return false on fail
+		return await new AuthCode({userId, userEmail}, rId, this.generateCode).save(this.config.code.expiresIn, rId).catch(e => console.log('caught', e)); // Catch internal errors, return false on fail
 	}
 
 	sendEmail = async () => {

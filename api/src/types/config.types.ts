@@ -41,11 +41,24 @@ type MongoConfigType = {
 type SecretsConfigType = {
     sentry?: string
     axiom?: string
+    resend?: string
 }
 
 export type SettingsType = {
     axiom?: {
-        dataset: string
+        datasetPrefix: string
+    }
+    auth?: {
+        code: {
+            length: number,
+            expiresIn: number
+        },
+        session: {
+            expiresIn: number
+        }
+    }
+    mail?: {
+
     }
 }
 

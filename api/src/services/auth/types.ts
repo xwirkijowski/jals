@@ -2,18 +2,12 @@ import {EntityId} from "redis-om";
 import {IdType} from "../../types/id.types";
 
 export type AuthServiceConfig = {
-    mail: {
-        senderAddr: string
-        senderName: string
+    code: {
+        length: number
+        expiresIn: number
     }
-    auth: {
-        code: {
-            length: number
-            expiresIn: number
-        }
-        session: {
-            expiresIn: number
-        }
+    session: {
+        expiresIn: number
     }
 }
 

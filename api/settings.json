@@ -1,7 +1,20 @@
 {
   "settings": {
     "axiom": {
-      "dataset": "p9s-jals-api"
+      "datasetPrefix": "p9s-jals-api"
+    },
+    "auth": {
+      "code": {
+        "length": 6,
+        "expiresIn": 300
+      },
+      "session": {
+        "expiresIn": 1800
+      }
+    },
+    "mail": {
+      "senderAddr": "jals@wirkijowski.dev",
+      "senderName": "Just Another Link Shortener"
     }
   }
 }

@@ -1,7 +1,7 @@
 import {ulid} from "ulid";
 import { globalLogger as log } from '../logging/log';
 import Counters from '../telemetryCounters';
-import {axiomClient as axiom, dataset as AXIOM_DATASET} from '../logging/axiom';
+import {axiomClient as axiom, datasetPrefix as AXIOM_PREFIX} from '../logging/axiom';
 
 /**
  * Warning
@@ -52,7 +52,7 @@ class Warning {
 
 	axiom() {
 		if (axiom) {
-			axiom.ingest(AXIOM_DATASET, {
+			axiom.ingest(`${AXIOM_PREFIX}+-error`, {
 				level: 'warning',
 				warnId: this.warnId,
 				domain: this.domain||null,

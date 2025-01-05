@@ -145,7 +145,7 @@ export const check = {
 
 
 // @todo Types
-export const getIP = (req: IncomingMessage) => {
+export const getIP = (req: IncomingMessage): string|undefined|GraphQLError => {
 	if (!req) return undefined;
 
 	let ip;
