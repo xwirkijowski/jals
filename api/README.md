@@ -32,18 +32,18 @@ There are 4 domains:
 Each domain contains:
 - `typeDefs.graphql` — the GraphQL type definitions;
 - `mutations.graphql` — GraphQL mutations, and related payload type definitions and inputs;
-- `mutations.resolvers.js` — separated mutation resolvers;
-- `resolvers.js` — object and query resolvers.
+- `mutations.resolvers.ts` — separated mutation resolvers;
+- `resolvers.ts` — object and query resolvers.
 
-All files in the domain are loaded via the `src/schema.js` file. This makes extending functionality relatively easy.
+All files in the domain are loaded via the `src/schema.ts` file. This makes extending functionality relatively easy.
 
-Data sources are stored separately due to them being loaded directly to `main.js` and then attached to context.
+Data sources are stored separately due to them being loaded directly to `main.ts` and then attached to context.
 
 ### Middleware
 
 Two custom plugins are loaded into the Apollo Server:
-- `extensionsPlugin.js` — appends current session status and requestId to the extensions field;
-- telemetryPlugin.js — logs requests with basic metrics (time tracking with dates and `performance`)/
+- `extensionsPlugin.ts` — appends current session status and requestId to the extensions field;
+- telemetryPlugin.ts — logs requests with basic metrics (time tracking with dates and `performance`)/
 
 ### Authentication Service
 
