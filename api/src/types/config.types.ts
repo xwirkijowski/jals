@@ -58,7 +58,8 @@ export type SettingsType = {
         }
     }
     mail?: {
-
+        senderAddr: string
+        senderName: string
     }
 }
 
