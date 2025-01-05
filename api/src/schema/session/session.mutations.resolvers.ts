@@ -36,13 +36,13 @@ export default {
 			let codeNode: AuthCodeType|void;
 			try {
 				codeNode = await services.auth.createCode(userNode._id, userNode.email, requestId);
-			} catch (err) { return result.addError('INTERNAL_ERROR').response(true); }
+			} catch (err) { return result.addError('INTERNAL_ERROR').response(); }
 
 
 			if (codeNode) {
 				return result.response(true)
 			} else {
-				return result.addErrorAndLog('CANNOT_CREATE_CODE', null, null, 'error', 'Failed to create an auth code', 'AuthService').response(true);
+				return result.addErrorAndLog('CANNOT_CREATE_CODE', null, null, 'error', 'Failed to create an auth code', 'AuthService').response();
 			}
 		},
 		logIn: async (_, {input}, {models, services, session, req, internal: {requestId}}: CtxI) => {
