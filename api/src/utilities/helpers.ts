@@ -171,6 +171,10 @@ export const getIP = (req: IncomingMessage): string|undefined|GraphQLError => {
 	return ip;
 }
 
+export const getUA = (req: IncomingMessage): string|undefined => {
+	return req.headers?.['user-agent'] || undefined;
+}
+
 // @todo Types
 export const setupMeta = (session: ContextInterface["session"], input: any, node:any = undefined) => {
 	const timestamp = new Date().toISOString();
