@@ -1,5 +1,5 @@
 import { Result } from "../result";
-import { check } from "../../utilities/helpers";
+import {check, getIP, getUA} from "../../utilities/helpers";
 
 // Types
 import {ContextInterface as CtxI} from "../../types/context.types";
@@ -9,7 +9,7 @@ import {HydratedUser} from "../../types/models/user.types";
 
 export default {
 	Mutation: {
-		requestAuthCode: async (_, {input} , {models, services, session, internal: {requestId}}: CtxI) => {
+		requestAuthCode: async (_, {input} , {models, services, session, internal: {requestId}, req}: CtxI) => {
 			check.needs('redis');
 
 			// Check if user logged in
@@ -38,8 +38,18 @@ export default {
 				codeNode = await services.auth.createCode(userNode._id, userNode.email, requestId);
 			} catch (err) { return result.addError('INTERNAL_ERROR').response(); }
 
+			// Send the email
+			let emailTransaction: string|void
+			try {
+				emailTransaction = await services.mail.create(userNode.email, 'Your authentication code', {
+					authCode: (codeNode as AuthCodeType).code,
+					userAddr: getIP(req),
+					userAgent: getUA(req)
+				}, requestId).send();
+			} catch (err) { return result.addError('INTERNAL_ERROR').response(); }
 
-			if (codeNode) {
+
+			if (emailTransaction) {
 				return result.response(true)
 			} else {
 				return result.addErrorAndLog('CANNOT_CREATE_CODE', null, null, 'error', 'Failed to create an auth code', 'AuthService').response();

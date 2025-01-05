@@ -16,6 +16,8 @@
   "devDependencies": {
     "@types/luxon": "^3.4.2",
     "@types/node": "^22.10.5",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2"
   },
@@ -34,6 +36,9 @@
     "inigo.js": "^0.30.11",
     "luxon": "^3.5.0",
     "mongoose": "^8.9.3",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-email": "^3.0.4",
     "redis": "^4.7.0",
     "redis-om": "^0.4.7",
     "resend": "^4.0.1",
