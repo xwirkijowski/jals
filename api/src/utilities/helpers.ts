@@ -144,31 +144,11 @@ export const check = {
 }
 
 
-// @todo Types
-export const getIP = (req: IncomingMessage): string|undefined|GraphQLError => {
+// @todo Types and rework
+export const getIP = (req: IncomingMessage): string|undefined => {
 	if (!req) return undefined;
 
-	let ip;
-
-	if (req.headers?.["p9s-user-ip"] !== null) { // Check custom header
-		ip = req.headers["p9s-user-ip"];
-	} else if (req.headers?.["x-forwarded-for"] !== null) { // Check x-forwarder-for header
-		ip = req.headers["x-forwarded-for"];
-	} else if (req.headers?.["x-real-ip"] !== null) { // Check x-real-ip header @todo needs testing
-		ip = req.headers["x-real-ip"];
-	} else if (req.connection && req.connection.remoteAddress !== null) { // Check connection @todo needs testing
-		ip = req.connection.remoteAddress;
-	} else if (req.socket && req.socket.remoteAddress !== null) { // Check socket @todo needs testing
-		ip = req.socket.remoteAddress;
-	} else { // No IP found
-		throw new GraphQLError('Cannot find IP address.', {
-			extensions: {
-				code: 'INTERNAL_SERVER_ERROR'
-			}
-		});
-	}
-
-	return ip;
+	return ((req?.headers?.["p9s-user-ip"] || req?.headers?.["x-forwarded-for"] || req?.headers?.["x-real-ip"] || req?.socket?.remoteAddress || undefined) as string);
 }
 
 export const getUA = (req: IncomingMessage): string|undefined => {
