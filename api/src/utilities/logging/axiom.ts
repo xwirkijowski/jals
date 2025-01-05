@@ -35,8 +35,8 @@ class AxiomWrapper {
         return this;
     }
 
-    ingest (subset: string|undefined = undefined, payload: object) {
-        if (!!this.client) return;
+    ingest = (subset: string|undefined = undefined, payload: object) => {
+        if (!this.client) return;
 
         const dataset = (subset) ? this.dataset+'-'+subset : this.dataset;
 
