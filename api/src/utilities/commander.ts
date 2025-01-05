@@ -1,7 +1,7 @@
 import process from 'node:process';
 import EventEmitter from 'events';
 
-import {$DB} from "./database/status";
+import {$DB, DatabaseStatusType} from "./database/status";
 import {globalLogger as log} from "./logging/log";
 
 import {Warning, FatalError} from "./errors";
@@ -14,7 +14,7 @@ import mongoose from "mongoose";
 
 class Commander extends EventEmitter {
 	status: string = 'not-initialized';
-	DB: typeof $DB;
+	DB: DatabaseStatusType;
 
 	redis?: RedisClientType; // Redis client
 	mongo?: mongoose.Connection; // MongoDB client

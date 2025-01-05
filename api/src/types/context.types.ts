@@ -1,10 +1,10 @@
-import {$DB} from "../utilities/database/status";
 import Counters from "../utilities/telemetryCounters";
 
 // Types and interfaces
 import {Model} from "mongoose";
 import {IncomingMessage} from "node:http";
 import {ConfigType} from "./config.types";
+import {DatabaseStatusType} from "../utilities/database/status";
 import {UserInterface} from "./models/user.types";
 import {LinkInterface} from "./models/link.types";
 import {ClickInterface} from "./models/click.types";
@@ -34,5 +34,5 @@ export interface ContextInterface {
             counters: typeof Counters
         }
     }
-    systemStatus: typeof $DB
+    systemStatus: DatabaseStatusType
 }

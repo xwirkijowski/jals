@@ -43,3 +43,5 @@ export class DatabaseStatus {
 }
 
 export const $DB = new DatabaseStatus();
+
+export type DatabaseStatusType = InstanceType<typeof DatabaseStatus>;

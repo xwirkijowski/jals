@@ -19,7 +19,6 @@ import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
 import { ulid } from 'ulid';
 
-
 // Import telemetry counters (requests, warnings, errors)
 import Counters from './src/utilities/telemetryCounters';
 
