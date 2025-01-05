@@ -3,7 +3,7 @@ import {ulid} from "ulid";
 
 import {globalLogger as log} from "../logging/log";
 import Counters from '../telemetryCounters';
-import {axiomClient as axiom, datasetPrefix as AXIOM_PREFIX} from '../logging/axiom';
+import {axiomClient as axiom} from '../logging/axiom';
 
 /**
  * InternalError
@@ -85,7 +85,7 @@ class InternalError extends Error implements Partial<Error> {
 
 	axiom() {
 		if (axiom) {
-			axiom.ingest(`${AXIOM_PREFIX}+-error`, {
+			axiom.ingest(`error`, {
 				level: this.level,
 				errorId: this.errorId,
 				domain: this.domain||null,

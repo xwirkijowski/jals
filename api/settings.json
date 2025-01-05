@@ -1,7 +1,7 @@
 {
   "settings": {
     "axiom": {
-      "datasetPrefix": "p9s-jals-api"
+      "dataset": "p9s-jals-api"
     },
     "auth": {
       "code": {

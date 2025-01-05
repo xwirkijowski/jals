@@ -46,7 +46,7 @@ type SecretsConfigType = {
 
 export type SettingsType = {
     axiom?: {
-        datasetPrefix: string
+        dataset: string
     }
     auth?: {
         code: {

@@ -2,7 +2,7 @@ import {globalLogger as log} from '../utilities/logging/log';
 import {ApolloServerPlugin, GraphQLRequestContextWillSendResponse, GraphQLRequestListener} from "@apollo/server";
 import {ContextInterface} from "../types/context.types";
 
-import {axiomClient as axiom, datasetPrefix as AXIOM_PREFIX} from "../utilities/logging/axiom";
+import {axiomClient as axiom} from "../utilities/logging/axiom";
 import {getUA} from "../utilities/helpers";
 
 export function telemetryPlugin(): ApolloServerPlugin<ContextInterface> {
@@ -22,7 +22,7 @@ export function telemetryPlugin(): ApolloServerPlugin<ContextInterface> {
 						session: !!(contextValue.session && contextValue.session !== 'invalid') ? contextValue?.session : undefined,
 					}
 
-					axiom.ingest(`${AXIOM_PREFIX}-request`, {
+					axiom.ingest(`request`, {
 						requestId: data.requestId,
 						time: data.time,
 						timestampStart: data.timestampStart,
