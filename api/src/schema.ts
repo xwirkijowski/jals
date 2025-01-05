@@ -17,7 +17,7 @@ const typeDefs = readFileSync(path.join(__dirname, './schema/typeDefs.graphql'),
 
 // Import type definitions and resolvers from all domains
 const typeDefsArr = loadFilesSync(path.join(__dirname, './schema/**/*'), { extensions: ['graphql']});
-const resolversArr = await loadFiles(path.join(__dirname, './schema/**/*.resolvers.js'), {
+const resolversArr = await loadFiles(path.join(__dirname, './schema/**/*.resolvers.ts'), {
 	requireMethod: async (p: string) => { return await import(pathToFileURL(p).pathname); }
 });
 
