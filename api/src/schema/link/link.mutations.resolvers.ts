@@ -95,17 +95,23 @@ export default {
 			check.validate(input.linkId, 'ObjectId');
 			check.validate(input.note, 'string');
 
-			const node = await models.link.findOne({_id: input.linkId});
+			let node = await models.link.findOne({_id: input.linkId});
 
 			if (!node) return result.addError('LINK_NOT_FOUND', 'input.linkId', 'Could not find a link with specified Id.').response(true);
 
+			node = setupMeta(session, undefined, node)
+
 			const node_update = await models.link.updateOne({_id: node._id}, {
-				$push: { flags: {
+				$push: {
+					flags: {
 						note: input.note,
 						createdBy: (session as SessionType)?.userId||null,
 						createdAt: new Date().toISOString(),
-					} },
-				version: node.version + 1,
+					}
+				},
+				updatedBy: node.updatedBy,
+				updatedAt: node.updatedAt,
+				version: node.version,
 			})
 
 			if (node_update.acknowledged === true && node_update.modifiedCount === 1) {
