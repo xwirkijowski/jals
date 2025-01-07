@@ -17,7 +17,6 @@ type ButtonType = keyof typeof ButtonTypeEnum;
 
 interface ButtonProps {
     btnType?: ButtonType,
-    element?: 'a'|'button',
     className?: string,
     effects?: boolean,
     children?: React.ReactNode,
@@ -37,22 +36,13 @@ const typeStyles: Record<ButtonType, string> = {
 
 export default ({
     btnType = 'primary',
-    element: Element = 'button',
     className,
     effects = false,
     children,
     ...props
-}: React.ButtonHTMLAttributes<HTMLButtonElement> & React.AnchorHTMLAttributes<HTMLAnchorElement> & ButtonProps): React.ReactNode => {
-
-    if (!['button', 'a'].includes(Element)) { Element = 'button'; }
-
-    // Attach specific props
-    props = {
-        ...props,
-    }
-
+}: React.ButtonHTMLAttributes<HTMLButtonElement> & ButtonProps): React.ReactNode => {
     return (
-        <Element
+        <button
             className={cx(
                 "duration-150 transition-all px-5 py-3 text-base text-nowrap rounded-xl font-bold ",
                 {"shadow-xl hover:shadow-md hover:scale-[0.975]": effects},
@@ -62,6 +52,6 @@ export default ({
             {...props}
         >
             {children}
-        </Element>
+        </button>
     )
 }
