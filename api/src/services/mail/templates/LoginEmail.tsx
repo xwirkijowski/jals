@@ -39,11 +39,11 @@ export const LoginEmail = (data: EmailDataInterface): React.ReactNode => {
                             fontWeight: 'bold',
                             lineHeight: 1,
                             borderRadius: '12px',
-                            padding: '16px 16px 16px 32px',
-                            letterSpacing: '16px',
+                            padding: '16px 16px 16px 24px',
+                            letterSpacing: '8px',
                             background: '#e4e4e7',
                             color: '#18181b',
-                        }}>{data.authCode.code}</p>
+                        }}>{data.authCode.code.substring(0,4)+' '+data.authCode.code.substring(4,8)}</p>
                         <p style={{
                             ...styles.paragraph,
                             textAlign: 'center',
@@ -51,7 +51,7 @@ export const LoginEmail = (data: EmailDataInterface): React.ReactNode => {
                         <p style={{
                             ...styles.paragraph,
                             textAlign: 'center',
-                        }}>use <a href={`${frontendAddr}/login/magic/${data.authCode[EntityId]}`}>this magic link</a> to log in</p>
+                        }}>use <a href={`${frontendAddr}/login/magic/${data.authCode.authCodeId}`}>this magic link</a> to log in</p>
                         <p style={{
                             ...styles.paragraph,
                             textAlign: 'center',
