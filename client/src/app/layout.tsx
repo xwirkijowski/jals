@@ -14,22 +14,28 @@ export const viewport: string = "width=device-width"
 import '../css/globals.css';
 
 import {ApolloWrapper} from '../contexts/ApolloWrapper';
+import {AuthContextWrapper} from "../contexts/AuthContext";
 
 // Components
 import {Footer} from '@comp/layout/Footer';
 import {Header} from '@comp/layout/Header';
 
-const RootLayout = ({children}: { children: React.ReactNode }) => {
+const RootLayout = (
+    {children, modal}: { children: React.ReactNode, modal: React.ReactNode }
+) => {
     return (
         <html lang="en" className="bg-white">
             <ApolloWrapper>
-                <body className="flex items-center justify-center min-h-screen">
-                    <Header/>
-                    <main className="w-full flex-1 px-8 flex">
-                        {children}
-                    </main>
-                    <Footer/>
-                </body>
+                <AuthContextWrapper value={false}>
+                    <body className="flex items-center justify-center min-h-screen">
+                        <Header/>
+                        <main className="w-full flex-1 px-8 flex">
+                            {modal}
+                            {children}
+                        </main>
+                        <Footer/>
+                    </body>
+                </AuthContextWrapper>
             </ApolloWrapper>
         </html>
     )

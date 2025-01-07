@@ -3,7 +3,7 @@
 import cx from "classnames";
 
 import {useRef} from "react";
-import {redirect} from "next/navigation";
+import {redirect, RedirectType} from "next/navigation";
 
 import Button from "@comp/Button/Button";
 
@@ -15,7 +15,7 @@ export const Inspect = () => {
             <form
                 onSubmit={(e) => {
                     e.preventDefault();
-                    redirect('inspect/'+inputRef?.current?.value, 'push');
+                    redirect('inspect/'+inputRef?.current?.value, ('push' as RedirectType))
                 }}
 
                 className={cx(

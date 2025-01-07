@@ -23,11 +23,10 @@ export const FlagForm = ({
     mode: 'page'|'modal'
 }) => {
     const router = useRouter();
-    const [state, action, pending] = useActionState(FlagAction.bind(null, {link, mode}), undefined);
+    const [state, action, pending] = useActionState(FlagAction.bind(null, {link}), undefined);
 
     return (
         <form action={action} className="w-full max-w-xl flex flex-col bg-white shadow-xl rounded-xl">
-            <input type={'hidden'} value={link.id} />
             <div className={"p-8"}>
                 <h2 className="font-bold text-zinc-900 text-2xl/tight sm:text-2xl/tight float-start">
                     Flag for moderation

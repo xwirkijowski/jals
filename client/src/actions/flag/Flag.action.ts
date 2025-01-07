@@ -8,7 +8,7 @@ import {getClient} from "../../apollo-client";
 
 
 export const FlagAction = async (
-    {mode, link}: {mode: string, link: LinkType},
+    {link}: {link: LinkType},
     state: LinkMutationDataType,
     formData: FormData
 ) => {

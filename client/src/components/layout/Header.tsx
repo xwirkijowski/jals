@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Button from "@comp/Button/Button";
 
 export const Header = () => {
     return (
@@ -8,11 +9,9 @@ export const Header = () => {
                     <span className="text-orange-500">v2</span></Link></h1>
                 <p className="pointer-events-none hidden sm:block">Just Another Link Shortener</p>
             </div>
-            <nav className="flex flex-row flex-1 justify-end">
-                <ul className="flex flex-row gap-0">
-                    <li className="p-2">Log in</li>
-                    <li className="p-2">Register</li>
-                </ul>
+            <nav className="flex flex-row flex-1 gap-4 justify-end">
+                <Link href={'/login'} passHref><Button btnType={'light'}>Log In</Button></Link>
+                <Link href={'/register'} passHref><Button>Create account</Button></Link>
             </nav>
         </header>
     )

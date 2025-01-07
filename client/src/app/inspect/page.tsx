@@ -1,7 +1,8 @@
 import {Inspect} from "@comp/logic/Inspect/Inspect";
 import Link from "next/link";
+import React from "react";
 
-export default () => {
+export default (): React.ReactNode => {
     return (
         <div className="flex flex-col justify-center items-center flex-1 gap-8">
             <div className="text-center">
