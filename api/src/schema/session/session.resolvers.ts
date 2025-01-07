@@ -1,5 +1,5 @@
 import { EntityId } from 'redis-om'
-import { check, getIP } from "../../utilities/helpers";
+import { check } from "../../utilities/helpers";
 
 // Types
 import {ContextInterface as CtxI} from "../../types/context.types";
@@ -7,7 +7,7 @@ import {SessionType} from "../../services/auth/session";
 
 export default {
 	Session: { // No need for auth checks, since output based on session.
-		id: (obj) => {
+		id: (obj: SessionType): string|null => {
 			return obj[EntityId] || null;
 		},
 		/*
