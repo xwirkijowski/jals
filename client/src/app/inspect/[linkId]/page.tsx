@@ -78,7 +78,7 @@ const LinkPage = async () => {
                 </div>
                 <div className={"col-span-full flex gap-8 p-8 justify-between items-center"}>
                     <p className={"text-zinc-900"}>Is this link malicious or inappropriate?</p>
-                    <Link href={`/inspect/${data.link.id}/flag`} passHref><Button type={"danger"} effects={true}>Flag for moderation</Button></Link>
+                    <Link href={`/inspect/${data.link.id}/flag`} passHref><Button btnType={"danger"} effects={true}>Flag for moderation</Button></Link>
                 </div>
             </div>
         </div>

@@ -46,7 +46,7 @@ export const ShortenForm = () => {
                             }}>Copy link</a>
                         </p>
                         <Link href={'/' + state.link.id + '/+'} passHref>
-                            <Button type={"success"} className={cx("flex-0")}>Inspect your link</Button>
+                            <Button btnType={"success"} className={cx("flex-0")}>Inspect your link</Button>
                         </Link>
                     </Fragment>
                 ) : (
@@ -69,8 +69,8 @@ export const ShortenForm = () => {
                                 'disabled:border-orange-500',
                             )} placeholder="Paste your link here"/>
                         <Button
-                            type={"dark"}
-                            buttonType="submit"
+                            btnType={"dark"}
+                            type="submit"
                             disabled={pending}
                             className={cx(
                                 'flex-0',

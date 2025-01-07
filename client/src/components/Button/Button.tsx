@@ -1,5 +1,5 @@
 import cx from 'classnames';
-import React, { JSX, ComponentType } from 'react';
+import React, { JSX } from 'react';
 
 // Types
 
@@ -16,11 +16,10 @@ enum ButtonTypeEnum {
 type ButtonType = keyof typeof ButtonTypeEnum;
 
 interface ButtonProps {
-    type?: ButtonType,
-    element?: ComponentType | keyof JSX.IntrinsicElements,
+    btnType?: ButtonType,
+    element?: 'a'|'button',
     className?: string,
     effects?: boolean,
-    buttonType?: "button" | "submit" | "reset" | undefined,
     children?: React.ReactNode,
 }
 
@@ -37,19 +36,19 @@ const typeStyles: Record<ButtonType, string> = {
 }
 
 export default ({
-    type = 'primary',
+    btnType = 'primary',
     element: Element = 'button',
     className,
     effects = false,
-    buttonType,
     children,
     ...props
-}: ButtonProps & React.HTMLAttributes<HTMLButtonElement|HTMLAnchorElement|Element>) => {
+}: React.ButtonHTMLAttributes<HTMLButtonElement> & React.AnchorHTMLAttributes<HTMLAnchorElement> & ButtonProps): React.ReactNode => {
+
+    if (!['button', 'a'].includes(Element)) { Element = 'button'; }
 
     // Attach specific props
     props = {
         ...props,
-        ...(buttonType && {type: buttonType}),
     }
 
     return (
@@ -57,7 +56,7 @@ export default ({
             className={cx(
                 "duration-150 transition-all px-5 py-3 text-base text-nowrap rounded-xl font-bold ",
                 {"shadow-xl hover:shadow-md hover:scale-[0.975]": effects},
-                typeStyles[type],
+                typeStyles[btnType],
                 className
             )}
             {...props}

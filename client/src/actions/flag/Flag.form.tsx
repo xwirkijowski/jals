@@ -81,15 +81,15 @@ export const FlagForm = ({
             )}
             {state?.result?.success ? (
                 <div className={"col-span-full flex gap-8 p-8 justify-end items-center"}>
-                    {mode === 'page' && (<Link href={`/inspect/${link.id}`} passHref><Button type={'light'}>Back to inspection</Button></Link>)}
-                    {mode === 'modal' && (<Button type={'light'} onClick={()=>router.back()}>Close</Button>)}
+                    {mode === 'page' && (<Link href={`/inspect/${link.id}`} passHref><Button btnType={'light'}>Back to inspection</Button></Link>)}
+                    {mode === 'modal' && (<Button btnType={'light'} onClick={()=>router.back()}>Close</Button>)}
                 </div>
             ) : (
                 <div className={"col-span-full flex gap-8 p-8 justify-between items-center"}>
-                    {mode === 'page' && (<Link href={`/inspect/${link.id}`} passHref><Button type={'light'}>Back to inspection</Button></Link>)}
-                    {mode === 'modal' && (<Button type={'light'} onClick={()=>router.back()}>Close</Button>)}
+                    {mode === 'page' && (<Link href={`/inspect/${link.id}`} passHref><Button btnType={'light'}>Back to inspection</Button></Link>)}
+                    {mode === 'modal' && (<Button btnType={'light'} onClick={()=>router.back()}>Close</Button>)}
 
-                    <Button type={"danger"} buttonType={'submit'} disabled={pending} effects={true}>
+                    <Button btnType={"danger"} type={'submit'} disabled={pending} effects={true}>
                         {pending ? (<Spinner/>) : ("Send flag")}
                     </Button>
                 </div>
