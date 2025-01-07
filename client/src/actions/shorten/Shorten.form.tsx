@@ -1,70 +1,21 @@
 'use client';
 
-import {useMutation} from "@apollo/client";
-import {Fragment, useRef, useState} from "react";
-
 import cx from "classnames";
+import {Fragment, useActionState} from "react";
 
 // Components
+import Link from "next/link";
 import {Spinner} from "@comp/Spinner/Spinner";
 import Button from "@comp/Button/Button";
 
-// Mutation
-import {CREATE_LINK} from './Shorten.queries';
+import {ShortenAction} from "./Shorten.action";
 
-import Link from "next/link";
-
-type DataInterface = {
-    link: {
-        id: string,
-        target: string,
-    },
-    result: {
-        success: boolean,
-        errors: Array<object>,
-        errorCodes: Array<string>,
-    }
-}
-
-export const Shorten = () => {
-    const [input, setInput] = useState<string|null>(null);
-    const [loading, setLoading] = useState(false);
-    const [data, setData] = useState<DataInterface|null>(null);
-
-    const [mutate] = useMutation(CREATE_LINK);
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        setLoading(true);
-
-        if (input !== null && input !== '') {
-            mutate({
-                variables: {
-                    input: {
-                        target: input,
-                    }
-                }
-            })
-                .then(res =>{
-                    // @todo Validate response, check for errors
-                    setData(res.data.createLink);
-                })
-                .catch(err => {
-                    console.log(err);
-                })
-                .finally(() => {
-                    setLoading(false);
-                    setInput('');
-                });
-        }
-
-    };
+export const ShortenForm = () => {
+    const [state, action, pending] = useActionState(ShortenAction, null);
 
     return (
         <div className={cx('flex w-full flex-col gap-8')}>
-            <form
-                onSubmit={(e) => handleSubmit(e)}
-
+            <form action={action}
                 className={cx(
                     'flex group',
                     'w-full',
@@ -76,7 +27,7 @@ export const Shorten = () => {
                     'shadow-zinc-900/20',
                     'focus-within:shadow-lg hover:shadow-lg',
                 )}>
-                {data && data?.result?.success ? (
+                {state?.result?.success ? (
                     <Fragment>
                         <p className={cx(
                             'flex-1',
@@ -89,12 +40,12 @@ export const Shorten = () => {
                             'border border-transparent border-r-0 px-4 py-2 pr-7 -mr-3',
                             'placeholder:text-zinc-600/50',
                             'border-green-500')}>
-                            {data.link.id}
+                            {state.link.id}
                             <a className={cx('float-end border-b border-b-current cursor-pointer text-orange-500 hover:text-orange-400 transition-all duration-150 text-sm font-bold')} onClick={e => {
-                                navigator.clipboard.writeText(window.location.href + data.link.id)
+                                navigator.clipboard.writeText(window.location.href + state.link.id)
                             }}>Copy link</a>
                         </p>
-                        <Link href={'/' + data.link.id + '/+'} passHref>
+                        <Link href={'/' + state.link.id + '/+'} passHref>
                             <Button type={"success"} className={cx("flex-0")}>Inspect your link</Button>
                         </Link>
                     </Fragment>
@@ -103,8 +54,8 @@ export const Shorten = () => {
                         <input
                             required
                             type={"url"}
-                            onChange={(e) => setInput(e.target.value)}
-                            disabled={loading}
+                            name={"target"}
+                            disabled={pending}
                             className={cx(
                                 'flex-1',
                                 'bg-white',
@@ -120,7 +71,7 @@ export const Shorten = () => {
                         <Button
                             type={"dark"}
                             buttonType="submit"
-                            disabled={loading}
+                            disabled={pending}
                             className={cx(
                                 'flex-0',
                                 'group-focus-within:bg-orange-500 group-focus-within:hover:bg-orange-400',
@@ -128,7 +79,7 @@ export const Shorten = () => {
                                 'hover:bg-zinc-700',
                             )}
                         >
-                            {loading ? (<Spinner/>) : ("Shorten")}
+                            {pending ? (<Spinner/>) : ("Shorten")}
                         </Button>
                     </Fragment>
                 )}
