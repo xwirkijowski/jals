@@ -1,11 +1,14 @@
 {
   "settings": {
+    "general": {
+      "frontendAddr": "http://localhost:3000"
+    },
     "axiom": {
       "dataset": "p9s-jals-api"
     },
     "auth": {
       "code": {
-        "length": 6,
+        "length": 8,
         "expiresIn": 300
       },
       "session": {

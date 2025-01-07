@@ -51,8 +51,8 @@ process.env?.REDIS_USER && !process.env?.REDIS_PASS && Warnings.new('REDIS_USER 
 !process.env?.MONGO_HOST && Errors.add(new FatalError('No MONGO_HOST specified, no access to database!', 'MONGO_HOST_MISSING', undefined, true));
 !process.env?.MONGO_PORT && Errors.add(new FatalError('No MONGO_PORT specified, no access to database!', 'MONGO_PORT_MISSING', undefined, true));
 !process.env?.MONGO_DB && Errors.add(new FatalError('No MONGO_DB specified, no database to access!', 'MONGO_DB_MISSING', undefined, true));
-!process.env?.MONGO_USER && Errors.add(new FatalError('No MONGO_USER specified, unsecure database access is forbidden!', 'MONGO_USER_MISSING', undefined, true));
-!process.env?.MONGO_PASS && Errors.add(new FatalError('No MONGO_PASS specified, unsecure database access is forbidden!', 'MONGO_PASS_MISSING', undefined, true));
+//!process.env?.MONGO_USER && Errors.add(new FatalError('No MONGO_USER specified, unsecure database access is forbidden!', 'MONGO_USER_MISSING', undefined, true));
+//!process.env?.MONGO_PASS && Errors.add(new FatalError('No MONGO_PASS specified, unsecure database access is forbidden!', 'MONGO_PASS_MISSING', undefined, true));
 
 // Secrets
 !process.env?.SECRET_SENTRY && Warnings.new('No SECRET_SENTRY specified, Sentry.io disabled!', 'SENTRY_DISABLED');

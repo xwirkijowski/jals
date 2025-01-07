@@ -45,6 +45,9 @@ type SecretsConfigType = {
 }
 
 export type SettingsType = {
+    general?: {
+        frontendAddr: string
+    }
     axiom?: {
         dataset: string
     }
