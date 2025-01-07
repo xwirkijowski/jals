@@ -25,8 +25,6 @@ export const FlagForm = ({
     const router = useRouter();
     const [state, action, pending] = useActionState(FlagAction.bind(null, {link, mode}), undefined);
 
-    console.log(state)
-
     return (
         <form action={action} className="w-full max-w-xl flex flex-col bg-white shadow-xl rounded-xl">
             <input type={'hidden'} value={link.id} />
