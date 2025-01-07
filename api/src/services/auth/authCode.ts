@@ -39,7 +39,7 @@ export default class AuthCode {
 		return this;
 	}
 
-	static async find (userId: AuthCodeInterface["userId"], code: string, rId: string) {
+	static async find (userId: AuthCodeInterface["userId"], code: string, rId: string): Promise<AuthCodeType> {
 		const node = await model.search()
 			.where('userId').equals(userId.toString())
 			.and('code').equals(code.toString())
@@ -48,7 +48,7 @@ export default class AuthCode {
 		return (node?.code) ? new AuthCode((node as AuthCodeInterface)) : undefined;
 	}
 
-	save = async (expiresIn: number, rId: string) => {
+	save = async (expiresIn: number, rId: string): Promise<this> => {
 		if (this.authCodeId) throw new InternalError('Cannot save existing AuthCode', 'AUTHCODE_SAVE_EXISTS', 'AuthService', true, {requestId: rId, authCode: this});
 
 		this.createdAt = new Date().toISOString(); // Set close to insertion

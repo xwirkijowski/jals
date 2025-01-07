@@ -3,10 +3,12 @@ import { Resend } from "resend";
 
 import { CriticalError } from '../../utilities/errors/index';
 import { globalLogger as log } from '../../utilities/logging/log';
-import {SettingsType} from "../../types/config.types";
 export { log };
 
-import {LoginEmail} from './transactional/LoginEmail';
+import {SettingsType} from "../../types/config.types";
+import {AuthCodeType} from "../auth/authCode";
+
+import {LoginEmail} from './templates/LoginEmail';
 
 export type MailServiceConfig = SettingsType['mail'];
 
@@ -50,7 +52,7 @@ export class MailService extends EventEmitter {
 export type MailServiceType = InstanceType<typeof MailService>;
 
 export interface EmailDataInterface {
-    authCode?: string
+    authCode?: AuthCodeType
     userAgent?: string
     userAddr?: string
     requestId?: string

@@ -42,7 +42,7 @@ export default {
 			let emailTransaction: string|void
 			try {
 				emailTransaction = await services.mail.create(userNode.email, 'Your authentication code', {
-					authCode: (codeNode as AuthCodeType).code,
+					authCode: (codeNode as AuthCodeType),
 					userAddr: getIP(req),
 					userAgent: getUA(req)
 				}, requestId).send();
