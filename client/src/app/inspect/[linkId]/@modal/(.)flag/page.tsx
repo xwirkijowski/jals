@@ -2,10 +2,10 @@
 
 import {useContext} from "react";
 
-import {LinkContext} from "app/inspect/[linkId]/context";
+import {LinkContext} from "../../../../../contexts/LinkContext";
 
 // Components
-import {Flag} from "@comp/logic/Flag/Flag";
+import {FlagForm} from "../../../../../actions/flag/Flag.form";
 import {ModalWrapper} from '@comp/Modal/Wrapper';
 
 export default () => {
@@ -13,7 +13,7 @@ export default () => {
 
     return (
         <ModalWrapper>
-            <Flag link={data.link} mode="modal" />
+            <FlagForm link={data.link} mode="modal" />
         </ModalWrapper>
     )
 }

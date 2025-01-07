@@ -9,7 +9,7 @@ import Button from "@comp/Button/Button";
 
 // Context
 import {useContext} from "react";
-import {LinkContext} from "./context";
+import {LinkContext} from "../../../contexts/LinkContext";
 import Link from "next/link";
 
 const LinkPage = async () => {
@@ -69,7 +69,7 @@ const LinkPage = async () => {
                     </div>
                     <div className={"gap-2 flex flex-col"}>
                         <h3 className={"font-bold"}>Last modified</h3>
-                        <p className={"text-zinc-600"}>{data.link.version > 0 ? new Date(data.link.createdAt).toLocaleString() : "Not modified yet"}</p>
+                        <p className={"text-zinc-600"}>{data.link.version > 0 && data.link.updatedAt ? new Date(data.link.updatedAt).toLocaleString() : "Not modified yet"}</p>
                     </div>
                     <div className={"gap-2 flex flex-col"}>
                     <h3 className={"font-bold"}>Version</h3>
@@ -78,7 +78,7 @@ const LinkPage = async () => {
                 </div>
                 <div className={"col-span-full flex gap-8 p-8 justify-between items-center"}>
                     <p className={"text-zinc-900"}>Is this link malicious or inappropriate?</p>
-                    <Link href={`/inspect/${data.link.id}/flag`} passHref><Button type={"danger"} effects={true}>Flag for moderation</Button></Link>
+                    <Link href={`/inspect/${data.link.id}/flag`} passHref><Button btnType={"danger"} effects={true}>Flag for moderation</Button></Link>
                 </div>
             </div>
         </div>

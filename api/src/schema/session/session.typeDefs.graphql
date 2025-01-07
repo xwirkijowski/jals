@@ -6,7 +6,7 @@ type Session {
     "User-agent used while creating the session"
     userAgent: String
     "Remote host IP address used while creating the session"
-    userAddress: IPAddress
+    userAddr: IPAddress
     "Session creation timestamp"
     createdAt: DateTime
     "Session last refresh timestamp"

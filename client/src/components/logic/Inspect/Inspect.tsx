@@ -3,7 +3,7 @@
 import cx from "classnames";
 
 import {useRef} from "react";
-import {redirect} from "next/navigation";
+import {redirect, RedirectType} from "next/navigation";
 
 import Button from "@comp/Button/Button";
 
@@ -15,7 +15,7 @@ export const Inspect = () => {
             <form
                 onSubmit={(e) => {
                     e.preventDefault();
-                    redirect('inspect/'+inputRef?.current?.value, 'push');
+                    redirect('inspect/'+inputRef?.current?.value, ('push' as RedirectType))
                 }}
 
                 className={cx(
@@ -46,8 +46,8 @@ export const Inspect = () => {
                         'group-focus-within:border-orange-500',
                     )} placeholder="Input your URL code or paste the full link"/>
                 <Button
-                    type={"dark"}
-                    buttonType="submit"
+                    btnType={"dark"}
+                    type="submit"
                     className={cx(
                         'flex-0',
                         'group-focus-within:bg-orange-500 group-focus-within:hover:bg-orange-400',

@@ -1,8 +1,8 @@
 import Link from "next/link";
 
 // Components
-import {Shorten} from "@comp/logic/Shorten/Shorten";
-import {ApolloWrapper} from "./ApolloWrapper";
+import {ShortenForm} from "../actions/shorten/Shorten.form";
+import {ApolloWrapper} from "../contexts/ApolloWrapper";
 
 const Page = () => {
     return (
@@ -14,7 +14,7 @@ const Page = () => {
 
             <div className="flex flex-col gap-4 justify-center text-center w-full max-w-xl">
                 <ApolloWrapper>
-                    <Shorten />
+                    <ShortenForm />
                 </ApolloWrapper>
                 <p className="text-zinc-600">or get information about an <Link href="/inspect" className="border-b border-b-current text-orange-500 hover:text-orange-400 transition-all duration-150 font-bold">existing link</Link></p>
                 <div className="flex flex-col gap-4 text-left w-full max-w-xl mt-8 text-zinc-600 text-md bg-white p-8 shadow-md shadow-zinc-900/20 rounded-xl">
