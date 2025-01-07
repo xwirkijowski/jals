@@ -9,7 +9,7 @@ import Button from "@comp/Button/Button";
 
 // Context
 import {useContext} from "react";
-import {LinkContext} from "./context";
+import {LinkContext} from "../../../contexts/LinkContext";
 import Link from "next/link";
 
 const LinkPage = async () => {
@@ -69,7 +69,7 @@ const LinkPage = async () => {
                     </div>
                     <div className={"gap-2 flex flex-col"}>
                         <h3 className={"font-bold"}>Last modified</h3>
-                        <p className={"text-zinc-600"}>{data.link.version > 0 ? new Date(data.link.createdAt).toLocaleString() : "Not modified yet"}</p>
+                        <p className={"text-zinc-600"}>{data.link.version > 0 && data.link.updatedAt ? new Date(data.link.updatedAt).toLocaleString() : "Not modified yet"}</p>
                     </div>
                     <div className={"gap-2 flex flex-col"}>
                     <h3 className={"font-bold"}>Version</h3>

@@ -1,13 +1,12 @@
 // Imports
 import {getClient} from '../../../apollo-client';
-import {LinkContextWrapper} from "./context";
+import {LinkContextWrapper} from "../../../contexts/LinkContext";
 import React from "react";
 
 // Metadata
 import {Metadata, ResolvingMetadata} from "next";
 export const generateMetadata = async (
-    { params, searchParams }: Props,
-    parent: ResolvingMetadata
+    { params }
 ): Promise<Metadata> => {
     const linkId = (await params).linkId;
     return {

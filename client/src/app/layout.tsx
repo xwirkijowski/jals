@@ -13,8 +13,9 @@ export const viewport: string = "width=device-width"
 // Import global styles
 import '../css/globals.css';
 
+import {ApolloWrapper} from '../contexts/ApolloWrapper';
+
 // Components
-import {ApolloWrapper} from './ApolloWrapper';
 import {Footer} from '@comp/layout/Footer';
 import {Header} from '@comp/layout/Header';
 
