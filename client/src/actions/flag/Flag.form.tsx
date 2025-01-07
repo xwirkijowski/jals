@@ -1,12 +1,10 @@
 'use client';
 
-import {useMutation} from "@apollo/client";
-import {useState, FormEvent} from "react";
+import {useActionState} from "react";
 import {useRouter} from 'next/navigation';
 import cx from "classnames";
 
-// Mutation
-import {FLAG_LINK} from './Flag.queries';
+import {FlagAction} from './Flag.action';
 
 // Components
 import {Spinner} from "@comp/Spinner/Spinner";
@@ -15,62 +13,23 @@ import Callout from "@comp/Callout/Callout";
 import Link from "next/link";
 
 // Types
-import {MutationDataType} from '@type/data/MutationData';
 import {LinkType} from "@type/data/Link";
 
-export const Flag = ({
+export const FlagForm = ({
     link,
     mode = 'page',
  }: {
     link: LinkType,
     mode: 'page'|'modal'
-
 }) => {
     const router = useRouter();
+    const [state, action, pending] = useActionState(FlagAction.bind(null, {link, mode}), undefined);
 
-    const [input, setInput] = useState<string | null>(null);
-    const [loading, setLoading] = useState(false);
-    const [data, setData] = useState<MutationDataType|null>(null);
-
-    const [mutate] = useMutation(FLAG_LINK);
-
-    const handleSubmit = (e: FormEvent) => {
-        e.preventDefault();
-
-        setLoading(true);
-
-        // Validation
-
-        if (input !== null && input !== '') {
-            mutate({
-                variables: {
-                    input: {
-                        linkId: link.id,
-                        note: input,
-                    }
-                }
-            })
-                .then(res =>{
-                    // @todo Validate response, check for errors
-                    setData(res.data.flagLink);
-                })
-                .catch(err => {
-                    console.log(err);
-                })
-                .finally(() => {
-                    setLoading(false);
-                    setInput('');
-                });
-        }
-    };
-
-    let isSuccess = (data && data?.result?.success);
+    console.log(state)
 
     return (
-        <form
-            onSubmit={(e) => handleSubmit(e)}
-
-            className="w-full max-w-xl flex flex-col bg-white shadow-xl rounded-xl">
+        <form action={action} className="w-full max-w-xl flex flex-col bg-white shadow-xl rounded-xl">
+            <input type={'hidden'} value={link.id} />
             <div className={"p-8"}>
                 <h2 className="font-bold text-zinc-900 text-2xl/tight sm:text-2xl/tight float-start">
                     Flag for moderation
@@ -87,7 +46,7 @@ export const Flag = ({
                     {link.id}
                 </p>
             </div>
-            {isSuccess ? (
+            {state?.result?.success ? (
                 <div
                     className={cx(
                         'relative p-8 border-y border-zinc-900/15 w-full',
@@ -105,9 +64,9 @@ export const Flag = ({
                 >
                     <textarea
                         required
-                        disabled={loading}
+                        disabled={pending}
+                        name={"note"}
                         rows={4}
-                        onChange={(e) => setInput(e.target.value)}
                         className={cx(
                             'flex-1 resize-none',
                             'bg-white col-span-full',
@@ -122,7 +81,7 @@ export const Flag = ({
                         )} placeholder="Provide short reason for flag..."/>
                 </div>
             )}
-            {isSuccess ? (
+            {state?.result?.success ? (
                 <div className={"col-span-full flex gap-8 p-8 justify-end items-center"}>
                     {mode === 'page' && (<Link href={`/inspect/${link.id}`} passHref><Button type={'light'}>Back to inspection</Button></Link>)}
                     {mode === 'modal' && (<Button type={'light'} onClick={()=>router.back()}>Close</Button>)}
@@ -132,8 +91,8 @@ export const Flag = ({
                     {mode === 'page' && (<Link href={`/inspect/${link.id}`} passHref><Button type={'light'}>Back to inspection</Button></Link>)}
                     {mode === 'modal' && (<Button type={'light'} onClick={()=>router.back()}>Close</Button>)}
 
-                    <Button type={"danger"} buttonType={'submit'} disabled={loading} effects={true}>
-                        {loading ? (<Spinner/>) : ("Send flag")}
+                    <Button type={"danger"} buttonType={'submit'} disabled={pending} effects={true}>
+                        {pending ? (<Spinner/>) : ("Send flag")}
                     </Button>
                 </div>
                 )
