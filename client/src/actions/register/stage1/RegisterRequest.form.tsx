@@ -10,7 +10,12 @@ import Button from "@comp/Button/Button";
 import {Input} from "@comp/Form/Input";
 import Callout from "@comp/Callout/Callout";
 
-export const LogInRequestForm = ({
+const list = cx(
+    'text-zinc-600 text-md',
+    'pl-6 relative',
+    'before:content-[""] before:w-4 before:top-2.5 before:absolute before:h-[1px] before:bg-current before:left-0')
+
+export const RegisterRequestForm = ({
     action,
     state,
     pending,
@@ -25,20 +30,23 @@ export const LogInRequestForm = ({
         <form action={action} className="w-full max-w-xl flex flex-col bg-white shadow-xl rounded-xl">
             <div className={"p-8 flex flex-col gap-4"}>
                 <h2 className="font-bold text-zinc-900 text-2xl/tight sm:text-2xl/tight float-start">
-                    Log in
+                    Create an account
                 </h2>
+                <ul>
+                    <li className={list}>Gain access to detailed statistics</li>
+                    <li className={list}>Access user agent breakdown</li>
+                    <li className={list}>See new clicks as they happen</li>
+                    <li className={list}>Edit your links</li>
+                </ul>
                 <p className={cx('text-zinc-600 text-md')}>
-                    If you have an account, you will receive an authentication code needed to log in to your account.
+                    You will receive an authentication code to confirm your email address.
                 </p>
                 <p className={cx('text-zinc-600 text-md')}>You will be able to input the code on the next step. Alternatively you can use the magic link from the email.</p>
                 {state && state?.result?.success === false &&
                     state.result.errors.map(item => {
                         return (
                             <Callout type="danger" title={'Failed'}>
-                                {item.code === 'INVALID_CREDENTIALS' && (
-                                    <p>Looks like you don't have an account yet!</p>
-                                )}
-                                {(item.code === 'UNKNOWN' || !item.code) && (
+                                {item.code === 'UNKNOWN' || !item.code && (
                                     <p>Unknown error occurred, try again later!</p>
                                 )}
                             </Callout>
@@ -58,14 +66,14 @@ export const LogInRequestForm = ({
                 </div>
             ) : (
                 <div className={cx('relative p-8 border-y border-zinc-900/15 flex flex-col w-full gap-4')}>
-                    <Input autoFocus name={'email'} type={'email'} withLabel={'E-mail address'} id={'login-email'} disabled={pending} required/>
+                    <Input autoFocus name={'email'} type={'email'} withLabel={'E-mail address'} id={'register-email'} disabled={pending} required/>
                 </div>
             )}
             <div className={"col-span-full flex gap-8 p-8 justify-between items-center"}>
                 <Button btnType={'light'} type={'button'} onClick={()=>router.back()}>Close</Button>
                 <div className={'flex gap-4'}>
-                    <Link href={'/register'} passHref replace>
-                        <Button btnType={'light'} type={'button'} disabled={pending} effects={false}>Register</Button>
+                    <Link href={'/login'} passHref replace>
+                        <Button btnType={'light'} type={'button'} disabled={pending} effects={false}>Log In</Button>
                     </Link>
                     <Button btnType={"primary"} type={'submit'} disabled={pending} effects={true}>
                         {pending ? (<Spinner/>) : ("Request code")}

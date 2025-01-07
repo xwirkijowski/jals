@@ -1,6 +1,6 @@
 "use server";
 
-import {CREATE_LINK} from "./Shorten.queries";
+import {CREATE_LINK} from "./Shorten.query";
 import {LinkMutationDataType} from "@type/data/MutationData";
 import {getClient} from "../../apollo-client";
 

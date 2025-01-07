@@ -1,10 +1,10 @@
 "use server";
 
-import {LOG_IN} from "./LogIn.query";
+import {REGISTER} from "./Register.query";
 import {getClient} from "../../../apollo-client";
 import {ResponseType} from "@type/data/Response";
 
-export const LogInAction = async (
+export const RegisterAction = async (
     {email}: {email?: string},
     state: ResponseType,
     formData: FormData
@@ -12,7 +12,7 @@ export const LogInAction = async (
     const code = formData.get('code');
 
     const {data: {logIn: data}} = await getClient().mutate({
-        mutation: LOG_IN,
+        mutation: REGISTER,
         variables: {
             input: {
                 email: email,

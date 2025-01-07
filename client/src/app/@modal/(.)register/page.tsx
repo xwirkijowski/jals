@@ -6,7 +6,7 @@ import {ModalWrapper} from "@comp/Modal/Wrapper";
 
 import {RegisterRequestForm} from "actions/register/stage1/RegisterRequest.form";
 import {RegisterRequestAction} from "actions/register/stage1/RegisterRequest.action";
-import {RegisterForm} from "actions/register/stage2/Register.form";
+import {RegisterForm} from "../../../actions/register/stage2/Register.form";
 import {RegisterAction} from "actions/register/stage2/Register.action";
 
 export default () => {
