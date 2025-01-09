@@ -6,32 +6,36 @@ import { repository as model } from "./authCode.model";
 import { log } from "./service";
 
 import {AuthCodeGenerator, AuthCodeInterface} from './types';
+import {ERequestAuthCodeAction} from "../../schema/session/session.mutations.types";
 
 export default class AuthCode {
 	authCodeId?: string
+	action?: string
+	code?: string
 	userId?: AuthCodeInterface["userId"]
 	userEmail?: string
-	code?: string
 	createdAt?: string|Date
 
-	constructor (props: AuthCodeInterface, rId?: string, generator?: AuthCodeGenerator) {
+	constructor (props: AuthCodeInterface , rId?: string, generator?: AuthCodeGenerator) {
 		if (props?.[EntityId] && props?.code) { // Create new instance from existing
 			this.authCodeId = props[EntityId];
+			this.action = props.action;
+			this.code = props.code;
 			this.userId = props.userId;
 			this.userEmail = props.userEmail;
-			this.code = props.code;
 			this.createdAt = props.createdAt;
 		} else { // New instance to insert
 			if (!props) return this; // No properties to use, pass to `Find` existing code
 
 			// @todo Change caller handling, no support for throw atm
-			else if (!props?.userId || !props?.userEmail) {
+			else if ((props?.action === 'LOGIN' && !props?.userId) || !props?.userEmail) {
 				throw new CriticalError('Code creation failed, no userId and userEmail provided!', 'AUTHCODE_MISSING_ARGS', 'AuthService', true, {requestId: rId, ...props})
 			} else if (!generator) {
 				throw new CriticalError('No generator passed to AuthCode constructor', 'AUTHCODE_MISSING_ARGS', 'AuthService', true, {requestId: rId, ...props})
 			}
 
-			this.userId = props.userId.toString();
+			this.action = props.action;
+			this.userId = props?.userId?.toString();
 			this.userEmail = props.userEmail.toString();
 			this.code = generator((rId as string));
 		}
@@ -39,11 +43,22 @@ export default class AuthCode {
 		return this;
 	}
 
-	static async find (userId: AuthCodeInterface["userId"], code: string, rId: string): Promise<AuthCodeType> {
-		const node = await model.search()
-			.where('userId').equals(userId.toString())
-			.and('code').equals(code.toString())
-			.return.first();
+	static async find (userId: AuthCodeInterface["userId"], code: string, action: ERequestAuthCodeAction, rId: string): Promise<AuthCodeType> {
+		let node;
+
+		if (action === ERequestAuthCodeAction['LOGIN']) {
+			node = await model.search()
+				.where('userId').equals(userId as string)
+				.and('code').equals(code)
+				.and('action').equals(action)
+				.return.first();
+		}
+		else {
+			node = await model.search()
+				.where('code').equals(code)
+				.and('action').equals(action)
+				.return.first();
+		}
 
 		return (node?.code) ? new AuthCode((node as AuthCodeInterface)) : undefined;
 	}

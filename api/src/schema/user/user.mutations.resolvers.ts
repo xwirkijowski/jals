@@ -6,8 +6,5 @@ export default {
 		deleteUser: async () => {
 
 		},
-		register: async () => {
-
-		},
 	}
 }

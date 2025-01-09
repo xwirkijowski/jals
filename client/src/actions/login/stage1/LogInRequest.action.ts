@@ -1,6 +1,6 @@
 "use server";
 
-import {REQUEST_AUTH_CODE} from "./LogInRequest.query";
+import {REQUEST_AUTH_CODE} from "../../shared/RequestAuthCode.query";
 import {getClient} from "../../../apollo-client";
 import {ResponseType} from "@type/data/Response";
 
@@ -15,6 +15,7 @@ export const LogInRequestAction = async (
         variables: {
             input: {
                 email: email,
+                action: 'LOGIN',
             }
         }
     })

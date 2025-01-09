@@ -5,6 +5,7 @@ import cx from "classnames";
 
 // Components
 import Link from "next/link";
+import {setupErrorCallouts} from "../../shared/mutation.utilities";
 import {Spinner} from "@comp/Spinner/Spinner";
 import Button from "@comp/Button/Button";
 import {Input} from "@comp/Form/Input";
@@ -20,6 +21,7 @@ export const LogInRequestForm = ({
     pending: boolean,
 }) => {
     const router = useRouter();
+    const errorCallouts = setupErrorCallouts(state);
 
     return (
         <form action={action} className="w-full max-w-xl flex flex-col bg-white shadow-xl rounded-xl">
@@ -31,20 +33,7 @@ export const LogInRequestForm = ({
                     If you have an account, you will receive an authentication code needed to log in to your account.
                 </p>
                 <p className={cx('text-zinc-600 text-md')}>You will be able to input the code on the next step. Alternatively you can use the magic link from the email.</p>
-                {state && state?.result?.success === false &&
-                    state.result.errors.map(item => {
-                        return (
-                            <Callout type="danger" title={'Failed'}>
-                                {item.code === 'INVALID_CREDENTIALS' && (
-                                    <p>Looks like you don't have an account yet!</p>
-                                )}
-                                {(item.code === 'UNKNOWN' || !item.code) && (
-                                    <p>Unknown error occurred, try again later!</p>
-                                )}
-                            </Callout>
-                        )
-                    })
-                }
+                {errorCallouts}
             </div>
             {state?.result?.success ? (
                 <div

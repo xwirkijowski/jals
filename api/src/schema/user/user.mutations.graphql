@@ -9,11 +9,6 @@ type DeleteUserPayload {
     result: Result!
 }
 
-type RegisterPayload {
-    result: Result!
-    user: User
-}
-
 # Inputs
 
 input UpdateUserInput {
@@ -29,15 +24,9 @@ input DeleteUserInput {
     userId: ID!
 }
 
-input RegisterInput {
-    email: EmailAddress!
-}
-
 # Extends
 
 extend type Mutation {
     updateUser(input: UpdateUserInput): UpdateUserPayload
     deleteUser(input: DeleteUserInput): DeleteUserPayload
-
-    register(input: RegisterInput): RegisterPayload
 }

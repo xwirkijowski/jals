@@ -1,11 +1,23 @@
+enum AuthAction {
+    LOGIN
+    REGISTER
+}
+
 # Inputs
 
 input RequestAuthCodeInput {
     "The user's e-mail address"
     email: EmailAddress!
+    "Auth action that requested this auth code"
+    action: AuthAction
+
+    "User-agent used while creating the session"
+    userAgent: String
+    "Remote host IP address used while creating the session"
+    userAddr: IPAddress
 }
 
-input LogInInput {
+input AuthInput {
     "The user's e-mail address"
     email: EmailAddress!
     "Provided login code"
@@ -14,14 +26,7 @@ input LogInInput {
     "User-agent used while creating the session"
     userAgent: String
     "Remote host IP address used while creating the session"
-    userAddress: IPAddress
-}
-
-input CreateTokenInput {
-    "User Id of the desired API user"
-    userId: ID!
-    "Secret (password) to the API user"
-    secret: String!
+    userAddr: IPAddress
 }
 
 # Payloads
@@ -30,11 +35,13 @@ type RequestAuthCodePayload {
     result: Result!
 }
 
-type LogInPayload {
+type AuthPayload {
     result: Result!
-    user: User
     sessionId: String
+    user: User
 }
+
+# @todo Implement below
 
 type LogOutPayload {
     result: Result!
@@ -60,7 +67,11 @@ extend type Mutation {
     "Request a login code"
     requestAuthCode(input: RequestAuthCodeInput): RequestAuthCodePayload
     "Log in user"
-    logIn(input: LogInInput): LogInPayload
+    logIn(input: AuthInput): AuthPayload
+    "Register a new user account"
+    register(input: AuthInput): AuthPayload
+
+
     "Log out current user out of current session"
     logOut: LogOutPayload
     "Log out current user out of all sessions"

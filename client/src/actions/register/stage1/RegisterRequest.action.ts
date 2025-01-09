@@ -1,6 +1,6 @@
 "use server";
 
-import {REQUEST_REGISTER} from "./RegisterRequest.query";
+import {REQUEST_AUTH_CODE} from "../../shared/RequestAuthCode.query";
 import {getClient} from "../../../apollo-client";
 import {ResponseType} from "@type/data/Response";
 
@@ -11,10 +11,11 @@ export const RegisterRequestAction = async (
     const email = formData.get('email');
 
     const {data: {requestAuthCode: data}} = await getClient().mutate({
-        mutation: REQUEST_REGISTER,
+        mutation: REQUEST_AUTH_CODE,
         variables: {
             input: {
                 email: email,
+                action: 'REGISTER',
             }
         }
     })
