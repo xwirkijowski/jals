@@ -33,7 +33,6 @@ input AuthInput {
 
 type RequestAuthCodePayload {
     result: Result!
-    action: AuthAction
 }
 
 type AuthPayload {

@@ -1,5 +1,6 @@
 import { Result } from "../result";
 import {check, getIP, getUA, handleError, setupMeta} from "../../utilities/helpers";
+import {log} from "../../services/auth/service";
 
 // Types
 import {ContextInterface as CtxI} from "../../types/context.types";
@@ -8,7 +9,6 @@ import SessionType from "../../services/auth/session";
 import {HydratedUser} from "../../types/models/user.types";
 import {ERequestAuthCodeAction, IAuthInput, IRequestAuthCodeInput} from "./session.mutations.types";
 import {CriticalError} from "../../utilities/errors";
-import {create} from "node:domain";
 
 const validateAuthInput = (input: IAuthInput): IAuthInput => {
 	check.validate(input, 'object');
@@ -190,6 +190,8 @@ export default {
 			} catch (err) {
 				handleError(err, 'Resolvers'); return result.addError('INTERNAL_ERROR').response();
 			}
+
+			log.withDomain('audit', 'Resolvers', "New user registered", {userId: createdUser._id, requestId: requestId});
 
 			// Create a session
 			let sessionNode: SessionType|boolean;
