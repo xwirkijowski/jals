@@ -9,6 +9,7 @@ import {SettingsType} from "../../types/config.types";
 import {AuthCodeType} from "../auth/authCode";
 
 import {LoginEmail} from './templates/LoginEmail';
+import {ERequestAuthCodeAction} from "../../schema/session/session.mutations.types";
 
 export type MailServiceConfig = SettingsType['mail'];
 
@@ -56,6 +57,7 @@ export interface EmailDataInterface {
     userAgent?: string
     userAddr?: string
     requestId?: string
+    action: ERequestAuthCodeAction
 }
 
 class Email {
@@ -84,7 +86,7 @@ class Email {
             from: this.from,
             to: this.to,
             subject: this.subject,
-            react: LoginEmail({...this.data, requestId: this.requestId}),
+            react: LoginEmail(({...this.data, requestId: this.requestId} as EmailDataInterface)),
         });
 
         if (error) {

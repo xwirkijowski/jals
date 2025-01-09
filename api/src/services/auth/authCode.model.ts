@@ -3,6 +3,7 @@ import { client } from '../../utilities/database/redis';
 
 export const repository = new Repository(new Schema(
 	'authCode', {
+		action: { type: 'string' },
 		userId: { type: 'string' },
 		userEmail: { type: 'string' },
 		code: { type: 'string' },

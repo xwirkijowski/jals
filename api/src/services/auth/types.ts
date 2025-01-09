@@ -1,5 +1,6 @@
 import {EntityId} from "redis-om";
 import {IdType} from "../../types/id.types";
+import {ERequestAuthCodeAction} from "../../schema/session/session.mutations.types";
 
 export type AuthServiceConfig = {
     code: {
@@ -18,8 +19,9 @@ export interface AuthCodeGenerator {
 export type AuthCodeInterface = {
     [EntityId]?: string
     authCodeId?: string
-    userId: IdType;
+    userId?: IdType;
     userEmail: string
+    action: ERequestAuthCodeAction
     code?: string
     createdAt?: Date | string
 }
