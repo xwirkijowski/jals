@@ -35,7 +35,7 @@ export default class AuthCode {
 			}
 
 			this.action = props.action;
-			this.userId = props.userId.toString();
+			this.userId = props?.userId?.toString();
 			this.userEmail = props.userEmail.toString();
 			this.code = generator((rId as string));
 		}
@@ -44,11 +44,21 @@ export default class AuthCode {
 	}
 
 	static async find (userId: AuthCodeInterface["userId"], code: string, action: ERequestAuthCodeAction, rId: string): Promise<AuthCodeType> {
-		const node = await model.search()
-			.where('userId').equals(userId.toString())
-			.and('code').equals(code.toString())
-			.and('action').equals(action.toString())
-			.return.first();
+		let node;
+
+		if (action === ERequestAuthCodeAction['LOGIN']) {
+			node = model.search()
+				.where('userId').equals(userId as string)
+				.and('code').equals(code)
+				.and('action').equals(action)
+				.return.first();
+		}
+		else {
+			node = model.search()
+				.where('code').equals(code)
+				.and('action').equals(action)
+				.return.first();
+		}
 
 		return (node?.code) ? new AuthCode((node as AuthCodeInterface)) : undefined;
 	}
