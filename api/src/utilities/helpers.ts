@@ -6,6 +6,7 @@ import { $DB } from "./database/status";
 import {SessionType} from "../services/auth/session";
 import {ContextInterface} from "../types/context.types";
 import {IdType} from "../types/id.types";
+import {CriticalError} from "./errors";
 
 export const h = {
 	/**
@@ -172,4 +173,10 @@ export const setupMeta = (session: ContextInterface["session"], input: any, node
 
 		return node;
 	}
+}
+
+export const handleError = (err: Error, domain?: string): void|CriticalError => {
+	// Do nothing on custom errors, they log everything on their own
+	if (['InternalError', 'CriticalError', 'FatalError'].includes(err.name)) return;
+	return new CriticalError(err?.message?`Unexpected error captured: ${err.message}`:'Unexpected error captured', 'UNKNOWN', domain||undefined, err?.stack)
 }
