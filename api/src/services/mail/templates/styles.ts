@@ -16,7 +16,7 @@ export const paragraph: CSS = {
     lineHeight: '1.5',
     color: '#18181b',
     marginTop: 0,
-    marginBottom: '16px'
+    marginBottom: '16px',
 }
 
 export const paragraphSmall: CSS = {
@@ -25,7 +25,24 @@ export const paragraphSmall: CSS = {
     color: '#a1a1aa',
     textAlign: 'justify',
     marginTop: 0,
-    marginBottom: '16px'
+    marginBottom: '16px',
+}
+
+export const authCode: CSS = {
+    display: 'inline-block',
+    fontSize: '24px',
+    fontWeight: 'bold',
+    lineHeight: 1,
+    color: '#18181b',
+    margin: 0,
+    padding: '0 4px',
+}
+
+export const authCodeWrapper: CSS = {
+    borderRadius: '12px',
+    padding: '16px 12px',
+    background: '#e4e4e7',
+    textAlign: 'center',
 }
 
 const styles = {
@@ -33,6 +50,8 @@ const styles = {
     section,
     paragraph,
     paragraphSmall,
+    authCode,
+    authCodeWrapper,
 }
 
 export default styles;

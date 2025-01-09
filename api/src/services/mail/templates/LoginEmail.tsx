@@ -1,6 +1,6 @@
 import React from "react";
-import {EntityId} from "redis-om";
 
+// Config
 import {config} from '../../../../config';
 const frontendAddr: string = config.settings.general.frontendAddr;
 
@@ -12,9 +12,21 @@ import {Footer} from "./components/Footer";
 // Types
 import {EmailDataInterface} from "../service";
 
-import styles from './styles';
+import styles, {authCodeWrapper} from './styles';
 
 export const LoginEmail = (data: EmailDataInterface): React.ReactNode => {
+    const authCode = [];
+
+    data.authCode.code.split('').forEach((c, i) => authCode.push(
+        <p key={i} style={{
+            ...styles.authCodeWrapper,
+            ...(i === 3 && {marginRight: '4px'}),
+            ...(i === 4 && {marginLeft: '4px'})
+        }}>
+            {c}
+        </p>
+    ))
+
     return (
         <html lang={"en"}>
             <Head/>
@@ -30,20 +42,10 @@ export const LoginEmail = (data: EmailDataInterface): React.ReactNode => {
                             fontWeight: 'bold',
                             color: '#18181b',
                         }}>Your authentication code</h1>
-                        <p style={{
-                            ...styles.paragraph,
-                        }}>Use the single use code below to log in to your JALS account.</p>
-                        <p style={{
-                            fontSize: '24px',
-                            textAlign: 'center',
-                            fontWeight: 'bold',
-                            lineHeight: 1,
-                            borderRadius: '12px',
-                            padding: '16px 16px 16px 24px',
-                            letterSpacing: '8px',
-                            background: '#e4e4e7',
-                            color: '#18181b',
-                        }}>{data.authCode.code.substring(0,4)+' '+data.authCode.code.substring(4,8)}</p>
+                        <p style={styles.paragraph}>Use the single use code below to log in to your JALS account.</p>
+                        <div style={styles.authCodeWrapper}>
+                            {authCode}
+                        </div>
                         <p style={{
                             ...styles.paragraph,
                             textAlign: 'center',
