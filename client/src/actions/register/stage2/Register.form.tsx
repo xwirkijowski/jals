@@ -5,6 +5,7 @@ import cx from "classnames";
 import {useRouter} from "next/navigation";
 
 // Components
+import {setupErrorCallouts} from "../../shared/mutation.utilities";
 import {Spinner} from "@comp/Spinner/Spinner";
 import Button from "@comp/Button/Button";
 import {Input} from "@comp/Form/Input";
@@ -20,6 +21,7 @@ export const RegisterForm = ({
     pending: boolean,
 }) => {
     const router = useRouter()
+    const errorCallouts = setupErrorCallouts(state);
 
     return (
         <form action={action} className="w-full max-w-xl flex flex-col bg-white shadow-xl rounded-xl">
@@ -27,18 +29,14 @@ export const RegisterForm = ({
                 <h2 className="font-bold text-zinc-900 text-2xl/tight sm:text-2xl/tight float-start">
                     Input your authentication code
                 </h2>
-                <p className={cx('text-zinc-600 text-md')}>Alternatively you can use the magic link from the email.</p>
-                {state && state?.result?.success === false &&
-                    state.result.errors.map(item => {
-                        return (
-                            <Callout type="danger" title={'Failed'}>
-                                {item.code === 'UNKNOWN' || !item.code && (
-                                    <p>Unknown error occurred, try again later!</p>
-                                )}
-                            </Callout>
-                        )
-                    })
-                }
+                <p className={cx('text-zinc-600 text-md')}>We've sent an authentication code to your email address.</p>
+                <p className={cx('text-zinc-600 text-md')}><strong>Your code is valid for only 5 minutes.</strong> If
+                    you don't see our message, check the spam folder.</p>
+                <p className={cx('text-zinc-600 text-md')}> If you did not receive it at all, please send us an email
+                    at <a href={'mailto:jals@wirkijowski.dev'}
+                          className="border-b border-b-current text-orange-500 hover:text-orange-400 transition-all duration-150 font-bold">jals@wirkijowski.dev</a>.
+                </p>
+                {errorCallouts}
             </div>
             {state?.result?.success ? (
                 <div
