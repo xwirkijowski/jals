@@ -47,14 +47,14 @@ export default class AuthCode {
 		let node;
 
 		if (action === ERequestAuthCodeAction['LOGIN']) {
-			node = model.search()
+			node = await model.search()
 				.where('userId').equals(userId as string)
 				.and('code').equals(code)
 				.and('action').equals(action)
 				.return.first();
 		}
 		else {
-			node = model.search()
+			node = await model.search()
 				.where('code').equals(code)
 				.and('action').equals(action)
 				.return.first();

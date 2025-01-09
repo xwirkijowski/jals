@@ -173,14 +173,11 @@ export default {
 				handleError(err, 'Resolvers'); return result.addError('INTERNAL_ERROR').response();
 			}
 
-			// Construct new user
-			const newUser = {
+			// Construct new user and set up metadata
+			const newUser = setupMeta(session, {
 				email: input.email,
 				isAdmin: false,
-			}
-
-			// Set up new user meta
-			setupMeta(session, newUser);
+			});
 
 			// Create a new user
 			let createdUser: HydratedUser;

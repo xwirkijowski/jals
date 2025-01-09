@@ -110,7 +110,7 @@ export class AuthService extends EventEmitter {
 	 */
 	checkCode = async (userId: AuthCodeInterface["userId"], code: string, action: ERequestAuthCodeAction, rId: string): Promise<AuthCode|false> => {
 		if ((action === ERequestAuthCodeAction['LOGIN'] && !userId) || !code || !rId) {
-			throw new CriticalError('Missing arguments, cannot check AuthCode', 'AUTH_CHECK_CODE_FAULT', 'AuthService', true, {userId, code, requestId: rId});
+			throw new CriticalError('Missing arguments, cannot check AuthCode', 'AUTH_CHECK_CODE_FAULT', 'AuthService', true, {userId, code, action, requestId: rId});
 		}
 
 		const node: AuthCodeType|undefined = await AuthCode.find(userId, code, action, rId);
