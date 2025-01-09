@@ -11,12 +11,12 @@ export const RegisterAction = async (
 ) => {
     const code = formData.get('code');
 
-    const {data: {logIn: data}} = await getClient().mutate({
+    const {data: {register: data}} = await getClient().mutate({
         mutation: REGISTER,
         variables: {
             input: {
                 email: email,
-                code: code
+                code: code,
             }
         }
     })

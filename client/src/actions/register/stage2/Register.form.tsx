@@ -64,7 +64,7 @@ export const RegisterForm = ({
                 <div className={"col-span-full flex gap-8 p-8 justify-between items-center"}>
                     <Button btnType={'light'} type={'button'} onClick={() => router.back()}>Close</Button>
                     <Button btnType={"primary"} type={'submit'} disabled={pending} effects={true}>
-                        {pending ? (<Spinner/>) : ("Log In")}
+                        {pending ? (<Spinner/>) : ("Register")}
                     </Button>
                 </div>
             )
