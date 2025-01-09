@@ -19,7 +19,7 @@ export const LoginEmail = (data: EmailDataInterface): React.ReactNode => {
 
     data.authCode.code.split('').forEach((c, i) => authCode.push(
         <p key={i} style={{
-            ...styles.authCodeWrapper,
+            ...styles.authCode,
             ...(i === 3 && {marginRight: '4px'}),
             ...(i === 4 && {marginLeft: '4px'})
         }}>
@@ -42,7 +42,10 @@ export const LoginEmail = (data: EmailDataInterface): React.ReactNode => {
                             fontWeight: 'bold',
                             color: '#18181b',
                         }}>Your authentication code</h1>
-                        <p style={styles.paragraph}>Use the single use code below to log in to your JALS account.</p>
+                        <p style={styles.paragraph}>
+                            {data.action === 'LOGIN' && ('Use the single use code below to log in to your JALS account.')}
+                            {data.action === 'REGISTER' && ('Use the single use code below to create your new JALS account.')}
+                        </p>
                         <div style={styles.authCodeWrapper}>
                             {authCode}
                         </div>
@@ -53,7 +56,7 @@ export const LoginEmail = (data: EmailDataInterface): React.ReactNode => {
                         <p style={{
                             ...styles.paragraph,
                             textAlign: 'center',
-                        }}>use <a href={`${frontendAddr}/login/magic/${data.authCode.authCodeId}`}>this magic link</a> to log in</p>
+                        }}>use <a href={`${frontendAddr}/${data.action.toLowerCase()}/magic/${data.authCode.authCodeId}`}>this magic link</a> to log in</p>
                         <p style={{
                             ...styles.paragraph,
                             textAlign: 'center',
