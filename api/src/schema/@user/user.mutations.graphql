@@ -27,6 +27,6 @@ input DeleteUserInput {
 # Extends
 
 extend type Mutation {
-    updateUser(input: UpdateUserInput): UpdateUserPayload
-    deleteUser(input: DeleteUserInput): DeleteUserPayload
+    updateUser(input: UpdateUserInput): UpdateUserPayload @auth
+    deleteUser(input: DeleteUserInput): DeleteUserPayload @auth
 }

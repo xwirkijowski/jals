@@ -6,9 +6,9 @@ type User {
     "Is user an admin?"
     isAdmin: Boolean!
 
-    createdBy: User
+    createdBy: User @auth
     createdAt: DateTime
-    updatedBy: User
+    updatedBy: User @auth
     updatedAt: DateTime
     version: Int
 }
@@ -24,11 +24,11 @@ type UserEdge {
 }
 
 extend type Query {
-    user(userId: ID!): User
+    user(userId: ID!): User @auth
 
     users(
         page: Int
         perPage: Int
-    ): UserConnection
+    ): UserConnection @auth
 }
 
