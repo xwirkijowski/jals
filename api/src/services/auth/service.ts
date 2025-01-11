@@ -92,7 +92,6 @@ export class AuthService extends EventEmitter {
 		return code;
 	}
 
-
 	createCode = async (userId: AuthCodeInterface["userId"], userEmail: string, action: AuthCodeInterface["action"], rId: string) => {
 		return await new AuthCode({userId, userEmail, action}, rId, this.generateCode).save(this.config.code.expiresIn, rId).catch(e => console.log('caught', e)); // Catch internal errors, return false on fail
 	}
