@@ -73,12 +73,12 @@ extend type Mutation {
 
 
     "Log out current user out of current session"
-    logOut: LogOutPayload
+    logOut: LogOutPayload @auth(level: SESSION)
     "Log out current user out of all sessions"
-    logOutAll: LogOutAllPayload
+    logOutAll: LogOutAllPayload @auth(level: SESSION)
 
     "Delete a specific session"
-    deleteSession(sessionId: String): DeleteSessionPayload
+    deleteSession(sessionId: String): DeleteSessionPayload @auth(level: SESSION)
     "Delete all sessions for specified user"
-    deleteAllSessions(userId: ID): DeleteAllSessionsPayload
+    deleteAllSessions(userId: ID): DeleteAllSessionsPayload @auth
 }

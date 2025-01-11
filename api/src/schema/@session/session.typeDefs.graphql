@@ -17,12 +17,12 @@ type Session {
 
 extend type Query {
     "Get session by ID"
-    session(sessionId: String!): Session
+    session(sessionId: String!): Session @auth
     "Get sessions by userId (ObjectId)"
-    sessionsByUser(userId: ID!): [Session]
+    sessionsByUser(userId: ID!): [Session] @auth
 
     "Get user from current session"
-    currentUser: User
+    currentUser: User @auth(level: SESSION)
     "Get current session"
     currentSession: Session
 }

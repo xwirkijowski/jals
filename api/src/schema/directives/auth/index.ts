@@ -33,7 +33,8 @@ const authDirective = (directiveName: string)=>  {
                             if (level === 'ADMIN') {
                                 check.isAdmin(context.session)
                             } else if (level === 'OWNER') {
-                                check.isOwner(context.session, source.createdBy);
+                                // Only works on field level
+                                check.isOwner(context.session, source?.createdBy);
                             } else if (level === 'SESSION') {
                                 check.session(context.session)
                             }

@@ -94,7 +94,7 @@ export const check = {
 
 		let authorized: boolean = false; // Default to false
 
-		if ((session as SessionType).userId === createdBy || (session as SessionType).isAdmin) authorized = true;
+		if ((session as SessionType)?.userId === createdBy || (session as SessionType)?.isAdmin === true) authorized = true;
 
 		// Handle user not authorized
 		if (!authorized) {

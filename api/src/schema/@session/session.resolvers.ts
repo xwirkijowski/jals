@@ -23,7 +23,6 @@ export default {
 		session: async (_, {sessionId}, {session, services: {auth}}: CtxI) => {
 			check.needs('redis');
 			check.validate(sessionId, 'string');
-			check.isAdmin(session);
 
 			// @todo integrate AuthService
 			const sessionNode = await models.session.fetch(sessionId);
@@ -33,7 +32,6 @@ export default {
 		sessionsByUser: async (_, {userId}, {session, models}: CtxI) => {
 			check.needs('redis');
 			check.validate(userId, 'string');
-			check.isOwner(session, userId);
 
 			const sessionNodes = await models.session.search().where('userId').eq(userId).return.all()
 
@@ -42,7 +40,6 @@ export default {
 		currentUser: async (_, __, {models: {user}, session}: CtxI) => {
 			check.needs('redis');
 			check.needs('mongo');
-			check.session(session);
 
 			return await user.findOne({_id: (session as SessionType).userId}) || null
 		},
