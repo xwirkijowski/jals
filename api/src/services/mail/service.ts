@@ -9,7 +9,7 @@ import {SettingsType} from "../../types/config.types";
 import {AuthCodeType} from "../auth/authCode";
 
 import {LoginEmail} from './templates/LoginEmail';
-import {ERequestAuthCodeAction} from "../../schema/session/session.mutations.types";
+import {ERequestAuthCodeAction} from "../../schema/@session/session.mutations.types";
 
 export type MailServiceConfig = SettingsType['mail'];
 

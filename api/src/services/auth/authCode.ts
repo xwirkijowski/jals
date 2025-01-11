@@ -6,7 +6,7 @@ import { repository as model } from "./authCode.model";
 import { log } from "./service";
 
 import {AuthCodeGenerator, AuthCodeInterface} from './types';
-import {ERequestAuthCodeAction} from "../../schema/session/session.mutations.types";
+import {ERequestAuthCodeAction} from "../../schema/@session/session.mutations.types";
 
 export default class AuthCode {
 	authCodeId?: string
@@ -43,7 +43,7 @@ export default class AuthCode {
 		return this;
 	}
 
-	static async find (userId: AuthCodeInterface["userId"], code: string, action: ERequestAuthCodeAction, rId: string): Promise<AuthCodeType> {
+	static async find (userId: AuthCodeInterface["userId"], code: string, action: AuthCodeInterface["action"], rId: string): Promise<AuthCodeType> {
 		let node;
 
 		if (action === ERequestAuthCodeAction['LOGIN']) {

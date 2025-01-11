@@ -13,7 +13,7 @@ import AuthCode, {AuthCodeType} from "./authCode";
 import {IncomingMessage} from "node:http";
 import {AuthServiceConfig, AuthCodeGenerator, SessionInterface, AuthCodeInterface} from "./types";
 import {ContextSessionUnion} from "../../types/context.types";
-import {ERequestAuthCodeAction} from "../../schema/session/session.mutations.types";
+import {ERequestAuthCodeAction} from "../../schema/@session/session.mutations.types";
 
 export class AuthService extends EventEmitter {
 	default_config: AuthServiceConfig = {
@@ -93,7 +93,7 @@ export class AuthService extends EventEmitter {
 	}
 
 
-	createCode = async (userId: AuthCodeInterface["userId"], userEmail: string, action: ERequestAuthCodeAction, rId: string) => {
+	createCode = async (userId: AuthCodeInterface["userId"], userEmail: string, action: AuthCodeInterface["action"], rId: string) => {
 		return await new AuthCode({userId, userEmail, action}, rId, this.generateCode).save(this.config.code.expiresIn, rId).catch(e => console.log('caught', e)); // Catch internal errors, return false on fail
 	}
 
@@ -108,7 +108,7 @@ export class AuthService extends EventEmitter {
 	 * @returns    {Promise<AuthCode|false>}    If AuthCode found, return AuthCode instance;
 	 *                                        If no AuthCode found, return false;
 	 */
-	checkCode = async (userId: AuthCodeInterface["userId"], code: string, action: ERequestAuthCodeAction, rId: string): Promise<AuthCode|false> => {
+	checkCode = async (userId: AuthCodeInterface["userId"], code: string, action: AuthCodeInterface["action"], rId: string): Promise<AuthCode|false> => {
 		if ((action === ERequestAuthCodeAction['LOGIN'] && !userId) || !code || !rId) {
 			throw new CriticalError('Missing arguments, cannot check AuthCode', 'AUTH_CHECK_CODE_FAULT', 'AuthService', true, {userId, code, action, requestId: rId});
 		}

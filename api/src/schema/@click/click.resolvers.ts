@@ -2,18 +2,20 @@ import { check } from "../../utilities/helpers";
 
 // Types
 import {ContextInterface as CtxI} from "../../types/context.types";
+import {HydratedClick} from "../../types/models/click.types";
+import {HydratedLink} from "../../types/models/link.types";
 
 // @todo Types
 
 export default {
 	Click: {
-		link: async (obj, _, {models: {link}}: CtxI) => {
-			return (async () => { return await link.findOne({_id: obj.linkId})})();
-		},
-		ipAddress: (obj, _, {session}: CtxI) => {
+		// Return associated link document
+		link: async (obj: HydratedClick, _: any, {models: {link}}: CtxI): Promise<HydratedLink|null> => (obj.linkId) ? await link.findOne({_id: obj.linkId}) : null,
+		// Require authentication
+		ipAddress: (obj: HydratedClick, _: any, {session}: CtxI): string|null => {
 			return check.isAdmin(session) ? obj.ipAddress : null;
 		},
-		createdBy: async (obj, _, {session, models: {user}}: CtxI) => {
+		createdBy: async (obj: HydratedClick, _: any, {session, models: {user}}: CtxI): Promise<string|null> => {
 			check.isAdmin(session);
 			return (obj.createdBy)
 				? user.findOne({_id: obj.createdBy})

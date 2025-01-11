@@ -1,6 +1,6 @@
 import {EntityId} from "redis-om";
 import {IdType} from "../../types/id.types";
-import {ERequestAuthCodeAction} from "../../schema/session/session.mutations.types";
+import {ERequestAuthCodeAction} from "../../schema/@session/session.mutations.types";
 
 export type AuthServiceConfig = {
     code: {
