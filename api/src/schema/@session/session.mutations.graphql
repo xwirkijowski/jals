@@ -9,7 +9,7 @@ input RequestAuthCodeInput {
     "The user's e-mail address"
     email: EmailAddress!
     "Auth action that requested this auth code"
-    action: AuthAction
+    action: AuthAction = LOGIN
 
     "User-agent used while creating the session"
     userAgent: String
