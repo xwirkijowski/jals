@@ -2,6 +2,8 @@ import mongoose, {Schema} from 'mongoose';
 
 import {LinkInterface} from "../types/models/link.types";
 
+// @todo State field instead of active
+
 export default mongoose.model<LinkInterface>(
 	'Links',
 	new mongoose.Schema<LinkInterface>({
@@ -9,6 +11,10 @@ export default mongoose.model<LinkInterface>(
 			type: String,
 			required: true,
 			index: true
+		},
+		clickCount: {
+			required: false,
+			type: Number,
 		},
 		flags: [{
 			note: {

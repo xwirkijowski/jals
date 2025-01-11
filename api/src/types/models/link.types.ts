@@ -8,6 +8,7 @@ export interface LinkFlagInterface {
 
 export interface LinkInterface {
     target: string
+    clickCount?: number
     flags?: [LinkFlagInterface]
     active: boolean
     createdAt: string

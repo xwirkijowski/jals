@@ -8,18 +8,10 @@ import {ContextInterface as CtxI} from "../../types/context.types";
 export default {
 	Link: {
 		id: ({_id}: HydratedLink): IdType => _id,
-		active: ({active}: HydratedLink): boolean => active ?? false,
-		clickCount: async (obj: HydratedLink, _:void, {session, models: {click}}: CtxI): Promise<number> =>
-			await click.countDocuments({linkId: obj._id})??0,
-		flagCount: (obj: HydratedLink): number =>  obj?.flags?.length??0,
-		createdBy: async ({createdBy}: HydratedLink, _:void, {session, models: {user}}: CtxI) => {
-			check.isAdmin(session);
-			return (createdBy) ? await user.findOne({_id: createdBy}) : null;
-		},
-		updatedBy: async ({updatedBy}: HydratedLink, _:void, {session, models: {user}}: CtxI) => {
-			check.isAdmin(session);
-			return (updatedBy) ? await user.findOne({_id: updatedBy}) : null;
-		},
+		active: ({active}: HydratedLink): boolean => active || false,
+		flagCount: (obj: HydratedLink): number =>  obj?.flags?.length ?? 0,
+		createdBy: async ({createdBy}: HydratedLink, _:any, {models: {user}}: CtxI) => (createdBy) ? await user.findOne({_id: createdBy}) : null,
+		updatedBy: async ({updatedBy}: HydratedLink, _:any, {models: {user}}: CtxI) => (updatedBy) ? await user.findOne({_id: updatedBy}) : null,
 	},
 	LinkConnection: {
 		edges: (obj) => { return obj.edges; },
@@ -37,7 +29,7 @@ export default {
 			return await link.findOne({_id: args.linkId});
 		},
 		links: async (_, args, { session, models: {link}}: CtxI) => {
-			check.isAdmin(session);
+			check.needs('mongo');
 
 			// @todo Implement
 

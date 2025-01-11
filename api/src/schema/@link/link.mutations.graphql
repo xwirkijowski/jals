@@ -44,8 +44,8 @@ input FlagLinkInput {
 
 extend type Mutation {
 	createLink(input: CreateLinkInput!): CreateLinkPayload
-	updateLink(input: UpdateLinkInput!): UpdateLinkPayload
-	deleteLink(input: DeleteLinkInput!): DeleteLinkPayload
+	updateLink(input: UpdateLinkInput!): UpdateLinkPayload @auth(level: SESSION)
+	deleteLink(input: DeleteLinkInput!): DeleteLinkPayload @auth(level: SESSION)
 
 	flagLink(input: FlagLinkInput!): FlagLinkPayload
 }

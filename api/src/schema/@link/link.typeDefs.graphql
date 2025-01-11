@@ -8,9 +8,9 @@ type Link {
 	flagCount: Int
 	active: Boolean!
 
-	createdBy: User
+	createdBy: User @auth
 	createdAt: DateTime!
-	updatedBy: User
+	updatedBy: User @auth
 	updatedAt: DateTime
 	version: Int!
 }
@@ -29,7 +29,7 @@ type LinkEdge {
 type LinkFlag {
 	note: String!
 	createdAt: DateTime!
-	createdBy: User!
+	createdBy: User! @auth
 }
 
 extend type Query {
@@ -44,5 +44,5 @@ extend type Query {
 		target: String
 		hasFlags: Boolean
 		createdBy: ID
-	): LinkConnection
+	): LinkConnection @auth(level: SESSION)
 }
