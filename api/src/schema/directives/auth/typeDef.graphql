@@ -3,4 +3,5 @@ directive @auth(level: AuthLevel = ADMIN) on OBJECT | FIELD_DEFINITION
 enum AuthLevel {
     ADMIN
     OWNER
+    SESSION
 }
