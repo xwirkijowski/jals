@@ -11,6 +11,7 @@ export default {
 	Mutation: {
 		createClick: async (_: any, {input}, {session, req, models: {click}}: CtxI) => {
 			check.needs('mongo');
+
 			const result = new Result();
 
 			// If no User-Agent provided, try request
@@ -28,9 +29,8 @@ export default {
 				return result.addError('CREATE_CLICK_FAILED').response(true);
 			}
 		},
-		removeClick: async (_: any, {input}, {session, models: {click}}: CtxI) => {
+		removeClick: async (_: any, {input}, {models: {click}}: CtxI) => {
 			check.needs('mongo');
-			check.isAdmin(session);
 
 			const result = new Result();
 
@@ -42,9 +42,8 @@ export default {
 				return result.addError('REMOVE_CLICK_FAILED').response(true);
 			}
 		},
-		removeAllClicks: async (_: any, {input}, {session, models: {click, link}}: CtxI) => {
+		removeAllClicks: async (_: any, {input}, {models: {click}}: CtxI) => {
 			check.needs('mongo');
-			check.isOwner(session, await link.findOne({_id: input.linkId}));
 
 			const result = new Result();
 

@@ -4,9 +4,9 @@ type Click {
     userAgent: String
     platform: String
     isMobile: Boolean
-    ipAddress: IPAddress
+    ipAddress: IPAddress @auth
 
-    createdBy: User
+    createdBy: User @auth
     createdAt: DateTime!
     version: Int!
 }
@@ -22,15 +22,15 @@ type ClickEdge {
 }
 
 extend type Query {
-    click(clickId: ID!): Click
+    click(clickId: ID!): Click @auth
 
     clicks(
         page: Int
         perPage: Int
         linkId: ID!
-    ): ClickConnection!
+    ): ClickConnection! @auth(level: SESSION)
 
     countClicks(
         linkId: ID!
-    ): Int!
+    ): Int @auth
 }

@@ -36,7 +36,7 @@ type RemoveAllClicksPayload {
 
 extend type Mutation {
 	createClick(input: CreateClickInput): CreateClickPayload
-	removeClick(input: RemoveClickInput): RemoveClickPayload
+	removeClick(input: RemoveClickInput): RemoveClickPayload @auth
 
-	removeAllClicks(input: RemoveAllClicksInput): RemoveAllClicksPayload
+	removeAllClicks(input: RemoveAllClicksInput): RemoveAllClicksPayload @auth
 }

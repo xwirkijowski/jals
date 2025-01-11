@@ -1,4 +1,4 @@
-import { check } from "../../utilities/helpers";
+import {check} from "../../utilities/helpers";
 
 // Types
 import {ContextInterface as CtxI} from "../../types/context.types";
@@ -11,12 +11,8 @@ export default {
 	Click: {
 		// Return associated link document
 		link: async (obj: HydratedClick, _: any, {models: {link}}: CtxI): Promise<HydratedLink|null> => (obj.linkId) ? await link.findOne({_id: obj.linkId}) : null,
-		// Require authentication
-		ipAddress: (obj: HydratedClick, _: any, {session}: CtxI): string|null => {
-			return check.isAdmin(session) ? obj.ipAddress : null;
-		},
-		createdBy: async (obj: HydratedClick, _: any, {session, models: {user}}: CtxI): Promise<string|null> => {
-			check.isAdmin(session);
+		// Return owner user document
+		createdBy: async (obj: HydratedClick, _: any, {models: {user}}: CtxI): Promise<string|null> => {
 			return (obj.createdBy)
 				? user.findOne({_id: obj.createdBy})
 				: null;
@@ -31,23 +27,13 @@ export default {
 		node: (obj) => { return obj; }
 	},
 	Query: {
-		click: async (_: any, args, {session, models: {click}}: CtxI) => {
-			check.isAdmin(session);
-			return await click.findOne({_id: args.clickId});
-		},
+		click: async (_: any, args, {models: {click}}: CtxI) => await click.findOne({_id: args.clickId}),
 		clicks: async (_: any, args, {session, models: {click, link}}: CtxI) => {
 			check.session(session);
 			check.isOwner(session, await link.findOne({_id: args.linkId}));
 
-			const clicks = await click.find({linkId: args.linkId})
-
-			return clicks;
+			return await click.find({linkId: args.linkId});
 		},
-		countClicks: async (_: any, args, {session, models: {click, link}}: CtxI) => {
-			check.session(session);
-			check.isOwner(session, await link.findOne({_id: args.linkId}));
-
-			return await click.countDocuments({linkId: args.linkId});
-		},
+		countClicks: async (_: any, args, {session, models: {click, link}}: CtxI) => await click.countDocuments({linkId: args.linkId}) || 0,
 	}
 }
