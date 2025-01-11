@@ -4,12 +4,13 @@ import {Result} from "../result";
 // Types
 import {ContextInterface as CtxI} from "../../types/context.types";
 import {HydratedClick} from "../../types/models/click.types";
+import {InternalError} from "../../utilities/errors";
 
 // @todo Types
 
 export default {
 	Mutation: {
-		createClick: async (_: any, {input}, {session, req, models: {click}}: CtxI) => {
+		createClick: async (_: any, {input}, {session, req, models: {click, link}}: CtxI) => {
 			check.needs('mongo');
 
 			const result = new Result();
@@ -22,6 +23,12 @@ export default {
 			input = setupMeta(session, input);
 
 			const node: HydratedClick = await click.create(input)
+
+			const linkNode_update = await link.updateOne({_id: node.linkId}, {$inc: {'clickCount': 1}});
+			if (linkNode_update.acknowledged !== true || linkNode_update.modifiedCount !== 1) {
+				result.addError('LINK_UPDATE_FAILED', undefined,  'Could not update click count');
+				new InternalError('Unexpected problem with database operation', 'DB_OPERATION_FAILED', 'Resolvers', true, linkNode_update);
+			}
 
 			if (node?._id) {
 				return result.response(true, {click: node});
@@ -39,6 +46,7 @@ export default {
 			if (node.deletedCount === 1) {
 				return result.response(true)
 			} else {
+				new InternalError('Unexpected problem with database operation', 'DB_OPERATION_FAILED', 'Resolvers', true, node);
 				return result.addError('REMOVE_CLICK_FAILED').response(true);
 			}
 		},
@@ -53,6 +61,7 @@ export default {
 			if (nodeCounts === node.deletedCount) {
 				return result.response(true, {deletedCount: node.deletedCount});
 			} else {
+				new InternalError('Unexpected problem with database operation', 'DB_OPERATION_FAILED', 'Resolvers', true, node);
 				return result.addError('REMOVE_CLICK_ALL_FAILED').response(true);
 			}
 		}

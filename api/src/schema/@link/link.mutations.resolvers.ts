@@ -5,6 +5,7 @@ import { Result } from "../result";
 import {ContextInterface as CtxI} from "../../types/context.types";
 import {HydratedLink, LinkInterface} from "../../types/models/link.types";
 import {SessionType} from "../../services/auth/session";
+import {InternalError} from "../../utilities/errors";
 
 export default {
 	Mutation: {
@@ -59,6 +60,7 @@ export default {
 			if (node_update.acknowledged === true && node_update.modifiedCount === 1) {
 				return result.response(true, { link: node });
 			} else {
+				new InternalError('Unexpected problem with database operation', 'DB_OPERATION_FAILED', 'Resolvers', true, node_update);
 				return result.addError('UPDATE_LINK_FAILED').response(true);
 			}
 		},
@@ -83,6 +85,7 @@ export default {
 			if (node_delete.acknowledged === true && node_delete.deletedCount === 1) {
 				return result.response(true)
 			} else {
+				new InternalError('Unexpected problem with database operation', 'DB_OPERATION_FAILED', 'Resolvers', true, node_delete);
 				return result.addError('DELETE_LINK_FAILED').response(true);
 			}
 		},
@@ -117,6 +120,7 @@ export default {
 			if (node_update.acknowledged === true && node_update.modifiedCount === 1) {
 				return result.response(true, { link: node });
 			} else {
+				new InternalError('Unexpected problem with database operation', 'DB_OPERATION_FAILED', 'Resolvers', true, node_update);
 				return result.addError('FLAG_LINK_FAILED').response(true);
 			}
 		},
