@@ -2,15 +2,15 @@ import {check, getIP, getUA, setupMeta} from "../../utilities/helpers";
 import {Result} from "../result";
 
 // Types
-import {ContextInterface as CtxI} from "../../types/context.types";
-import {HydratedClick} from "../../types/models/click.types";
+import {IContext} from "../../types/context.types";
+import {THydratedClick} from "../../models/click.types";
 import {InternalError} from "../../utilities/errors";
 
 // @todo Types
 
 export default {
 	Mutation: {
-		createClick: async (_: any, {input}, {session, req, models: {click, link}}: CtxI) => {
+		createClick: async (_: any, {input}, {session, req, models: {click, link}}: IContext) => {
 			check.needs('mongo');
 
 			const result = new Result();
@@ -22,7 +22,7 @@ export default {
 
 			input = setupMeta(session, input);
 
-			const node: HydratedClick = await click.create(input)
+			const node: THydratedClick = await click.create(input)
 
 			const linkNode_update = await link.updateOne({_id: node.linkId}, {$inc: {'clickCount': 1}});
 			if (linkNode_update.acknowledged !== true || linkNode_update.modifiedCount !== 1) {
@@ -36,7 +36,7 @@ export default {
 				return result.addError('CREATE_CLICK_FAILED').response(true);
 			}
 		},
-		removeClick: async (_: any, {input}, {models: {click}}: CtxI) => {
+		removeClick: async (_: any, {input}, {models: {click}}: IContext) => {
 			check.needs('mongo');
 
 			const result = new Result();
@@ -50,7 +50,7 @@ export default {
 				return result.addError('REMOVE_CLICK_FAILED').response(true);
 			}
 		},
-		removeAllClicks: async (_: any, {input}, {models: {click}}: CtxI) => {
+		removeAllClicks: async (_: any, {input}, {models: {click}}: IContext) => {
 			check.needs('mongo');
 
 			const result = new Result();

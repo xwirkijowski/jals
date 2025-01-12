@@ -9,7 +9,7 @@ export class DatabaseStatus {
 		this.redis = 'unknown';
 	}
 
-	setMongo (status: string) {
+	setMongo (status: string): this {
 		this.mongo = status;
 		return this;
 	}
@@ -42,6 +42,6 @@ export class DatabaseStatus {
 	}
 }
 
-export const $DB = new DatabaseStatus();
+export const $DB: TDatabaseStatus = new DatabaseStatus();
 
-export type DatabaseStatusType = InstanceType<typeof DatabaseStatus>;
+export type TDatabaseStatus = InstanceType<typeof DatabaseStatus>;

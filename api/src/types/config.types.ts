@@ -1,8 +1,8 @@
-export interface ConnectionStringBuilder {
+export interface IConnectionStringBuilder {
     (): string
 }
 
-type ServerConfigType = {
+type TServerConfig = {
     port: number
     host: string
     protocol: string
@@ -13,21 +13,21 @@ type ServerConfigType = {
     }
 }
 
-type RedisConfigType = {
+type TRedisConfig = {
     host: string
     port: number
     db?: string
     user?: string
     password?: string
     string?: string
-    connectionString: ConnectionStringBuilder
+    connectionString: IConnectionStringBuilder
     socket: {
         connectTimeout: number
         reconnectAttempts: number|undefined
     }
 }
 
-type MongoConfigType = {
+type TMongoConfig = {
     host: string
     port: number
     db: string
@@ -35,16 +35,16 @@ type MongoConfigType = {
     password: string
     opts?: string
     string?: string
-    connectionString: ConnectionStringBuilder
+    connectionString: IConnectionStringBuilder
 }
 
-type SecretsConfigType = {
+type TSecretsConfig = {
     sentry?: string
     axiom?: string
     resend?: string
 }
 
-export type SettingsType = {
+export type TSettings = {
     general?: {
         frontendAddr: string
     }
@@ -66,14 +66,14 @@ export type SettingsType = {
     }
 }
 
-export type ConfigType = {
-    server: ServerConfigType
-    redis: RedisConfigType
-    mongo: MongoConfigType
-    secrets: SecretsConfigType
-    settings: SettingsType
+export type TConfig = {
+    server: TServerConfig
+    redis: TRedisConfig
+    mongo: TMongoConfig
+    secrets: TSecretsConfig
+    settings: TSettings
 };
 
-export type ConfigDefaultsType = Partial<{
-    [Property in keyof ConfigType]: Partial<ConfigType[Property]>
+export type TConfigDefaults = Partial<{
+    [Property in keyof TConfig]: Partial<TConfig[Property]>
 }>

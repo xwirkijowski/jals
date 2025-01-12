@@ -6,17 +6,17 @@ import { CriticalError } from '../../utilities/errors/index';
 import { globalLogger as log } from '../../utilities/logging/log';
 export { log };
 
-import Session, {SessionType} from "./session";
+import Session, {TSession} from "./session";
 import AuthCode, {AuthCodeType} from "./authCode";
 
 // Types
 import {IncomingMessage} from "node:http";
-import {AuthServiceConfig, AuthCodeGenerator, SessionInterface, AuthCodeInterface} from "./types";
-import {ContextSessionUnion} from "../../types/context.types";
-import {ERequestAuthCodeAction} from "../../schema/@session/session.mutations.types";
+import {IAuthCodeGenerator, ISession, IAuthCode, TSettingsAuth} from "./types";
+import {UContextSession} from "../../types/context.types";
+import {ERequestAuthCodeAction} from "../../schema/@session/session.types";
 
 export class AuthService extends EventEmitter {
-	default_config: AuthServiceConfig = {
+	default_config: TSettingsAuth = {
 		code: {
 			length: 6,
 			expiresIn: 60 * 5,
@@ -26,9 +26,9 @@ export class AuthService extends EventEmitter {
 		},
 	}
 
-	config: AuthServiceConfig;
+	config: TSettingsAuth;
 
-	constructor (config?: AuthServiceConfig) {
+	constructor (config?: TSettingsAuth) {
 		super();
 
 		log.withDomain('log', 'AuthService', 'Loading AuthService configuration...');
@@ -50,10 +50,16 @@ export class AuthService extends EventEmitter {
 
 	// Session block
 
-	handleSession = async (request: IncomingMessage, rId: string): Promise<ContextSessionUnion> => {
+	/**
+	 * Authentication method, handles session on request
+	 *
+	 * @param request
+	 * @param rId
+	 */
+	handleSession = async (request: IncomingMessage, rId: string): Promise<UContextSession> => {
 		if (request && request.headers.authorization) {
 			const sessionId: string = request.headers.authorization.replace('Bearer ', '');
-			const session: SessionType|undefined = await Session.find(sessionId, rId);
+			const session: TSession|undefined = await Session.find(sessionId, rId);
 
 			if (session) {
 				await session.refresh(this.config.session.expiresIn, rId);
@@ -66,14 +72,24 @@ export class AuthService extends EventEmitter {
 		} else return undefined;
 	}
 
-	createSession = async (userId: SessionInterface["userId"], isAdmin: boolean, request: IncomingMessage, rId: string) => {
+	createSession = async (userId: ISession["userId"], isAdmin: boolean, request: IncomingMessage, rId: string) => {
 		// Catch internal errors, return false on fail to avoid propagation to public API
 		return await new Session({userId, isAdmin}, rId, request).save(this.config.session.expiresIn, rId).catch((_: Error): boolean => false);
 	}
 
+	getSessionById = async (sessionId: ISession['sessionId'], rId: string) => {
+		if (!sessionId) return undefined; // Silent fail, variable should be checked beforehand
+		return await Session.find(sessionId, rId);
+	}
+
+	getSessionsByUserId = async (userId: ISession['sessionId'], rId: string) => {
+		if (!userId) return undefined; // Silent fail, variable should be checked beforehand
+		return await Session.findByUserId(userId, rId);
+	}
+
 	// Authentication code block
 
-	generateCode: AuthCodeGenerator = (rId: string): string => {
+	generateCode: IAuthCodeGenerator = (rId: string): string => {
 		const length = this.config.code.length;
 
 		if (length <= 0) {
@@ -92,7 +108,7 @@ export class AuthService extends EventEmitter {
 		return code;
 	}
 
-	createCode = async (userId: AuthCodeInterface["userId"], userEmail: string, action: AuthCodeInterface["action"], rId: string) => {
+	createCode = async (userId: IAuthCode["userId"], userEmail: string, action: IAuthCode["action"], rId: string) => {
 		return await new AuthCode({userId, userEmail, action}, rId, this.generateCode).save(this.config.code.expiresIn, rId).catch(e => console.log('caught', e)); // Catch internal errors, return false on fail
 	}
 
@@ -107,7 +123,7 @@ export class AuthService extends EventEmitter {
 	 * @returns    {Promise<AuthCode|false>}    If AuthCode found, return AuthCode instance;
 	 *                                        If no AuthCode found, return false;
 	 */
-	checkCode = async (userId: AuthCodeInterface["userId"], code: string, action: AuthCodeInterface["action"], rId: string): Promise<AuthCode|false> => {
+	checkCode = async (userId: IAuthCode["userId"], code: string, action: IAuthCode["action"], rId: string): Promise<AuthCode|false> => {
 		if ((action === ERequestAuthCodeAction['LOGIN'] && !userId) || !code || !rId) {
 			throw new CriticalError('Missing arguments, cannot check AuthCode', 'AUTH_CHECK_CODE_FAULT', 'AuthService', true, {userId, code, action, requestId: rId});
 		}
@@ -118,4 +134,4 @@ export class AuthService extends EventEmitter {
 	}
 }
 
-export type AuthServiceType = InstanceType<typeof AuthService>;
+export type TAuthService = InstanceType<typeof AuthService>;

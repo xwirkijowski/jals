@@ -1,10 +1,10 @@
 import mongoose, {Schema} from "mongoose";
 
-import {UserInterface} from "../types/models/user.types";
+import {IUser} from "./user.types";
 
-export default mongoose.model<UserInterface>(
+export default mongoose.model<IUser>(
 	'User',
-	new mongoose.Schema<UserInterface>({
+	new mongoose.Schema<IUser>({
 		email: {
 			type: String,
 			unique: true,

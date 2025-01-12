@@ -6,7 +6,7 @@ import { getIP } from "../../utilities/helpers";
 import { repository as model } from "./session.model";
 import { log } from "./service";
 
-import {SessionInterface} from "./types";
+import {ISession} from "./types";
 import {IncomingMessage} from "node:http";
 
 /**
@@ -15,7 +15,7 @@ import {IncomingMessage} from "node:http";
 
 export default class Session {
 	sessionId?: string;
-	userId: SessionInterface["userId"];
+	userId: ISession["userId"];
 	isAdmin: boolean = false;
 	userAgent?: string;
 	userAddr?: string;
@@ -23,7 +23,7 @@ export default class Session {
 	updatedAt?: Date|string;
 	version: number = 0;
 
-	constructor(props: SessionInterface, rId: string, request?: IncomingMessage) {
+	constructor(props: ISession, rId: string, request?: IncomingMessage) {
 		if (!props?.userId) { // @todo Change caller handling, no support for throw atm
 			throw new CriticalError('Session creation failed, no userId provided!', 'SESSION_MISSING_ARGS', 'AuthService', true, {requestId: rId, ...props})
 		}
@@ -40,12 +40,12 @@ export default class Session {
 		return this;
 	}
 
-	static async find(sessionId: string, rId: string) {
+	static async find(sessionId: string, rId: string): Promise<TSession> {
 		const node = await model.fetch(sessionId);
 
 		node.sessionId = node[(EntityId as unknown as string)];
 
-		return (node?.userId) ? new Session((node as SessionInterface), rId) : undefined;
+		return (node?.userId) ? new Session((node as ISession), rId) : undefined;
 	}
 
 	refresh = async (expiresIn: number, rId: string) => {
@@ -61,7 +61,7 @@ export default class Session {
 		return this;
 	}
 
-	save = async (expiresIn: number, rId: string) => {
+	save = async (expiresIn: number, rId: string): Promise<this> => {
 		if (this.sessionId) return undefined;
 
 		this.createdAt = new Date().toISOString(); // Set close to insertion
@@ -84,4 +84,4 @@ export default class Session {
 }
 
 // Export class type
-export type SessionType = InstanceType<typeof Session>;
+export type TSession = InstanceType<typeof Session>;

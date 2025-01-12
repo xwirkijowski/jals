@@ -1,6 +1,6 @@
 import {HydratedDocument, Types} from 'mongoose';
 
-export interface UserInterface {
+export interface IUser {
     email: string
     isAdmin: boolean
     createdAt: string
@@ -10,4 +10,4 @@ export interface UserInterface {
     version: number
 }
 
-export type HydratedUser = HydratedDocument<UserInterface>;
+export type THydratedUser = HydratedDocument<IUser>;

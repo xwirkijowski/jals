@@ -1,11 +1,11 @@
 import {ApolloServerPlugin, GraphQLRequestContextWillSendResponse, GraphQLRequestListener} from "@apollo/server";
-import {ContextInterface} from "../types/context.types";
+import {IContext} from "../types/context.types";
 
-export function extensionsPlugin (): ApolloServerPlugin<ContextInterface> {
+export function extensionsPlugin (): ApolloServerPlugin<IContext> {
 	return {
-		async requestDidStart(): Promise<void | GraphQLRequestListener<ContextInterface>> {
+		async requestDidStart(): Promise<void | GraphQLRequestListener<IContext>> {
 			return {
-				async willSendResponse(requestContext: GraphQLRequestContextWillSendResponse<ContextInterface>): Promise<void> {
+				async willSendResponse(requestContext: GraphQLRequestContextWillSendResponse<IContext>): Promise<void> {
 					const requestId = requestContext.contextValue.internal.requestId;
 
 					const session = requestContext.contextValue.session;

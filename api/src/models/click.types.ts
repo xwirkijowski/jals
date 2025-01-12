@@ -1,6 +1,6 @@
 import {HydratedDocument, Types} from "mongoose";
 
-export interface ClickInterface {
+export interface IClick {
     linkId: Types.ObjectId
     userAgent: string
     platform: string
@@ -10,4 +10,4 @@ export interface ClickInterface {
     createdBy?: Types.ObjectId
 }
 
-export type HydratedClick = HydratedDocument<ClickInterface>;
+export type THydratedClick = HydratedDocument<IClick>;

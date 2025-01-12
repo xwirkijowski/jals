@@ -3,11 +3,11 @@ import {check, getIP, getUA, handleError, setupMeta} from "../../utilities/helpe
 import {log} from "../../services/auth/service";
 
 // Types
-import {ContextInterface as CtxI} from "../../types/context.types";
+import {IContext} from "../../types/context.types";
 import AuthCodeType from "../../services/auth/authCode";
 import SessionType from "../../services/auth/session";
-import {HydratedUser} from "../../types/models/user.types";
-import {ERequestAuthCodeAction, IAuthInput, IRequestAuthCodeInput} from "./session.mutations.types";
+import {THydratedUser} from "../../models/user.types";
+import {ERequestAuthCodeAction, IAuthInput, IRequestAuthCodeInput} from "./session.types";
 import {CriticalError} from "../../utilities/errors";
 
 const validateAuthInput = (input: IAuthInput): IAuthInput => {
@@ -22,7 +22,7 @@ const validateAuthInput = (input: IAuthInput): IAuthInput => {
 
 export default {
 	Mutation: {
-		requestAuthCode: async (_: any, {input}: {input: IRequestAuthCodeInput} , {models: {user}, services, session, internal: {requestId}, req}: CtxI) => {
+		requestAuthCode: async (_: any, {input}: {input: IRequestAuthCodeInput} , {models: {user}, services, session, internal: {requestId}, req}: IContext) => {
 			check.needs('redis');
 			check.needs('mongo');
 
@@ -49,7 +49,7 @@ export default {
 			input.email = input.email.normalize('NFKD');
 
 			// Get user by email
-			const userNode: HydratedUser = await user.findOne({email: input.email})
+			const userNode: THydratedUser = await user.findOne({email: input.email})
 
 			if (!userNode && action === 'LOGIN') { // If no user found on `LOGIN` return error
 				return result.addError('INVALID_CREDENTIALS').response();
@@ -84,10 +84,10 @@ export default {
 			if (emailTransaction) {
 				return result.response(true)
 			} else {
-				return result.addErrorAndLog('CANNOT_CREATE_CODE', null, null, 'error', 'Failed to create an auth code', 'AuthService').response();
+				return result.addErrorAndLog('CANNOT_CREATE_CODE', null, null, 'error', 'Failed to create an auth code', 'Resolvers').response();
 			}
 		},
-		logIn: async (_: any, {input}: {input: IAuthInput}, {models: {user}, services, session, req, internal: {requestId}}: CtxI) => {
+		logIn: async (_: any, {input}: {input: IAuthInput}, {models: {user}, services, session, req, internal: {requestId}}: IContext) => {
 			check.needs('redis');
 			check.needs('mongo');
 
@@ -106,7 +106,7 @@ export default {
 			if (input?.userAgent) input.userAgent.normalize('NFKD');
 
 			// Get user by email
-			const userNode: HydratedUser = await user.findOne({email: input.email})
+			const userNode: THydratedUser = await user.findOne({email: input.email})
 
 			// If no user found return operation failed
 			if (!userNode) {
@@ -140,7 +140,7 @@ export default {
 			}
 
 		},
-		register: async (_: any, {input}: {input: IAuthInput}, {models: {user}, services, session, req, internal: {requestId}}: CtxI) => {
+		register: async (_: any, {input}: {input: IAuthInput}, {models: {user}, services, session, req, internal: {requestId}}: IContext) => {
 			check.needs('redis');
 			check.needs('mongo');
 
@@ -157,7 +157,7 @@ export default {
 			if (input?.userAgent) input.userAgent.normalize('NFKD');
 
 			// Check for existing user
-			const userNode: HydratedUser = await user.findOne({email: input.email})
+			const userNode: THydratedUser = await user.findOne({email: input.email})
 
 			// If user found return operation failed
 			if (userNode) {
@@ -180,7 +180,7 @@ export default {
 			});
 
 			// Create a new user
-			let createdUser: HydratedUser;
+			let createdUser: THydratedUser;
 			try {
 				createdUser = await user.create(newUser);
 				if (!createdUser) throw new CriticalError('Could not insert a new user!', 'CREATE_USER_FAILED', 'Resolvers', true, {operationResult: createdUser})

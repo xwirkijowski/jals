@@ -3,7 +3,7 @@ import {getDirective, MapperKind, mapSchema} from '@graphql-tools/utils';
 import {loadTypeDef} from "../typeDefLoader";
 import {defaultFieldResolver} from "graphql/execution";
 import {check} from "../../../utilities/helpers";
-import {ContextInterface} from "../../../types/context.types";
+import {IContext} from "../../../types/context.types";
 
 const authDirective = (directiveName: string)=>  {
     const typeDirectiveArgumentMaps: Record<string, any> = {}
@@ -29,7 +29,7 @@ const authDirective = (directiveName: string)=>  {
                     if (level) {
                         const {resolve = defaultFieldResolver} = fieldConfig
 
-                        fieldConfig.resolve = (source: any, args: any, context: ContextInterface, info) => {
+                        fieldConfig.resolve = (source: any, args: any, context: IContext, info) => {
                             if (level === 'ADMIN') {
                                 check.isAdmin(context.session)
                             } else if (level === 'OWNER') {

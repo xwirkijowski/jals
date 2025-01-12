@@ -46,4 +46,6 @@ class TelemetryCounters {
 
 export default new TelemetryCounters();
 
+export type TTelemetryCounters = InstanceType<typeof TelemetryCounters>;
+
 export {TelemetryCounters}

@@ -10,11 +10,11 @@ import {Header} from "./components/Header";
 import {Footer} from "./components/Footer";
 
 // Types
-import {EmailDataInterface} from "../service";
+import {IEmailData} from "../service";
 
 import styles, {authCodeWrapper} from './styles';
 
-export const LoginEmail = (data: EmailDataInterface): React.ReactNode => {
+export const LoginEmail = (data: IEmailData): React.ReactNode => {
     const authCode = [];
 
     data.authCode.code.split('').forEach((c, i) => authCode.push(

@@ -1,12 +1,12 @@
 import mongoose, {Schema} from 'mongoose';
 
-import {LinkInterface} from "../types/models/link.types";
+import {ILink} from "./link.types";
 
 // @todo State field instead of active
 
-export default mongoose.model<LinkInterface>(
+export default mongoose.model<ILink>(
 	'Links',
-	new mongoose.Schema<LinkInterface>({
+	new mongoose.Schema<ILink>({
 		target: {
 			type: String,
 			required: true,

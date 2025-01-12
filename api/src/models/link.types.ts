@@ -1,15 +1,15 @@
 import {HydratedDocument, Types} from 'mongoose';
 
-export interface LinkFlagInterface {
+export interface ILinkFlag {
     note: string
     createdAt: string
     createdBy?: Types.ObjectId
 }
 
-export interface LinkInterface {
+export interface ILink {
     target: string
     clickCount?: number
-    flags?: [LinkFlagInterface]
+    flags?: [ILinkFlag]
     active: boolean
     createdAt: string
     createdBy?: Types.ObjectId
@@ -18,4 +18,4 @@ export interface LinkInterface {
     version: number
 }
 
-export type HydratedLink = HydratedDocument<LinkInterface>
+export type THydratedLink = HydratedDocument<ILink>

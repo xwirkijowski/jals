@@ -3,9 +3,9 @@ import { GraphQLError } from "graphql";
 
 import {IncomingMessage} from "node:http";
 import { $DB } from "./database/status";
-import {SessionType} from "../services/auth/session";
-import {ContextInterface} from "../types/context.types";
-import {IdType} from "../types/id.types";
+import {TSession} from "../services/auth/session";
+import {IContext} from "../types/context.types";
+import {TId} from "../types/id.types";
 import {CriticalError} from "./errors";
 
 export const h = {
@@ -67,8 +67,8 @@ export const check = {
 			throw new GraphQLError('Session database unavailable.', { extensions: { code: 'INTERNAL_SERVER_ERROR' } });
 		}
 	},
-	isSessionValid: (session: ContextInterface["session"]): session is SessionType => (!!session && session !== 'invalid'),
-	session: (session: ContextInterface["session"]): true|GraphQLError => {
+	isSessionValid: (session: IContext["session"]): session is TSession => (!!session && session !== 'invalid'),
+	session: (session: IContext["session"]): true|GraphQLError => {
 		if (check.isSessionValid(session)) return true;
 
 		throw new GraphQLError('Unauthenticated. You need to be logged in to access this resource.', {
@@ -88,13 +88,13 @@ export const check = {
 	 *
 	 * @return	Boolean|GraphQLError	If checks pass, return true, else error.
 	 */
-	isOwner: (session:ContextInterface["session"] = undefined, createdBy: IdType): true|GraphQLError => {
+	isOwner: (session:IContext["session"] = undefined, createdBy: TId): true|GraphQLError => {
 		// Handle no session
 		check.session(session)
 
 		let authorized: boolean = false; // Default to false
 
-		if ((session as SessionType)?.userId === createdBy || (session as SessionType)?.isAdmin === true) authorized = true;
+		if ((session as TSession)?.userId === createdBy || (session as TSession)?.isAdmin === true) authorized = true;
 
 		// Handle user not authorized
 		if (!authorized) {
@@ -119,7 +119,7 @@ export const check = {
 	 *
 	 * @return	Boolean|GraphQLError	If checks pass, return true, else error.
 	 */
-	isAdmin: (session: ContextInterface["session"] = undefined, silent: boolean = false): boolean|GraphQLError => {
+	isAdmin: (session: IContext["session"] = undefined, silent: boolean = false): boolean|GraphQLError => {
 		// Handle no session
 		check.session(session)
 
@@ -127,7 +127,7 @@ export const check = {
 
 		let authorized: boolean = false; // Default to false
 
-		if ((session as SessionType).isAdmin) authorized = true;
+		if ((session as TSession).isAdmin) authorized = true;
 
 		// Handle user not authorized
 		if (!authorized && !silent) {
@@ -157,7 +157,7 @@ export const getUA = (req: IncomingMessage): string|undefined => {
 }
 
 // @todo Types
-export const setupMeta = (session: ContextInterface["session"], input: any, node:any = undefined) => {
+export const setupMeta = (session: IContext["session"], input: any, node:any = undefined) => {
 	const timestamp = new Date().toISOString();
 
 	if (!node) {
