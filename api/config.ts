@@ -4,10 +4,10 @@ import { globalLogger as log } from "./src/utilities/logging/log";
 const Warnings = new WarningAggregator('Config');
 const Errors = new ErrorAggregator('Config');
 
-import {ConfigType, ConfigDefaultsType} from "./src/types/config.types";
+import {TConfig, TConfigDefaults} from "./src/types/config.types";
 
 // Defaults
-const defaults: ConfigDefaultsType = {
+const defaults: TConfigDefaults = {
     server: {
         port: 4000,
         host: '127.0.0.1',
@@ -79,7 +79,7 @@ const credentials = (user: string, password: string): string => {
     } else return '';
 }
 
-const config: ConfigType = {
+const config: TConfig = {
     server: {
         host: process.env?.SERVER_HOST || defaults.server.host,
         port: Number(process.env?.SERVER_PORT) || defaults.server.port,

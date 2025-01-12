@@ -39,10 +39,10 @@ import { AuthService } from "./src/services/auth/service";
 import { MailService } from "./src/services/mail/service";
 
 // Types
-import { ContextInterface } from "./src/types/context.types";
+import { IContext } from "./src/types/context.types";
 
 // Construct Apollo server instance
-const server = new ApolloServer<ContextInterface>({
+const server = new ApolloServer<IContext>({
 	schema,
 	plugins: [
 		telemetryPlugin(),
@@ -72,7 +72,7 @@ const { url } = await startStandaloneServer(server, {
 		port: config.server.port,
 		host: config.server.host
 	},
-	context: async ({req}): Promise<ContextInterface> => {
+	context: async ({req}): Promise<IContext> => {
 		statistics.counters.increment('requests');
 
 		const telemetryRequest = {
