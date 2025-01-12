@@ -2,48 +2,41 @@ import { EntityId } from 'redis-om'
 import { check } from "../../utilities/helpers";
 
 // Types
-import {ContextInterface as CtxI} from "../../types/context.types";
-import {SessionType} from "../../services/auth/session";
+import {IContext, UContextSession} from "../../types/context.types";
+import {TSession} from "../../services/auth/session";
+import {THydratedUser} from "../../models/user.types";
 
 export default {
 	Session: { // No need for auth checks, since output based on session.
-		id: (obj: SessionType): string|null => {
-			return obj[EntityId] || null;
-		},
-		/*
-		user: (_, __, {session}: CtxI) => {
-			return (session) ? session.user : null;
-		},
-		 */
-		userAddr: (obj) => {
-			return obj.userAddr;
-		}
+		id: (obj: TSession): string | null => obj[EntityId] || obj.sessionId || null,
+		user: async ({userId}: TSession, _: any, {models: {user}}: IContext): Promise<THydratedUser> => (userId) ? await user.findOne({_id: userId}) : null,
 	},
 	Query: {
-		session: async (_, {sessionId}, {session, services: {auth}}: CtxI) => {
+		session: async (_: any, {sessionId}, {services: {auth}, internal: {requestId}}: IContext): Promise<TSession> => {
 			check.needs('redis');
 			check.validate(sessionId, 'string');
 
-			// @todo integrate AuthService
-			const sessionNode = await models.session.fetch(sessionId);
+			const sessionNode = await auth.getSessionById(sessionId, requestId);
 
-			return (sessionNode?.userId)?sessionNode:null;
+			return (sessionNode?.userId) ? sessionNode : null;
 		},
-		sessionsByUser: async (_, {userId}, {session, models}: CtxI) => {
+		sessionsByUser: async (_: any, {userId}, {services: {auth}, internal: {requestId}}: IContext): Promise<TSession[]> => {
 			check.needs('redis');
 			check.validate(userId, 'string');
 
-			const sessionNodes = await models.session.search().where('userId').eq(userId).return.all()
+			const sessionNodes = await auth.getSessionsByUserId(userId, requestId);
 
-			return sessionNodes||[];
+			console.log(sessionNodes);
+
+			return sessionNodes;
 		},
-		currentUser: async (_, __, {models: {user}, session}: CtxI) => {
+		currentUser: async (_: any, __: any, {models: {user}, session}: IContext): Promise<THydratedUser> => {
 			check.needs('redis');
 			check.needs('mongo');
 
-			return await user.findOne({_id: (session as SessionType).userId}) || null
+			return await user.findOne({_id: (session as TSession).userId}) || null
 		},
-		currentSession: (_, __, {session}: CtxI) => {
+		currentSession: (_: any, __: any, {session}: IContext): UContextSession|null => {
 			return (session) ? session : null;
 		}
 	},

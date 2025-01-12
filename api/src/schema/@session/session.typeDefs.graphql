@@ -1,6 +1,8 @@
 type Session {
     "Session Id"
     id: String!
+    "Associated user Id"
+    userId: ID
     "Associated user"
     user: User
     "User-agent used while creating the session"

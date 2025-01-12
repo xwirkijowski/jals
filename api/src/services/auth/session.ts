@@ -48,7 +48,26 @@ export default class Session {
 		return (node?.userId) ? new Session((node as ISession), rId) : undefined;
 	}
 
-	refresh = async (expiresIn: number, rId: string) => {
+	static async findByUserId(userId: ISession['userId'], rId: string): Promise<Array<TSession>> {
+		const nodes = await model.search()
+			.where('userId').equals(userId as string)
+			.return.all();
+
+		let sessions: Array<TSession> = [];
+
+		if (nodes.length > 0) {
+			nodes.forEach(node => {
+				if (node?.userId === userId) {
+					node.sessionId = node[(EntityId as unknown as string)];
+					sessions.push(new Session((node as ISession), rId));
+				}
+			})
+		}
+
+		return sessions;
+	}
+
+	refresh = async (expiresIn: number, rId: string): Promise<this> => {
 		if (!this.sessionId) return undefined;
 
 		this.updatedAt = new Date();
