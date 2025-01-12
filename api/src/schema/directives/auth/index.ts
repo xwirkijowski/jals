@@ -39,7 +39,7 @@ const authDirective = (directiveName: string)=>  {
                                 check.session(context.session)
                             }
 
-                            resolve(source, args, context, info);
+                            return resolve(source, args, context, info);
                         }
 
                         return fieldConfig;
