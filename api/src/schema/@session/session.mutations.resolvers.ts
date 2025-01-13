@@ -87,7 +87,7 @@ export default {
 				return result.addErrorAndLog('CANNOT_CREATE_CODE', null, null, 'error', 'Failed to create an auth code', 'Resolvers').response();
 			}
 		},
-		logIn: async (_: any, {input}: {input: IAuthInput}, {models: {user}, services, session, req, internal: {requestId}}: IContext) => {
+		logIn: async (_: any, {input}: {input: IAuthInput}, {models: {user}, services, session, req, res, internal: {requestId}}: IContext) => {
 			check.needs('redis');
 			check.needs('mongo');
 
@@ -125,7 +125,7 @@ export default {
 			// Create a session
 			let sessionNode: SessionType|boolean;
 			try {
-				sessionNode = await services.auth.createSession(userNode._id, userNode.isAdmin, req, requestId);
+				sessionNode = await services.auth.createSession(userNode._id, userNode.isAdmin, req, res, requestId);
 			}  catch (err) {
 				handleError(err, 'Resolvers'); return result.addError('INTERNAL_ERROR').response();
 			}
@@ -140,7 +140,7 @@ export default {
 			}
 
 		},
-		register: async (_: any, {input}: {input: IAuthInput}, {models: {user}, services, session, req, internal: {requestId}}: IContext) => {
+		register: async (_: any, {input}: {input: IAuthInput}, {models: {user}, services, session, req, res, internal: {requestId}}: IContext) => {
 			check.needs('redis');
 			check.needs('mongo');
 
@@ -193,7 +193,7 @@ export default {
 			// Create a session
 			let sessionNode: SessionType|boolean;
 			try {
-				sessionNode = await services.auth.createSession(createdUser._id, false, req, requestId);
+				sessionNode = await services.auth.createSession(createdUser._id, false, req, res, requestId);
 			}  catch (err) {
 				handleError(err, 'Resolvers'); return result.addError('INTERNAL_ERROR').response();
 			}

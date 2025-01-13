@@ -7,7 +7,7 @@ import { repository as model } from "./session.model";
 import { log } from "./service";
 
 import {ISession} from "./types";
-import {IncomingMessage} from "node:http";
+import {IContext} from "../../types/context.types";
 
 /**
  * @todo Implement check for expires
@@ -23,7 +23,7 @@ export default class Session {
 	updatedAt?: Date|string;
 	version: number = 0;
 
-	constructor(props: ISession, rId: string, request?: IncomingMessage) {
+	constructor(props: ISession, rId: string, request?: IContext['req']) {
 		if (!props?.userId) { // @todo Change caller handling, no support for throw atm
 			throw new CriticalError('Session creation failed, no userId provided!', 'SESSION_MISSING_ARGS', 'AuthService', true, {requestId: rId, ...props})
 		}

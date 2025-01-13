@@ -1,7 +1,6 @@
 import mongoose from 'mongoose';
 import { GraphQLError } from "graphql";
 
-import {IncomingMessage} from "node:http";
 import { $DB } from "./database/status";
 import {TSession} from "../services/auth/session";
 import {IContext} from "../types/context.types";
@@ -146,13 +145,13 @@ export const check = {
 
 
 // @todo Types and rework
-export const getIP = (req: IncomingMessage): string|undefined => {
+export const getIP = (req: IContext['req']): string|undefined => {
 	if (!req) return undefined;
 
 	return ((req?.headers?.["p9s-user-ip"] || req?.headers?.["x-forwarded-for"] || req?.headers?.["x-real-ip"] || req?.socket?.remoteAddress || undefined) as string);
 }
 
-export const getUA = (req: IncomingMessage): string|undefined => {
+export const getUA = (req: IContext['req']): string|undefined => {
 	return req.headers?.['user-agent'] || undefined;
 }
 

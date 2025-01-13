@@ -10,9 +10,8 @@ import Session, {TSession} from "./session";
 import AuthCode, {AuthCodeType} from "./authCode";
 
 // Types
-import {IncomingMessage} from "node:http";
 import {IAuthCodeGenerator, ISession, IAuthCode, TSettingsAuth} from "./types";
-import {UContextSession} from "../../types/context.types";
+import {IContext, UContextSession} from "../../types/context.types";
 import {ERequestAuthCodeAction} from "../../schema/@session/session.types";
 
 export class AuthService extends EventEmitter {
@@ -39,7 +38,7 @@ export class AuthService extends EventEmitter {
 		return this;
 	}
 
-	 deny = () => {
+	deny = () => {
 		throw new GraphQLError('Invalid credentials', {
 			extensions: {
 				code: 'UNAUTHORIZED',
@@ -56,7 +55,7 @@ export class AuthService extends EventEmitter {
 	 * @param request
 	 * @param rId
 	 */
-	handleSession = async (request: IncomingMessage, rId: string): Promise<UContextSession> => {
+	handleSession = async (request: IContext['req'], rId: string): Promise<UContextSession> => {
 		if (request && request.headers.authorization) {
 			const sessionId: string = request.headers.authorization.replace('Bearer ', '');
 			const session: TSession|undefined = await Session.find(sessionId, rId);
@@ -72,9 +71,22 @@ export class AuthService extends EventEmitter {
 		} else return undefined;
 	}
 
-	createSession = async (userId: ISession["userId"], isAdmin: boolean, request: IncomingMessage, rId: string) => {
-		// Catch internal errors, return false on fail to avoid propagation to public API
-		return await new Session({userId, isAdmin}, rId, request).save(this.config.session.expiresIn, rId).catch((_: Error): boolean => false);
+	createSession = async (
+		userId: ISession["userId"],
+		isAdmin: boolean,
+		request: IContext['req'],
+		response: IContext['res'],
+		rId: string
+	): Promise<TSession|false> => {
+		// Catch internal errors, to avoid propagation to response
+		const session: TSession|false = await new Session({userId, isAdmin}, rId, request)
+			.save(this.config.session.expiresIn, rId)
+			.catch((): false => false);
+
+		// Return false on fail, handle in resolver
+		if (!session) return false;
+
+		return session;
 	}
 
 	getSessionById = async (sessionId: ISession['sessionId'], rId: string) => {
@@ -120,8 +132,8 @@ export class AuthService extends EventEmitter {
 	 * @param	action
 	 * @param   rId
 	 *
-	 * @returns    {Promise<AuthCode|false>}    If AuthCode found, return AuthCode instance;
-	 *                                        If no AuthCode found, return false;
+	 * @returns    {Promise<AuthCode|false>}	If AuthCode found, return AuthCode instance;
+	 *                                        	If no AuthCode found, return false;
 	 */
 	checkCode = async (userId: IAuthCode["userId"], code: string, action: IAuthCode["action"], rId: string): Promise<AuthCode|false> => {
 		if ((action === ERequestAuthCodeAction['LOGIN'] && !userId) || !code || !rId) {
