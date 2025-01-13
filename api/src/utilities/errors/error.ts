@@ -87,7 +87,7 @@ class InternalError extends Error implements Partial<Error> {
 		if (axiom) {
 			axiom.ingest(`error`, {
 				level: this.level,
-				errorId: this.errorId,
+				id: this.errorId,
 				domain: this.domain||null,
 				code: this.code,
 				msg: this.msg,
