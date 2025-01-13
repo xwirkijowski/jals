@@ -1,8 +1,9 @@
 "use server";
 
 import {LOG_IN} from "./LogIn.query";
-import {getClient} from "../../../apollo-client";
+import {getClient} from "../../../lib/apollo-client";
 import {ResponseType} from "@type/data/Response";
+import {createSession, getSessionContext} from "../../../lib/auth/session";
 
 export const LogInAction = async (
     {email}: {email?: string},
@@ -18,8 +19,13 @@ export const LogInAction = async (
                 email: email,
                 code: code
             }
-        }
+        },
+        context: await getSessionContext(),
     })
+
+    if (data && data?.result?.success === true && data?.sessionId) {
+        await createSession(data)
+    }
 
     return data;
 }

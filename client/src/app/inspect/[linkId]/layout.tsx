@@ -1,10 +1,13 @@
+"use server";
+
 // Imports
-import {getClient} from '../../../apollo-client';
+import {getClient} from '../../../lib/apollo-client';
 import {LinkContextWrapper} from "../../../contexts/LinkContext";
+import {getSessionContext} from "../../../lib/auth/session";
 import React from "react";
 
 // Metadata
-import {Metadata, ResolvingMetadata} from "next";
+import {Metadata} from "next";
 export const generateMetadata = async (
     { params }
 ): Promise<Metadata> => {
@@ -45,9 +48,7 @@ export default async ({
     params: any
 }) => {
     const linkId: string = (await params).linkId;
-    const {data} = await getClient().query({query: LINK, variables: {linkId: linkId}});
-
-    console.log(data)
+    const {data} = await getClient().query({query: LINK, variables: {linkId: linkId}, context: await getSessionContext()});
 
     return (
         <LinkContextWrapper value={{data}}>

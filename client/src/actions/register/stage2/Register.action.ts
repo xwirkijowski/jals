@@ -1,8 +1,9 @@
 "use server";
 
 import {REGISTER} from "./Register.query";
-import {getClient} from "../../../apollo-client";
+import {getClient} from "../../../lib/apollo-client";
 import {ResponseType} from "@type/data/Response";
+import {getSessionContext} from "../../../lib/auth/session";
 
 export const RegisterAction = async (
     {email}: {email?: string},
@@ -18,7 +19,8 @@ export const RegisterAction = async (
                 email: email,
                 code: code,
             }
-        }
+        },
+        context: await getSessionContext(),
     })
 
     return data;

@@ -1,8 +1,9 @@
 "use server";
 
 import {REQUEST_AUTH_CODE} from "../../shared/RequestAuthCode.query";
-import {getClient} from "../../../apollo-client";
+import {getClient} from "../../../lib/apollo-client";
 import {ResponseType} from "@type/data/Response";
+import {getSessionContext} from "../../../lib/auth/session";
 
 export const RegisterRequestAction = async (
     state: ResponseType,
@@ -17,7 +18,8 @@ export const RegisterRequestAction = async (
                 email: email,
                 action: 'REGISTER',
             }
-        }
+        },
+        context: await getSessionContext(),
     })
 
     return {
