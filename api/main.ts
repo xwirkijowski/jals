@@ -23,8 +23,8 @@ import { ulid } from 'ulid';
 import Counters from './src/utilities/telemetryCounters';
 
 // Import middleware
-import { telemetryPlugin } from "./src/middleware/telemetryPlugin";
-import { extensionsPlugin } from "./src/middleware/extensionsPlugin";
+import { telemetryPlugin } from "./src/plugins/telemetry.plugin";
+import { extensionsPlugin } from "./src/plugins/extensions.plugin";
 
 // Import final schema
 import schema from './src/schema';
@@ -72,7 +72,7 @@ const { url } = await startStandaloneServer(server, {
 		port: config.server.port,
 		host: config.server.host
 	},
-	context: async ({req}): Promise<IContext> => {
+	context: async ({req, res}): Promise<IContext> => {
 		statistics.counters.increment('requests');
 
 		const telemetryRequest = {
@@ -86,9 +86,12 @@ const { url } = await startStandaloneServer(server, {
 
 		const session = await services.auth.handleSession(req, telemetryRequest.requestId);
 
+		console.log(session, req.headers)
+
 		return {
 			session,
 			req,
+			res,
 			pagination: config.server.pagination,
 			models: {
 				user: userModel,

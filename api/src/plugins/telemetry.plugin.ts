@@ -3,7 +3,7 @@ import {ApolloServerPlugin, GraphQLRequestContextWillSendResponse, GraphQLReques
 import {IContext} from "../types/context.types";
 
 import {axiomClient as axiom} from "../utilities/logging/axiom";
-import {getUA} from "../utilities/helpers";
+import {getIP, getUA} from "../utilities/helpers";
 
 export function telemetryPlugin(): ApolloServerPlugin<IContext> {
 	return {
@@ -20,6 +20,8 @@ export function telemetryPlugin(): ApolloServerPlugin<IContext> {
 						timestampStart: contextValue.internal.requestTimestamp,
 						timestampEnd: new Date().toISOString(),
 						session: !!(contextValue.session && contextValue.session !== 'invalid') ? contextValue?.session : undefined,
+						userAddr: getIP(contextValue.req),
+						userAgent: getUA(contextValue.req),
 					}
 
 					axiom.ingest(`request`, {
@@ -30,7 +32,8 @@ export function telemetryPlugin(): ApolloServerPlugin<IContext> {
 						sessionId: data?.session?.sessionId,
 						user: {
 							id: data?.session?.userId,
-							agent: getUA(contextValue.req),
+							agent: data.userAddr,
+							addr: data.userAgent,
 						},
 						body: (contextValue.req as any)?.body,
 					})
@@ -43,7 +46,8 @@ export function telemetryPlugin(): ApolloServerPlugin<IContext> {
 						...(!!(data?.session) && {sessionId: data.session.sessionId}),
 						user: {
 							...(!!(data?.session) && {id: data.session.userId}),
-							agent: getUA(contextValue.req),
+							agent: data.userAddr,
+							addr: data.userAgent,
 						},
 					});
 				}
