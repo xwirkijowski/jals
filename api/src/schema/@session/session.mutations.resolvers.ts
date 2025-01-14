@@ -207,7 +207,24 @@ export default {
 				return result.addError('LOGIN_FAILED', undefined, 'Unknown problem occurred, cannot log in.').response(true);
 			}
 		},
+		logOut: async (_: any, __:any, {session, internal: {requestId}}: IContext) => {
+			check.needs('redis');
+			check.needs('mongo');
 
-		// @todo Implement logout mutations
+			if (!check.isSessionValid(session)) return new Result().addError('NOT_LOGGED_IN').response()
+
+			const result = new Result();
+
+			try {
+				await session.remove(requestId);
+			} catch (err) {
+				return result.addError('LOGOUT_FAILED', undefined, 'Unknown problem occurred, cannot log out and remove session.').response();
+			}
+
+			session = undefined;
+
+			return result.response()
+		}
+		// @todo Implement additional session management mutations
 	}
 }
