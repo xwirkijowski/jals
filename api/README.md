@@ -43,8 +43,8 @@ Data sources are stored separately due to them being loaded directly to `main.ts
 ### Middleware
 
 Two custom plugins are loaded into the Apollo Server:
-- `extensionsPlugin.ts` — appends current session status and requestId to the extensions field;
-- `telemetryPlugin.ts` — logs requests with basic metrics (time tracking with dates and `performance`).
+- `extensions.plugin.ts` — appends current session status and requestId to the extensions field;
+- `telemetry.plugin.ts` — logs requests with basic metrics (time tracking with dates and `performance`).
 
 ### Services
 
