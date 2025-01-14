@@ -89,3 +89,5 @@ export class ResultError {
 		return this;
 	}
 }
+
+export type TResult = InstanceType<typeof Result>
