@@ -78,19 +78,32 @@ export const check = {
 			else throw new GraphQLError('Input empty or wrong type', {extensions: {code: 'BAD_USER_INPUT'}});
 		}
 	},
-	prepareInput: (input: any, struct: TValidateData, result: TResult = new Result()): {readyInput?: any, result: TResult} => {
-		const code = {
-			malformed: 'BAD_USER_INPUT',
-			invalid: 'INPUT_INVALID',
-			type: 'INPUT_WRONG_TYPE',
-			empty: 'INPUT_EMPTY',
+	// @todo Documentation, better types, implement pattern for email and web addresses
+	prepareInput: (input: unknown, struct: TValidateData, result: TResult = new Result()): {readyInput?: any, result: TResult} => {
+		const e = (path: string, key: string, condition?: any) => {
+			const code = {
+				malformed: 'BAD_USER_INPUT',
+				invalid: 'INPUT_INVALID',
+				type: 'INPUT_WRONG_TYPE',
+				empty: 'INPUT_EMPTY',
+			}
+
+			const message = {
+				malformed: '',
+				invalid: '',
+				length: `Input field ${path} must have exactly ${condition} length`,
+				type: `Input field ${path} is of wrong type`,
+				empty: `Input field ${path} is empty`,
+			}
+
+			return [code[key] as string, path as string, message[key] as string] as const;
 		}
 
 		let readyInput = {};
 
 		// Validate the input object
-		if (typeof input !== 'object') return {readyInput, result: result.addError(code.malformed, 'input', 'Input wrong type')};
-		else if (Object.keys(input).length === 0) return {readyInput, result: result.addError(code.empty, 'input', 'Input empty')};
+		if (typeof input !== 'object') return {readyInput, result: result.addError('BAD_USER_INPUT', 'input', 'Input wrong type')};
+		else if (Object.keys(input).length === 0) return {readyInput, result: result.addError('INPUT_EMPTY', 'input', 'Input empty')};
 
 		for (const [key, data] of Object.entries(struct)) {
 			const normalize: boolean = data?.normalize || false;
@@ -101,41 +114,41 @@ export const check = {
 
 			// Check if not null or undefined
 			if (!optional && (!inputValue || (inputValue && !check.nonNull(inputValue)))) {
-				result.addError(code.empty, path, 'Input field empty');
+				result.addError(...e(path, 'empty'));
 				continue;
 			} else if (optional && !inputValue) continue;
 
 			// Handle generic string
 			if (data.type === 'string') {
 				if (typeof inputValue !== data.type) {
-					result.addError(code.type, path, 'Input wrong type');
+					result.addError(...e(path, 'type'));
 					continue;
 				} else if (inputValue.length === 0) {
-					result.addError(code.empty, path, 'Input empty');
+					result.addError(...e(path, 'empty'));
 					continue;
 				} else if (data.length && inputValue.length !== data.length) {
-					result.addError(code.invalid, path, `Input must have exactly ${data.length} length`);
+					result.addError(...e(path, 'length', data.length));
 					continue;
 				}
 
 				readyInput[key] = (normalize) ? String(inputValue).normalize('NFKD') : String(inputValue);
 			} else if (data.type === 'boolean') {
 				if (typeof inputValue !== data.type) {
-					result.addError(code.type, path, 'Input wrong type');
+					result.addError(...e(path, 'type'));
 					continue;
 				}
 
 				readyInput[key] = Boolean(inputValue);
 			} else if (data.type === 'number') {
 				if (typeof inputValue !== data.type) {
-					result.addError(code.type, path, 'Input wrong type');
+					result.addError(...e(path, 'type'));
 					continue;
 				}
 
 				readyInput[key] = Number(inputValue);
 			} else if (data.type === 'ObjectId') {
 				if (!mongoose.isValidObjectId(inputValue)) {
-					result.addError(code.type, path, 'Input wrong type');
+					result.addError(...e(path, 'type'));
 					continue;
 				}
 
