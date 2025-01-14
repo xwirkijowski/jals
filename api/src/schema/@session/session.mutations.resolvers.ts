@@ -10,6 +10,17 @@ import {THydratedUser} from "../../models/user.types";
 import {ERequestAuthCodeAction, IAuthInput, IRequestAuthCodeInput} from "./session.types";
 import {CriticalError} from "../../utilities/errors";
 
+const handleAction = (readyInput: any) => {
+	// Set default action to `LOGIN` if none specified or invalid
+	if (!readyInput.action || !['LOGIN', 'REGISTER'].includes(readyInput.action)) readyInput.action = ERequestAuthCodeAction["LOGIN"];
+
+	// Assign to variable, remove form input
+	const action: ERequestAuthCodeAction = ERequestAuthCodeAction[readyInput.action];
+	delete readyInput.action;
+
+	return action;
+}
+
 const validateAuthInput = (input: IAuthInput): { readyInput: IAuthInput, result: TResult } => {
 	const {readyInput, result} = check.prepareInput(input, {
 		email: {
@@ -33,6 +44,8 @@ const validateAuthInput = (input: IAuthInput): { readyInput: IAuthInput, result:
 	return {readyInput, result};
 }
 
+// @todo Get rid of try...catch
+
 export default {
 	Mutation: {
 		requestAuthCode: async (_: any, {input}: {input: IRequestAuthCodeInput} , {models: {user}, services, session, internal: {requestId}, req}: IContext) => {
@@ -54,12 +67,7 @@ export default {
 			});
 			if (result.hasErrors()) return result.response();
 
-			// Set default action to `LOGIN` if none specified or invalid
-			if (!readyInput.action || !['LOGIN', 'REGISTER'].includes(readyInput.action)) readyInput.action = ERequestAuthCodeAction["LOGIN"];
-
-			// Assign to variable, remove form input
-			const action: ERequestAuthCodeAction = ERequestAuthCodeAction[readyInput.action];
-			delete readyInput.action;
+			const action = handleAction(readyInput);
 
 			// Get user by email
 			const userNode: THydratedUser = await user.findOne({email: readyInput.email})
@@ -229,7 +237,7 @@ export default {
 			try {
 				await session.remove(requestId);
 			} catch (err) {
-				return result.addError('LOGOUT_FAILED', undefined, 'Unknown problem occurred, cannot log out and remove session.').response();
+				handleError(err, 'Resolvers'); return result.addError('LOGOUT_FAILED', undefined, 'Unknown problem occurred, cannot log out and remove session.').response();
 			}
 
 			session = undefined;
