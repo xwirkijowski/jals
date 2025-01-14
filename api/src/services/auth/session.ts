@@ -100,6 +100,22 @@ export default class Session {
 			return undefined;
 		}
 	}
+
+	remove = async (rId: string): Promise<boolean> => {
+		if (!this.sessionId) throw new CriticalError('Cannot remove AuthCode without identifier', 'SESSION_REMOVE_NO_ID', 'AuthService', true, {requestId: rId, authCode: this});
+
+		// Remove the entity
+		await model.remove(this.sessionId);
+
+		// Fetch ID to confirm deletion
+		const node = await model.fetch(this.sessionId);
+
+		if (node.code) {
+			throw new CriticalError('Session removal failed!', 'SESSION_REMOVE_FAULT', 'AuthService', true, {requestId: rId, authCode: this});
+		} else {
+			return true;
+		}
+	}
 }
 
 // Export class type

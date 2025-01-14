@@ -79,7 +79,23 @@ export default class AuthCode {
 
 			return this;
 		} else {
-			throw new CriticalError('AuthCode save failed!', 'AUTHCODE_SAVE_FAULT', 'AuthService', true, {requestId: rId, authCode: this})
+			throw new CriticalError('AuthCode save failed!', 'AUTHCODE_SAVE_FAULT', 'AuthService', true, {requestId: rId, authCode: this});
+		}
+	}
+
+	remove = async (rId: string): Promise<boolean> => {
+		if (!this.authCodeId) throw new CriticalError('Cannot remove AuthCode without identifier', 'AUTHCODE_REMOVE_NO_ID', 'AuthService', true, {requestId: rId, authCode: this});
+
+		// Remove the entity
+		await model.remove(this.authCodeId);
+
+		// Fetch ID to confirm deletion
+		const node = await model.fetch(this.authCodeId);
+
+		if (node.code) {
+			throw new CriticalError('AuthCode removal failed!', 'AUTHCODE_REMOVE_FAULT', 'AuthService', true, {requestId: rId, authCode: this});
+		} else {
+			return true;
 		}
 	}
 }
