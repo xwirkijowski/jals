@@ -1,4 +1,4 @@
-import { Result } from "../result";
+import {Result, TResult} from "../result";
 import {check, getIP, getUA, handleError, setupMeta} from "../../utilities/helpers";
 import {log} from "../../services/auth/service";
 
@@ -10,14 +10,27 @@ import {THydratedUser} from "../../models/user.types";
 import {ERequestAuthCodeAction, IAuthInput, IRequestAuthCodeInput} from "./session.types";
 import {CriticalError} from "../../utilities/errors";
 
-const validateAuthInput = (input: IAuthInput): IAuthInput => {
-	check.validate(input, 'object');
-	check.validate(input.email, 'string');
-	check.validate(input.code, 'string');
-	check.validate(input?.userAgent, 'string', true);
-	check.validate(input?.userAddr, 'string', true);
+const validateAuthInput = (input: IAuthInput): { readyInput: IAuthInput, result: TResult } => {
+	const {readyInput, result} = check.prepareInput(input, {
+		email: {
+			type: 'string',
+		},
+		code: {
+			type: 'string',
+			length: 8,
+		},
+		userAgent: {
+			type: 'string',
+			normalize: true,
+			optional: true,
+		},
+		userAddr: {
+			type: 'string',
+			optional: true,
+		}
+	})
 
-	return input;
+	return {readyInput, result};
 }
 
 export default {
@@ -26,30 +39,30 @@ export default {
 			check.needs('redis');
 			check.needs('mongo');
 
-			// Check if user logged in
-			if (session && session !== 'invalid') return new Result().addError('ALREADY_LOGGED_IN').response();
-
-			const result = new Result();
+			if (check.isSessionValid(session)) return new Result().addError('ALREADY_LOGGED_IN').response();
 
 			// Validate required input fields
-			check.validate(input, 'object');
-			check.validate(input.email, 'string');
-			check.validate(input.action, 'string', true);
-
-			// @todo Input sanitization
+			const {readyInput, result} = check.prepareInput(input, {
+				email: {
+					type: 'string',
+					normalize: true,
+				},
+				action: {
+					type: 'string',
+					optional: true,
+				}
+			});
+			if (result.hasErrors()) return result.response();
 
 			// Set default action to `LOGIN` if none specified or invalid
-			if (!input.action || !['LOGIN', 'REGISTER'].includes(input.action)) input.action = ERequestAuthCodeAction["LOGIN"];
+			if (!readyInput.action || !['LOGIN', 'REGISTER'].includes(readyInput.action)) readyInput.action = ERequestAuthCodeAction["LOGIN"];
 
 			// Assign to variable, remove form input
-			const action: ERequestAuthCodeAction = ERequestAuthCodeAction[input.action];
-			delete input.action;
-
-			// Normalize user input
-			input.email = input.email.normalize('NFKD');
+			const action: ERequestAuthCodeAction = ERequestAuthCodeAction[readyInput.action];
+			delete readyInput.action;
 
 			// Get user by email
-			const userNode: THydratedUser = await user.findOne({email: input.email})
+			const userNode: THydratedUser = await user.findOne({email: readyInput.email})
 
 			if (!userNode && action === 'LOGIN') { // If no user found on `LOGIN` return error
 				return result.addError('INVALID_CREDENTIALS').response();
@@ -62,7 +75,7 @@ export default {
 				if (action === 'LOGIN') {
 					codeNode = await services.auth.createCode(userNode._id, userNode.email, action, requestId);
 				} else if (action === 'REGISTER') {
-					codeNode = await services.auth.createCode(undefined, input.email, action, requestId);
+					codeNode = await services.auth.createCode(undefined, readyInput.email, action, requestId);
 				}
 			} catch (err) {
 				handleError(err, 'Resolvers'); return result.addError('INTERNAL_ERROR').response();
@@ -71,7 +84,7 @@ export default {
 			// Send the email
 			let emailTransaction: string|void
 			try {
-				emailTransaction = await services.mail.create(userNode?.email||input.email, 'Your authentication code', {
+				emailTransaction = await services.mail.create(userNode?.email||readyInput.email, 'Your authentication code', {
 					authCode: (codeNode as AuthCodeType),
 					userAddr: getIP(req),
 					userAgent: getUA(req),
@@ -91,22 +104,13 @@ export default {
 			check.needs('redis');
 			check.needs('mongo');
 
-			// Check if user logged in
-			if (session && session !== 'invalid') return new Result().addError('ALREADY_LOGGED_IN').response();
+			if (check.isSessionValid(session)) return new Result().addError('ALREADY_LOGGED_IN').response();
 
-			const result = new Result();
-
-			// Validate input fields
-			validateAuthInput(input);
-
-			// @todo Input sanitization
-
-			// Normalize user input
-			input.email = input.email.normalize('NFKD');
-			if (input?.userAgent) input.userAgent.normalize('NFKD');
+			const {readyInput, result} = validateAuthInput(input);
+			if (result.hasErrors()) return result.response();
 
 			// Get user by email
-			const userNode: THydratedUser = await user.findOne({email: input.email})
+			const userNode: THydratedUser = await user.findOne({email: readyInput.email})
 
 			// If no user found return operation failed
 			if (!userNode) {
@@ -116,8 +120,7 @@ export default {
 			// Check code
 			let codeNode: AuthCodeType|false;
 			try {
-				codeNode = await services.auth.checkCode(userNode._id, input.code, ERequestAuthCodeAction['LOGIN'], requestId);
-				if (!codeNode) return result.addError('INVALID_CODE', undefined, 'Login failed, invalid code').response(true);
+				codeNode = await services.auth.checkCode(userNode._id, readyInput.code, ERequestAuthCodeAction['LOGIN'], requestId);
 				if (!codeNode) return result.addError('INVALID_CODE', undefined, 'Login failed, invalid code').response();
 			} catch (err) {
 				handleError(err, 'Resolvers'); return result.addError('INTERNAL_ERROR').response();
@@ -152,20 +155,13 @@ export default {
 			check.needs('redis');
 			check.needs('mongo');
 
-			// Check if user logged in
-			if (session && session !== 'invalid') return new Result().addError('ALREADY_LOGGED_IN').response();
+			if (check.isSessionValid(session)) return new Result().addError('ALREADY_LOGGED_IN').response();
 
-			const result = new Result();
-
-			// Validate input fields
-			validateAuthInput(input);
-
-			// Normalize user input
-			input.email = input.email.normalize('NFKD');
-			if (input?.userAgent) input.userAgent.normalize('NFKD');
+			const {readyInput, result} = validateAuthInput(input);
+			if (result.hasErrors()) return result.response();
 
 			// Check for existing user
-			const userNode: THydratedUser = await user.findOne({email: input.email})
+			const userNode: THydratedUser = await user.findOne({email: readyInput.email})
 
 			// If user found return operation failed
 			if (userNode) {
@@ -175,7 +171,7 @@ export default {
 			// Check code
 			let codeNode: AuthCodeType|false;
 			try {
-				codeNode = await services.auth.checkCode(undefined, input.code, ERequestAuthCodeAction['REGISTER'], requestId);
+				codeNode = await services.auth.checkCode(undefined, readyInput.code, ERequestAuthCodeAction['REGISTER'], requestId);
 				if (!codeNode) return result.addError('INVALID_CODE', undefined, 'Login failed, invalid code').response(true);
 			} catch (err) {
 				handleError(err, 'Resolvers'); return result.addError('INTERNAL_ERROR').response();
@@ -183,7 +179,7 @@ export default {
 
 			// Construct new user and set up metadata
 			const newUser = setupMeta(session, {
-				email: input.email,
+				email: readyInput.email,
 				isAdmin: false,
 			});
 
