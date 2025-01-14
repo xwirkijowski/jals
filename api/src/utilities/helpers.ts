@@ -92,7 +92,6 @@ export const check = {
 		if (typeof input !== 'object') return {readyInput, result: result.addError(code.malformed, 'input', 'Input wrong type')};
 		else if (Object.keys(input).length === 0) return {readyInput, result: result.addError(code.empty, 'input', 'Input empty')};
 
-
 		for (const [key, data] of Object.entries(struct)) {
 			const normalize: boolean = data?.normalize || false;
 			const optional: boolean = data?.optional || false;
@@ -101,10 +100,10 @@ export const check = {
 			const path = `input.${key}`
 
 			// Check if not null or undefined
-			if (!inputValue || !check.nonNull(inputValue) && !optional) {
+			if (!optional && (!inputValue || (inputValue && !check.nonNull(inputValue)))) {
 				result.addError(code.empty, path, 'Input field empty');
 				continue;
-			} else if (!inputValue && optional) continue;
+			} else if (optional && !inputValue) continue;
 
 			// Handle generic string
 			if (data.type === 'string') {
@@ -114,7 +113,7 @@ export const check = {
 				} else if (inputValue.length === 0) {
 					result.addError(code.empty, path, 'Input empty');
 					continue;
-				} else if (inputValue.length !== data.length) {
+				} else if (data.length && inputValue.length !== data.length) {
 					result.addError(code.invalid, path, `Input must have exactly ${data.length} length`);
 					continue;
 				}
