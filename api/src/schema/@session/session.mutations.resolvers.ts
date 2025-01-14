@@ -82,7 +82,7 @@ export default {
 			}
 
 			if (emailTransaction) {
-				return result.response(true)
+				return result.response()
 			} else {
 				return result.addErrorAndLog('CANNOT_CREATE_CODE', null, null, 'error', 'Failed to create an auth code', 'Resolvers').response();
 			}
@@ -118,6 +118,7 @@ export default {
 			try {
 				codeNode = await services.auth.checkCode(userNode._id, input.code, ERequestAuthCodeAction['LOGIN'], requestId);
 				if (!codeNode) return result.addError('INVALID_CODE', undefined, 'Login failed, invalid code').response(true);
+				if (!codeNode) return result.addError('INVALID_CODE', undefined, 'Login failed, invalid code').response();
 			} catch (err) {
 				handleError(err, 'Resolvers'); return result.addError('INTERNAL_ERROR').response();
 			}
@@ -126,7 +127,14 @@ export default {
 			let sessionNode: SessionType|boolean;
 			try {
 				sessionNode = await services.auth.createSession(userNode._id, userNode.isAdmin, req, res, requestId);
-			}  catch (err) {
+			} catch (err) {
+				handleError(err, 'Resolvers'); return result.addError('INTERNAL_ERROR').response();
+			}
+
+			// Invalidate used code
+			try {
+				await codeNode.remove(requestId);
+			} catch (err) {
 				handleError(err, 'Resolvers'); return result.addError('INTERNAL_ERROR').response();
 			}
 
@@ -136,7 +144,7 @@ export default {
 					user: userNode,
 				});
 			} else {
-				return result.addError('LOGIN_FAILED', undefined, 'Unknown problem occurred, cannot log in.').response(true);
+				return result.addError('LOGIN_FAILED', undefined, 'Unknown problem occurred, cannot log in.').response();
 			}
 
 		},
@@ -198,13 +206,20 @@ export default {
 				handleError(err, 'Resolvers'); return result.addError('INTERNAL_ERROR').response();
 			}
 
+			// Invalidate used code
+			try {
+				await codeNode.remove(requestId);
+			} catch (err) {
+				handleError(err, 'Resolvers'); return result.addError('INTERNAL_ERROR').response();
+			}
+
 			if (sessionNode) {
 				return result.response(true, {
 					sessionId: (sessionNode as SessionType).sessionId,
 					user: createdUser,
 				});
 			} else {
-				return result.addError('LOGIN_FAILED', undefined, 'Unknown problem occurred, cannot log in.').response(true);
+				return result.addError('LOGIN_FAILED', undefined, 'Unknown problem occurred, cannot log in.').response();
 			}
 		},
 		logOut: async (_: any, __:any, {session, internal: {requestId}}: IContext) => {
