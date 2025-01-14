@@ -86,8 +86,6 @@ const { url } = await startStandaloneServer(server, {
 
 		const session = await services.auth.handleSession(req, telemetryRequest.requestId);
 
-		console.log(session, req.headers)
-
 		return {
 			session,
 			req,
