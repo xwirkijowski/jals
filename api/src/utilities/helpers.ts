@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, {Types} from 'mongoose';
 import { GraphQLError } from "graphql";
 
 import { $DB } from "./database/status";
@@ -6,6 +6,7 @@ import {TSession} from "../services/auth/session";
 import {IContext} from "../types/context.types";
 import {TId} from "../types/id.types";
 import {CriticalError} from "./errors";
+import {Result, TResult} from "../schema/result";
 
 export const h = {
 	/**
@@ -36,9 +37,27 @@ export const h = {
 	}
 }
 
+// Types
+
+export interface IValidateData {
+	type: 'string'|'number'|'boolean'|'ObjectId'
+	normalize?: boolean
+	optional?: boolean
+	length?: number
+}
+
+export type TValidateData = {
+	[key: string]: IValidateData // | TValidateData
+}
+
+/**
+ *
+ */
 export const check = {
 	/**
 	 * Validate if defined and non-null
+	 *
+	 * @deprecated
 	 *
 	 * @param	input					Input field.
 	 * @param	type					Expected type of input.
@@ -59,6 +78,75 @@ export const check = {
 			else throw new GraphQLError('Input empty or wrong type', {extensions: {code: 'BAD_USER_INPUT'}});
 		}
 	},
+	prepareInput: (input: any, struct: TValidateData, result: TResult = new Result()): {readyInput?: any, result: TResult} => {
+		const code = {
+			malformed: 'BAD_USER_INPUT',
+			invalid: 'INPUT_INVALID',
+			type: 'INPUT_WRONG_TYPE',
+			empty: 'INPUT_EMPTY',
+		}
+
+		let readyInput = {};
+
+		// Validate the input object
+		if (typeof input !== 'object') return {readyInput, result: result.addError(code.malformed, 'input', 'Input wrong type')};
+		else if (Object.keys(input).length === 0) return {readyInput, result: result.addError(code.empty, 'input', 'Input empty')};
+
+
+		for (const [key, data] of Object.entries(struct)) {
+			const normalize: boolean = data?.normalize || false;
+			const optional: boolean = data?.optional || false;
+
+			let inputValue = input[key];
+			const path = `input.${key}`
+
+			// Check if not null or undefined
+			if (!inputValue || !check.nonNull(inputValue) && !optional) {
+				result.addError(code.empty, path, 'Input field empty');
+				continue;
+			} else if (!inputValue && optional) continue;
+
+			// Handle generic string
+			if (data.type === 'string') {
+				if (typeof inputValue !== data.type) {
+					result.addError(code.type, path, 'Input wrong type');
+					continue;
+				} else if (inputValue.length === 0) {
+					result.addError(code.empty, path, 'Input empty');
+					continue;
+				} else if (inputValue.length !== data.length) {
+					result.addError(code.invalid, path, `Input must have exactly ${data.length} length`);
+					continue;
+				}
+
+				readyInput[key] = (normalize) ? String(inputValue).normalize('NFKD') : String(inputValue);
+			} else if (data.type === 'boolean') {
+				if (typeof inputValue !== data.type) {
+					result.addError(code.type, path, 'Input wrong type');
+					continue;
+				}
+
+				readyInput[key] = Boolean(inputValue);
+			} else if (data.type === 'number') {
+				if (typeof inputValue !== data.type) {
+					result.addError(code.type, path, 'Input wrong type');
+					continue;
+				}
+
+				readyInput[key] = Number(inputValue);
+			} else if (data.type === 'ObjectId') {
+				if (!mongoose.isValidObjectId(inputValue)) {
+					result.addError(code.type, path, 'Input wrong type');
+					continue;
+				}
+
+				readyInput[key] = inputValue;
+			}
+		}
+
+		return {readyInput, result}
+	},
+	nonNull: (v: string|number|boolean|Object|Array<string|number|boolean|Object>): boolean => (v !== undefined && v !== null),
 	needs: (system: string):void|GraphQLError => {
 		if (system === 'mongo' && $DB.mongo !== 'connected') {
 			throw new GraphQLError('Database unavailable.', { extensions: { code: 'INTERNAL_SERVER_ERROR' } });
@@ -66,7 +154,7 @@ export const check = {
 			throw new GraphQLError('Session database unavailable.', { extensions: { code: 'INTERNAL_SERVER_ERROR' } });
 		}
 	},
-	isSessionValid: (session: IContext["session"]): session is TSession => (!!session && session !== 'invalid'),
+	isSessionValid: (session: IContext["session"]): session is TSession => (session && session !== 'invalid'),
 	session: (session: IContext["session"]): true|GraphQLError => {
 		if (check.isSessionValid(session)) return true;
 
