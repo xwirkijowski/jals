@@ -32,8 +32,8 @@ export function telemetryPlugin(): ApolloServerPlugin<IContext> {
 						sessionId: data?.session?.sessionId,
 						user: {
 							id: data?.session?.userId,
-							agent: data.userAddr,
-							addr: data.userAgent,
+							agent: data.userAgent,
+							addr: data.userAddr,
 						},
 						body: (contextValue.req as any)?.body,
 					})
@@ -46,8 +46,8 @@ export function telemetryPlugin(): ApolloServerPlugin<IContext> {
 						...(!!(data?.session) && {sessionId: data.session.sessionId}),
 						user: {
 							...(!!(data?.session) && {id: data.session.userId}),
-							agent: data.userAddr,
-							addr: data.userAgent,
+							agent: data.userAgent,
+							addr: data.userAddr,
 						},
 					});
 				}
