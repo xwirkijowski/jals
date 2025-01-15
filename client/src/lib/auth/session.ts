@@ -4,19 +4,30 @@ import { cookies } from 'next/headers';
 const cookieName = 'jals-session';
 const cookieExpire = 60 * 60 * 1000;
 
-type TSessionCookie = {
+export type TSessionCookie = {
 	userId: string;
 	sessionId: string;
 } | 'invalid' | undefined
 
+export type TSession = {
+	id: string
+	user: {
+		id: string
+		email: string
+		isAdmin: boolean
+		version: number
+	}
+	version: number
+} | 'invalid' | undefined
+
 export const createSession = async (data: any) => {
-	const content: TSessionCookie = {
+	const payload: TSessionCookie = {
 		sessionId: data.sessionId,
 		userId: data.user.id,
 	};
 	const cookieStore = await cookies();
 
-	cookieStore.set(cookieName, JSON.stringify(content), {
+	cookieStore.set(cookieName, JSON.stringify(payload), {
 		httpOnly: true,
 		secure: true,
 		expires: new Date(Date.now() + cookieExpire),
@@ -37,13 +48,13 @@ export const refreshSession = async () => {
 
 	if (!payload) return null;
 
-	cookieStore.set(cookieName, session, {
+	cookieStore.set(cookieName, JSON.stringify(payload), {
 		httpOnly: true,
 		secure: true,
 		expires: new Date(Date.now() + cookieExpire),
 		sameSite: 'strict',
 		path: '/',
-	})
+	});
 }
 
 export const invalidateSession = async () => {
@@ -66,14 +77,14 @@ export const getSession = async () => {
 	const cookieStore = await cookies();
 	const session: string | undefined = cookieStore.get(cookieName)?.value || undefined;
 
-	if (!session) return null;
+	if (!session) return undefined;
 	else if (session === 'invalid') return 'invalid';
 	else {
 		let payload: TSessionCookie;
 
 		try {
 			payload = JSON.parse(session) }
-		catch (err) { return null; } // @todo Error handling
+		catch (err) { return undefined; } // @todo Error handling
 
 		return payload;
 	}

@@ -2,9 +2,9 @@
 
 import {Context, createContext, ReactNode} from "react";
 
-export const AuthContext: Context<TContextSessionUnion> = createContext(false);
+export const AuthContext: Context<TContextSessionUnion> = createContext(undefined);
 
-export type TContextSession= {
+export type TContextSession = {
     id: string
     user: {
         id: string
@@ -15,7 +15,7 @@ export type TContextSession= {
     version: number
 }
 
-export type TContextSessionUnion = TContextSession | 'invalid' | false
+export type TContextSessionUnion = TContextSession | 'invalid' | undefined
 
 export const AuthContextWrapper = ({value, children}: {value: TContextSessionUnion, children: ReactNode}) => {
     return (

@@ -6,6 +6,8 @@ import {AuthContext, TContextSession} from "../../contexts/auth/auth.context";
 import Link from "next/link";
 import Button from "@comp/Button/Button";
 import {isSessionValid} from "../../contexts/auth/auth.utils.client";
+import {LogOutButton} from "../../actions/logout/LogOut.button";
+import cx from "classnames";
 
 export const Header = async () => {
     const auth = useContext(AuthContext);
@@ -18,11 +20,18 @@ export const Header = async () => {
                     <span className="text-orange-500">v2</span></Link></h1>
                 <p className="pointer-events-none hidden sm:block">Just Another Link Shortener</p>
             </div>
-            <nav className="flex flex-row flex-1 gap-4 justify-end">
+            <nav className="flex flex-row flex-1 gap-4 justify-end items-center">
                 {authValid ? (
                     <>
-                        <p>{(auth as TContextSession).user.email}</p>
-                        <Link href="/logout" passHref><Button btnType={'light'}>Log Out</Button></Link>
+                        <p className={cx(
+                            'flex flex-row items-center rounded-full py-2 px-4 text-sm float-end text-nowrap',
+                            'bg-zinc-100 text-zinc-500',
+                        )}>
+                            {(auth as TContextSession).user.email}
+                        </p>
+
+                        <Link href={'/dashboard'} passHref><Button btnType={'primary'}>Dashboard</Button></Link>
+                        <LogOutButton/>
                     </>
                 ) : (
                     <>

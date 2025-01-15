@@ -26,5 +26,5 @@ export const resolveSession = async () => {
 
 			return data;
 		}
-	} else return false;
+	} else return undefined;
 }

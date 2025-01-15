@@ -22,7 +22,6 @@ const Page = () => {
                     <p>You can gain access to all visits ("clicks") on your short links by creating a free account!</p>
                 </div>
             </div>
-
         </div>
     )
 }
