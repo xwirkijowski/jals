@@ -1,17 +1,17 @@
 "use client"
 
 import {useContext} from "react";
-import {AuthContext, TContextSession} from "../../contexts/auth/auth.context";
+import {AuthContext} from "../../contexts/auth/auth.context";
 
 import Link from "next/link";
 import Button from "@comp/Button/Button";
-import {isSessionValid} from "../../contexts/auth/auth.utils.client";
 import {LogOutButton} from "../../actions/logout/LogOut.button";
 import cx from "classnames";
+import {TCurrentUser, UserContext} from "../../contexts/user/user.context";
 
 export const Header = async () => {
     const auth = useContext(AuthContext);
-    const authValid: boolean = isSessionValid(auth);
+    const user: TCurrentUser = useContext(UserContext);
 
     return (
         <header className="flex flex-row w-full px-8 py-4 gap-8 mb-8 bg-white border-b-2 border-orange-500">
@@ -21,13 +21,13 @@ export const Header = async () => {
                 <p className="pointer-events-none hidden sm:block">Just Another Link Shortener</p>
             </div>
             <nav className="flex flex-row flex-1 gap-4 justify-end items-center">
-                {authValid ? (
+                {auth?.session && user ? (
                     <>
                         <p className={cx(
                             'flex flex-row items-center rounded-full py-2 px-4 text-sm float-end text-nowrap',
                             'bg-zinc-100 text-zinc-500',
                         )}>
-                            {(auth as TContextSession).user.email}
+                            {user?.email}
                         </p>
 
                         <Link href={'/dashboard'} passHref><Button btnType={'primary'}>Dashboard</Button></Link>
