@@ -3,7 +3,8 @@
 import {LOG_OUT} from "./LogOut.query";
 import {getClient} from "../../lib/apollo-client";
 import {ResponseType} from "@type/data/Response";
-import {deleteSession, getSessionContext} from "../../lib/auth/session";
+import {getSessionHeader} from "../../lib/auth/session";
+import {deleteCookie} from "../../lib/auth/session.cookies";
 
 export const LogOutAction = async (
 	state: ResponseType
@@ -11,9 +12,9 @@ export const LogOutAction = async (
 
 	const {data: {logOut: data}} = await getClient().mutate({
 		mutation: LOG_OUT,
-		context: await getSessionContext(),
+		context: await getSessionHeader(true),
 	})
 
-	await deleteSession()
+	await deleteCookie()
 	return data;
 }

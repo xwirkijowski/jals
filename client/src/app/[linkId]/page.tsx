@@ -13,7 +13,7 @@ export const generateMetadata = async (
 
 import { redirect } from "next/navigation";
 import { getClient } from "../../lib/apollo-client";
-import { getSessionContext } from "../../lib/auth/session";
+import { getSessionHeader } from "../../lib/auth/session";
 
 import { gql } from "@apollo/client";
 const LINK = gql`
@@ -46,8 +46,10 @@ export default async function (
 )  {
 	const linkId: string = (await params).linkId;
 
-	const {data: {link}} = await getClient().query({query: LINK, variables: {linkId: linkId}, context: await getSessionContext()});
-	const {data: {createClick: {click}}} = await getClient().mutate({mutation: CLICK_ADD, variables: {input: {linkId: linkId}}, context: await getSessionContext()});
+	const requestContext = await getSessionHeader(true);
+
+	const {data: {link}} = await getClient().query({query: LINK, variables: {linkId: linkId}, context: requestContext});
+	const {data: {createClick: {click}}} = await getClient().mutate({mutation: CLICK_ADD, variables: {input: {linkId: linkId}}, context: requestContext});
 
 	if (link && link?.active === true && link?.flagCount < 5 && link?.target) {
 		await click;

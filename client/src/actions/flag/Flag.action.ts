@@ -5,7 +5,7 @@ import {LinkType} from "@type/data/Link";
 import {FLAG_LINK} from "./Flag.queries";
 import {LinkMutationDataType} from "@type/data/MutationData";
 import {getClient} from "../../lib/apollo-client";
-import {getSessionContext} from "../../lib/auth/session";
+import {getSessionHeader} from "../../lib/auth/session";
 
 
 export const FlagAction = async (
@@ -25,7 +25,7 @@ export const FlagAction = async (
                 note: note,
             }
         },
-        context: await getSessionContext(),
+        context: await getSessionHeader(true),
     });
 
     return data;

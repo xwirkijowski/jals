@@ -3,7 +3,7 @@
 import {REQUEST_AUTH_CODE} from "../../shared/RequestAuthCode.query";
 import {getClient} from "../../../lib/apollo-client";
 import {ResponseType} from "@type/data/Response";
-import {getSessionContext} from "../../../lib/auth/session";
+import {getSessionHeader} from "../../../lib/auth/session";
 
 export const RegisterRequestAction = async (
     state: ResponseType,
@@ -19,7 +19,7 @@ export const RegisterRequestAction = async (
                 action: 'REGISTER',
             }
         },
-        context: await getSessionContext(),
+        context: await getSessionHeader(true),
     })
 
     return {

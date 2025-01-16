@@ -3,7 +3,7 @@
 import {REGISTER} from "./Register.query";
 import {getClient} from "../../../lib/apollo-client";
 import {ResponseType} from "@type/data/Response";
-import {getSessionContext} from "../../../lib/auth/session";
+import {getSessionHeader} from "../../../lib/auth/session";
 
 export const RegisterAction = async (
     {email}: {email?: string},
@@ -20,7 +20,7 @@ export const RegisterAction = async (
                 code: code,
             }
         },
-        context: await getSessionContext(),
+        context: await getSessionHeader(true),
     })
 
     return data;

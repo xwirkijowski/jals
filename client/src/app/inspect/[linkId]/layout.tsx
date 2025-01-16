@@ -3,7 +3,7 @@
 // Imports
 import {getClient} from '../../../lib/apollo-client';
 import {LinkContextWrapper} from "../../../contexts/LinkContext";
-import {getSessionContext} from "../../../lib/auth/session";
+import {getSessionHeader} from "../../../lib/auth/session";
 import React from "react";
 
 // Metadata
@@ -48,7 +48,7 @@ export default async ({
     params: any
 }) => {
     const linkId: string = (await params).linkId;
-    const {data} = await getClient().query({query: LINK, variables: {linkId: linkId}, context: await getSessionContext()});
+    const {data} = await getClient().query({query: LINK, variables: {linkId: linkId}, context: await getSessionHeader(true)});
 
     return (
         <LinkContextWrapper value={{data}}>

@@ -4,22 +4,20 @@ import {
     ApolloClient,
     InMemoryCache,
 } from "@apollo/experimental-nextjs-app-support";
-import {deleteSession, getSession, invalidateSession, refreshSession} from "./auth/session";
+import {getCookie, refreshCookie, deleteCookie} from "./auth/session.cookies";
 import { asyncMap } from "@apollo/client/utilities";
 
 const authManagerMiddleware = new ApolloLink((operation, forward) => {
     return asyncMap(forward(operation), async data => {
         if (data?.extensions && data?.extensions?.auth) {
             const auth = data.extensions.auth;
-            const session = await getSession();
+            const session = await getCookie();
 
             if (session) {
                 if (auth === 'invalid') {
-                    await invalidateSession();
-                } else if (auth === 'invalid' && session === 'invalid') {
-                    await deleteSession();
-                } else if (session !== 'invalid' && auth === session?.sessionId) {
-                    await refreshSession();
+                    await deleteCookie();
+                } else if (auth === session?.sessionId) {
+                    await refreshCookie();
                 }
             }
         }

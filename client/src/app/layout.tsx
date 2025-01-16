@@ -22,24 +22,29 @@ import {AuthContextWrapper} from "../contexts/auth/auth.context";
 // Components
 import {Footer} from '@comp/layout/Footer';
 import {Header} from '@comp/layout/Header';
-import {resolveSession} from "../contexts/auth/auth.utils.server";
+import {getCookie} from "../lib/auth/session.cookies";
+import {UserContextWrapper} from "../contexts/user/user.context";
+import {getUser} from "../contexts/user/user.utils.server";
 
 const RootLayout = async (
     {children, modal}: { children: React.ReactNode, modal: React.ReactNode }
 ) => {
-    const session = await resolveSession();
+    const session = await getCookie();
+    let user = await getUser(session);
 
     return (
         <html lang="en" className="bg-white">
-            <AuthContextWrapper value={session}>
-                <body className="flex items-center justify-center min-h-screen">
-                    <Header/>
-                    <main className="w-full flex-1 px-8 flex">
-                        {modal}
-                        {children}
-                    </main>
-                    <Footer/>
-                </body>
+            <AuthContextWrapper initialSession={session}>
+                <UserContextWrapper user={user}>
+                    <body className="flex items-center justify-center min-h-screen">
+                        <Header/>
+                        <main className="w-full flex-1 px-8 flex">
+                            {modal}
+                            {children}
+                        </main>
+                        <Footer/>
+                    </body>
+                </UserContextWrapper>
             </AuthContextWrapper>
         </html>
     )

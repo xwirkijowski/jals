@@ -3,7 +3,8 @@
 import {LOG_IN} from "./LogIn.query";
 import {getClient} from "../../../lib/apollo-client";
 import {ResponseType} from "@type/data/Response";
-import {createSession, getSessionContext} from "../../../lib/auth/session";
+import {getSessionHeader} from "../../../lib/auth/session";
+import {createCookie} from "../../../lib/auth/session.cookies";
 
 export const LogInAction = async (
     {email}: {email?: string},
@@ -20,11 +21,11 @@ export const LogInAction = async (
                 code: code
             }
         },
-        context: await getSessionContext(),
+        context: await getSessionHeader(true),
     })
 
     if (data && data?.result?.success === true && data?.sessionId) {
-        await createSession(data)
+        await createCookie(data)
     }
 
     return data;

@@ -15,7 +15,7 @@ export const LogOutButton = () => {
 	const [state, action, pending] = useActionState(LogOutAction, undefined);
 
 	if (!pending && state?.result?.success) {
-		router.refresh();
+		router.back();
 	}
 
 	return (

@@ -1,25 +1,39 @@
 "use client";
 
-import {Context, createContext, ReactNode} from "react";
+import Cookies from "js-cookie";
 
-export const AuthContext: Context<TContextSessionUnion> = createContext(undefined);
+import {createContext, ReactNode, useCallback, useState} from "react";
+import {TSessionCookie} from "../../lib/auth/session.types";
 
-export type TContextSession = {
-    id: string
-    user: {
-        id: string
-        email: string
-        isAdmin: boolean
-        version: number
-    }
-    version: number
+export type TAuthContext = {
+    session: TAuthContextUnion;
+    refreshSession: Function
 }
 
-export type TContextSessionUnion = TContextSession | 'invalid' | undefined
+export const AuthContext = createContext<TAuthContext>({session: null, refreshSession: () => {}});
 
-export const AuthContextWrapper = ({value, children}: {value: TContextSessionUnion, children: ReactNode}) => {
+export type TAuthContextUnion = TSessionCookie | null
+
+export const AuthContextWrapper = ({initialSession, children}: {initialSession: TAuthContextUnion, children: ReactNode}) => {
+    const [session, setSession] = useState(initialSession);
+
+    const refreshSession = useCallback(() => {
+        const cookie = Cookies.get('jals-session');
+
+        console.log('refresh')
+
+        if (cookie) {
+            try {
+                const payload = JSON.parse(cookie);
+                setSession(payload);
+            } catch {
+                setSession(null)
+            }
+        } else setSession(null);
+    }, [])
+
     return (
-        <AuthContext.Provider value={value}>
+        <AuthContext.Provider value={{session, refreshSession}}>
             {children}
         </AuthContext.Provider>
     )

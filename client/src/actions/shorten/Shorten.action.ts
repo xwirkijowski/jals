@@ -3,7 +3,7 @@
 import {CREATE_LINK} from "./Shorten.query";
 import {LinkMutationDataType} from "@type/data/MutationData";
 import {getClient} from "../../lib/apollo-client";
-import {getSessionContext} from "../../lib/auth/session";
+import {getSessionHeader} from "../../lib/auth/session";
 
 export const ShortenAction = async (
     state: LinkMutationDataType,
@@ -20,7 +20,7 @@ export const ShortenAction = async (
                 target: target,
             }
         },
-        context: await getSessionContext(),
+        context: await getSessionHeader(true),
     });
 
     return data;
