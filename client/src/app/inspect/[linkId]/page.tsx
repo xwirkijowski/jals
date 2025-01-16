@@ -31,7 +31,7 @@ const LinkPage = async () => {
                         Inspecting link<br/><span className={"text-orange-500"}>{data.link.id}</span>
                     </h2>
                     {/* @ts-ignore workaround for `anchor-name` CSS property */}
-                    <button style={{"anchor-name": "--active-popover"}} popoverTarget={'active-popover'} popoverTargetAction={'toggle'}
+                    <button style={{anchorName: "--active-popover"}} popoverTarget={'active-popover'} popoverTargetAction={'toggle'}
                          className={cx(
                         'cursor-help flex flex-row gap-2 items-center rounded-full py-1 px-2 text-sm float-end text-nowrap',
                         {'bg-red-100 text-red-500': !data.link.active},
@@ -46,7 +46,7 @@ const LinkPage = async () => {
                         {data.link.active ? "Active" : "Not active"}
                     </button>
                     {/* @ts-ignore workaround for `anchor-name` CSS property */}
-                    <Tooltip style={{"position-anchor": "--active-popover"}} id={"active-popover"}>
+                    <Tooltip style={{positionAnchor: "--active-popover"}} id={"active-popover"}>
                         <p className={cx('font-bold')}>What does that mean?</p>
                         <p>Currently, this links is {data.link.active ? "active" : "not active"}.</p>
                         <p>When someone uses this short link, they <b>{data.link.active ? "will be" : "will not be"}</b> automatically redirected.</p>
@@ -72,7 +72,7 @@ const LinkPage = async () => {
                         <p className={"text-zinc-600"}>{data.link.version > 0 && data.link.updatedAt ? new Date(data.link.updatedAt).toLocaleString() : "Not modified yet"}</p>
                     </div>
                     <div className={"gap-2 flex flex-col"}>
-                    <h3 className={"font-bold"}>Version</h3>
+                        <h3 className={"font-bold"}>Version</h3>
                         <p className={"text-zinc-600"}>{data.link.version}</p>
                     </div>
                 </div>

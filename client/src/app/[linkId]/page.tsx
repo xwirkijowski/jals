@@ -76,7 +76,7 @@ export default async function (
 		<div className="flex flex-col justify-center items-center flex-1 gap-8">
 			{loading ? (<Spinner/>) : (
 				<div className={cx('flex-col gap-4 flex items-center max-w-md w-full')}>
-					<button style={{"anchor-name": "--active-popover"}} popoverTarget={'active-popover'}
+					<button style={{anchorName: "--active-popover"}} popoverTarget={'active-popover'}
 					        popoverTargetAction={'toggle'}
 					        className={cx(
 						        'cursor-help flex flex-row gap-2 items-center rounded-full py-1 px-2 text-sm float-end text-nowrap',
@@ -92,7 +92,7 @@ export default async function (
 						{link.id}
 					</button>
 					{/* @ts-ignore workaround for `anchor-name` CSS property */}
-					<Tooltip style={{"position-anchor": "--active-popover"}} id={"active-popover"}>
+					<Tooltip style={{positionAnchor: "--active-popover"}} id={"active-popover"}>
 						<p className={cx('font-bold')}>What does that mean?</p>
 						<p>Currently, this links is {link.active ? "active" : "not active"}{link.active && link.caution && (" and has been flagged.")}.</p>
 						<p>When someone uses this short link,
