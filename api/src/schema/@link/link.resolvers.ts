@@ -9,7 +9,8 @@ export default {
 	Link: {
 		id: ({_id}: THydratedLink): TId => _id,
 		active: ({active}: THydratedLink): boolean => active || false,
-		flagCount: (obj: THydratedLink): number =>  obj?.flags?.length ?? 0,
+		flagCount: (obj: THydratedLink): number => obj?.flags?.length || 0,
+		caution: (obj: THydratedLink): boolean => (!obj?.active || (obj?.active && (obj?.flags as Array<object>)?.length > 0)),
 		createdBy: async ({createdBy}: THydratedLink, _:any, {models: {user}}: IContext) => (createdBy) ? await user.findOne({_id: createdBy}) : null,
 		updatedBy: async ({updatedBy}: THydratedLink, _:any, {models: {user}}: IContext) => (updatedBy) ? await user.findOne({_id: updatedBy}) : null,
 	},
