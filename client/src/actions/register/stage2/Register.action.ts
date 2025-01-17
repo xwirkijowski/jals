@@ -4,6 +4,8 @@ import {REGISTER} from "./Register.query";
 import {getClient} from "../../../lib/apollo-client";
 import {ResponseType} from "@type/data/Response";
 import {getSessionHeader} from "../../../lib/auth/session";
+import {revalidatePath} from "next/cache";
+import {createCookie} from "../../../lib/auth/session.cookies";
 
 export const RegisterAction = async (
     {email}: {email?: string},
@@ -22,6 +24,14 @@ export const RegisterAction = async (
         },
         context: await getSessionHeader(true),
     })
+
+    // Create session cookie
+    if (data && data?.result?.success === true && data?.sessionId) {
+        await createCookie(data)
+    }
+
+    // Refresh layout
+    revalidatePath('/', 'layout')
 
     return data;
 }

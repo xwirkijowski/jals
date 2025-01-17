@@ -5,6 +5,7 @@ import {getClient} from "../../lib/apollo-client";
 import {ResponseType} from "@type/data/Response";
 import {getSessionHeader} from "../../lib/auth/session";
 import {deleteCookie} from "../../lib/auth/session.cookies";
+import {revalidatePath} from "next/cache";
 
 export const LogOutAction = async (
 	state: ResponseType
@@ -16,5 +17,7 @@ export const LogOutAction = async (
 	})
 
 	await deleteCookie()
+	revalidatePath('/', 'layout')
+
 	return data;
 }

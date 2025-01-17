@@ -6,6 +6,7 @@ import {FLAG_LINK} from "./Flag.queries";
 import {LinkMutationDataType} from "@type/data/MutationData";
 import {getClient} from "../../lib/apollo-client";
 import {getSessionHeader} from "../../lib/auth/session";
+import {revalidatePath} from "next/cache";
 
 
 export const FlagAction = async (
@@ -27,6 +28,9 @@ export const FlagAction = async (
         },
         context: await getSessionHeader(true),
     });
+
+    // Revalidate data
+    revalidatePath('/inspect/[linkId]', 'layout')
 
     return data;
 }
