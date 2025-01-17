@@ -4,6 +4,7 @@
 import {getClient} from '../../../lib/apollo-client';
 import {LinkContextWrapper} from "../../../contexts/link/link.context";
 import {getSessionHeader} from "../../../lib/auth/session";
+import {LinkNotFound} from "@comp/Logic/NotFound";
 import React from "react";
 
 // Metadata
@@ -51,9 +52,15 @@ export default async ({
     const {data} = await getClient().query({query: LINK, variables: {linkId: linkId}, context: await getSessionHeader(true)});
 
     return (
-        <LinkContextWrapper value={{data}}>
-            {modal}
-            {children}
-        </LinkContextWrapper>
+        <>
+            {data?.link ? (
+                <LinkContextWrapper value={{data}}>
+                    {modal}
+                    {children}
+                </LinkContextWrapper>
+            ) : (
+                <LinkNotFound linkId={linkId} context={'inspect'} />
+            )}
+        </>
     )
 }
