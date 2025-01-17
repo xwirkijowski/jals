@@ -3,6 +3,8 @@
 import {useRouter} from 'next/navigation';
 import cx from "classnames";
 
+import {TActionProps} from "../../shared/common.types";
+
 // Components
 import Link from "next/link";
 import {setupErrorCallouts} from "../../shared/mutation.utilities";
@@ -16,15 +18,9 @@ const list = cx(
     'pl-6 relative',
     'before:content-[""] before:w-4 before:top-2.5 before:absolute before:h-[1px] before:bg-current before:left-0')
 
-export const RegisterRequestForm = ({
-    action,
-    state,
-    pending,
-}: {
-    action: any
-    state: any,
-    pending: boolean,
-}) => {
+export const RegisterRequestForm = (
+    {mode = 'page', action, state, pending}: TActionProps
+) => {
     const router = useRouter();
     const errorCallouts = setupErrorCallouts(state);
 

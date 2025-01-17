@@ -16,10 +16,10 @@ import {Card} from "@comp/Card/Card";
 import {CardHead} from "@comp/Card/CardHead";
 import {CardBody} from "@comp/Card/CardBody";
 import {CardFooter} from "@comp/Card/CardFooter";
+import {Textarea} from "@comp/Form/Textarea";
 
 // Types
 import {LinkType} from "@type/data/Link";
-import {Textarea} from "@comp/Form/Textarea";
 
 export const FlagForm = ({
     link,

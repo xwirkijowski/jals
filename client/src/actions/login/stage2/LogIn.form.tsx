@@ -4,6 +4,8 @@ import cx from "classnames";
 
 import {useRouter} from "next/navigation";
 
+import {TActionProps} from "../../shared/common.types";
+
 // Components
 import {setupErrorCallouts} from "../../shared/mutation.utilities";
 import {Spinner} from "@comp/Spinner/Spinner";
@@ -11,15 +13,9 @@ import Button from "@comp/Button/Button";
 import {Input} from "@comp/Form/Input";
 import Callout from "@comp/Callout/Callout";
 
-export const LogInForm = ({
-    action,
-    state,
-    pending,
-}: {
-    action: any
-    state: any,
-    pending: boolean,
-}) => {
+export const LogInForm = (
+    {mode = 'page', action, state, pending}: TActionProps
+) => {
     const router = useRouter()
     const errorCallouts = setupErrorCallouts(state);
 

@@ -11,15 +11,11 @@ import Button from "@comp/Button/Button";
 import {Input} from "@comp/Form/Input";
 import Callout from "@comp/Callout/Callout";
 
-export const LogInRequestForm = ({
-    action,
-    state,
-    pending,
-}: {
-    action: any
-    state: any,
-    pending: boolean,
-}) => {
+import {TActionProps} from "../../shared/common.types";
+
+export const LogInRequestForm = (
+    {mode = 'page', action, state, pending}: TActionProps
+) => {
     const router = useRouter();
     const errorCallouts = setupErrorCallouts(state);
 
