@@ -2,6 +2,7 @@ build/
 dist/
 out/
 logs/
+.next/
 
 .env
 .env*
@@ -12,3 +13,5 @@ logs/
 node_modules/
 
 package-lock.json
+
+client-old/
