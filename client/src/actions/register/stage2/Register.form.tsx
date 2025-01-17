@@ -34,7 +34,7 @@ export const RegisterForm = ({
                     you don't see our message, check the spam folder.</p>
                 <p className={cx('text-zinc-600 text-md')}> If you did not receive it at all, please send us an email
                     at <a href={'mailto:jals@wirkijowski.dev'}
-                          className="border-b border-b-current text-orange-500 hover:text-orange-400 transition-all duration-150 font-bold">jals@wirkijowski.dev</a>.
+                          className="border-b border-b-current text-orange-500 hover:text-orange-400 trans font-bold">jals@wirkijowski.dev</a>.
                 </p>
                 {errorCallouts}
             </div>

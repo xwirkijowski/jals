@@ -31,7 +31,7 @@ export const LogInForm = ({
                 </h2>
                 <p className={cx('text-zinc-600 text-md')}>We've sent an authentication code to your email address.</p>
                 <p className={cx('text-zinc-600 text-md')}><strong>Your code is valid for only 5 minutes.</strong> If you don't see our message, check the spam folder.</p>
-                <p className={cx('text-zinc-600 text-md')}> If you did not receive it at all, please send us an email at <a href={'mailto:jals@wirkijowski.dev'} className="border-b border-b-current text-orange-500 hover:text-orange-400 transition-all duration-150 font-bold">jals@wirkijowski.dev</a>.</p>
+                <p className={cx('text-zinc-600 text-md')}> If you did not receive it at all, please send us an email at <a href={'mailto:jals@wirkijowski.dev'} className="border-b border-b-current text-orange-500 hover:text-orange-400 trans font-bold">jals@wirkijowski.dev</a>.</p>
                 {errorCallouts}
             </div>
             {state?.result?.success ? (
@@ -47,7 +47,7 @@ export const LogInForm = ({
             ) : (
                 <div className={cx('relative p-8 border-y border-zinc-900/15 flex flex-col w-full gap-4')}>
                     <Input autoFocus={true} name={'code'} type={'text'} withLabel={'Code'} id={'login-code'} disabled={pending}
-                           minLength={8} maxLength={8} pattern={'[0-9]{8}'} required/>
+                           minLength={8} maxLength={8} pattern={'[0-9]{8}'} autoComplete={'off'} required/>
                 </div>
             )}
             {state?.result?.success ? (
