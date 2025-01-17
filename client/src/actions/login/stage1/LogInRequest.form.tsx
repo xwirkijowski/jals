@@ -47,10 +47,10 @@ export const LogInRequestForm = (
                 </div>
             )}
             <div className={"col-span-full flex gap-8 p-8 justify-between items-center"}>
-                <Button btnType={'light'} type={'button'} onClick={()=>router.back()}>Close</Button>
+                <Button btnType={'light'} onClick={()=>router.back()}>Close</Button>
                 <div className={'flex gap-4'}>
                     <Link href={'/register'} passHref replace>
-                        <Button btnType={'light'} type={'button'} disabled={pending} effects={false}>Register</Button>
+                        <Button btnType={'light'} disabled={pending} effects={false}>Register</Button>
                     </Link>
                     <Button btnType={"primary"} type={'submit'} disabled={pending} effects={true}>
                         {pending ? (<Spinner/>) : ("Request code")}

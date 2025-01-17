@@ -48,11 +48,11 @@ export const LogInForm = (
             )}
             {state?.result?.success ? (
                 <div className={"col-span-full flex gap-8 p-8 justify-end items-center"}>
-                    <Button btnType={'light'} type={'button'} onClick={() => router.back()}>Close</Button>
+                    <Button btnType={'light'} onClick={() => router.back()}>Close</Button>
                 </div>
             ) : (
                 <div className={"col-span-full flex gap-8 p-8 justify-between items-center"}>
-                    <Button btnType={'light'} type={'button'} onClick={() => router.back()}>Close</Button>
+                    <Button btnType={'light'} onClick={() => router.back()}>Close</Button>
                     <Button btnType={"primary"} type={'submit'} disabled={pending} effects={true}>
                         {pending ? (<Spinner/>) : ("Log In")}
                     </Button>

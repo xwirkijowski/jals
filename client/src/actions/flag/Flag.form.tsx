@@ -61,13 +61,13 @@ export const FlagForm = ({
                 </CardBody>
                 {state?.result?.success ? (
                     <CardFooter className={"!justify-end"}>
-                        {mode === 'page' && (<Link href={`/inspect/${link.id}`} passHref><Button type={'button'} btnType={'light'}>Back to inspection</Button></Link>)}
-                        {mode === 'modal' && (<Button type={'button'} btnType={'light'} onClick={()=>router.back()}>Close</Button>)}
+                        {mode === 'page' && (<Link href={`/inspect/${link.id}`} passHref><Button btnType={'light'}>Back to inspection</Button></Link>)}
+                        {mode === 'modal' && (<Button btnType={'light'} onClick={()=>router.back()}>Close</Button>)}
                     </CardFooter>
                 ) : (
                     <CardFooter>
-                        {mode === 'page' && (<Link href={`/inspect/${link.id}`} passHref><Button btnType={'light'} type={'button'}>Back to inspection</Button></Link>)}
-                        {mode === 'modal' && (<Button btnType={'light'} type={'button'} onClick={()=>router.back()}>Close</Button>)}
+                        {mode === 'page' && (<Link href={`/inspect/${link.id}`} passHref><Button btnType={'light'}>Back to inspection</Button></Link>)}
+                        {mode === 'modal' && (<Button btnType={'light'}onClick={()=>router.back()}>Close</Button>)}
 
                         <Button btnType={"danger"} type={'submit'} disabled={pending} effects={true}>
                             {pending ? (<Spinner/>) : ("Send flag")}
