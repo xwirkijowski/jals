@@ -43,6 +43,7 @@ export default () => {
                     <H2 className="float-start">
                         Inspecting link<br/><span className={"text-orange-500"}>{data.link.id}</span>
                     </H2>
+                    {/* @ts-ignore workaround for `anchorName` CSS property */}
                     <button style={{anchorName: "--active-popover"}} popoverTarget={'active-popover'} popoverTargetAction={'toggle'}
                          className={cx(
                         'cursor-help flex flex-row gap-2 items-center rounded-full py-1 px-2 text-sm float-end text-nowrap',
@@ -57,6 +58,7 @@ export default () => {
                         )} />
                         {data.link.active ? "Active" : "Not active"}
                     </button>
+                    {/* @ts-ignore workaround for `positionAnchor` CSS property */}
                     <Tooltip style={{positionAnchor: "--active-popover"}} id={"active-popover"}>
                         <p className={cx('font-bold')}>What does that mean?</p>
                         <p>Currently, this links is {data.link.active ? "active" : "not active"}.</p>

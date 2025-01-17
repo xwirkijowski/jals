@@ -80,6 +80,7 @@ export default async function (
 				<div className="flex flex-col justify-center items-center flex-1 gap-8">
 					{loading ? (<Spinner/>) : (
 						<div className={cx('flex-col gap-4 flex items-center max-w-md w-full')}>
+							{/* @ts-ignore workaround for `anchorName` CSS property */}
 							<button style={{anchorName: "--active-popover"}} popoverTarget={'active-popover'}
 							        popoverTargetAction={'toggle'}
 							        className={cx(
@@ -95,7 +96,7 @@ export default async function (
                         )}/>
 								{link.id}
 							</button>
-							{/* @ts-ignore workaround for `anchor-name` CSS property */}
+							{/* @ts-ignore workaround for `positionAnchor` CSS property */}
 							<Tooltip style={{positionAnchor: "--active-popover"}} id={"active-popover"}>
 								<p className={cx('font-bold')}>What does that mean?</p>
 								<p>Currently, this links

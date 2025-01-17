@@ -12,7 +12,7 @@ export default (): React.ReactNode => {
         <div className="flex flex-col justify-center items-center flex-1 gap-8">
             <div className="text-center">
                 <H1>
-                    Inspect your <span className={"text-orange-500"}>JALS </span>link
+                    Inspect your <span className={"text-orange-500"}>JALS</span> link
                 </H1>
             </div>
             <div className="flex flex-col gap-4 justify-center text-center w-full max-w-xl">

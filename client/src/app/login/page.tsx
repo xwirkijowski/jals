@@ -13,11 +13,11 @@ export default () => {
     return (
         <>
             {(!state1 || state1.result.success === false) ? (
-                <div className="flex flex-col justify-center items-center flex-1 gap-8">
+                <div className="flex flex-col justify-center items-center flex-1">
                     <LogInRequestForm mode="page" action={action1} state={state1} pending={pending1} />
                 </div>
             ) : (
-                <div className="flex flex-col justify-center items-center flex-1 gap-8">
+                <div className="flex flex-col justify-center items-center flex-1">
                     <LogInForm mode="page" action={action2} state={state2} pending={pending2}/>
                 </div>
             )}
