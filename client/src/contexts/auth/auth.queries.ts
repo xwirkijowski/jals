@@ -10,3 +10,12 @@ export const CURRENT_USER = gql`
         }
     }
 `;
+
+export const CURRENT_SESSION = gql`
+    query {
+        currentSession {
+            id
+            isAdmin
+        }
+    }
+`;

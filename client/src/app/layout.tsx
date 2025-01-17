@@ -17,20 +17,20 @@ export const generateViewport = async (): Promise<Viewport> => ({
 // Import global styles
 import '../css/globals.css';
 
+// Contexts
 import {AuthContextWrapper} from "../contexts/auth/auth.context";
 
 // Components
 import {Footer} from '@comp/layout/Footer';
 import {Header} from '@comp/layout/Header';
 import {getCookie} from "../lib/auth/session.cookies";
-import {UserContextWrapper} from "../contexts/user/user.context";
-import {getUser} from "../contexts/user/user.utils.server";
+import {getUser} from "../contexts/auth/auth.utils.server";
 
 const RootLayout = async (
     {children, modal}: { children: React.ReactNode, modal: React.ReactNode }
 ) => {
     const session = await getCookie();
-    let user = await getUser(session);
+    const user = await getUser(session);
 
     return (
         <html lang="en" className="bg-white">
