@@ -19,10 +19,12 @@ import '../css/globals.css';
 
 // Contexts
 import {AuthContextWrapper} from "../contexts/auth/auth.context";
+import {ThemeContextWrapper} from "../contexts/theme/theme.context";
 
 // Components
-import {Footer} from '@comp/layout/Footer';
-import {Header} from '@comp/layout/Header';
+import {Body} from "@comp/Layout/Body";
+import {Header} from '@comp/Layout/Header';
+import {Footer} from '@comp/Layout/Footer';
 import {getCookie} from "../lib/auth/session.cookies";
 import {getUser} from "../contexts/auth/auth.utils.server";
 
@@ -34,17 +36,17 @@ const RootLayout = async (
 
     return (
         <html lang="en" className="bg-white">
-            <AuthContextWrapper initialSession={session}>
-                <UserContextWrapper user={user}>
-                    <body className="flex items-center justify-center min-h-screen">
+            <AuthContextWrapper session={session} user={user}>
+                <ThemeContextWrapper>
+                    <Body>
                         <Header/>
                         <main className="w-full flex-1 px-8 flex">
                             {modal}
                             {children}
                         </main>
-                        <Footer/>
-                    </body>
-                </UserContextWrapper>
+                        <Footer version={process?.env?.npm_package_version} />
+                    </Body>
+                </ThemeContextWrapper>
             </AuthContextWrapper>
         </html>
     )
