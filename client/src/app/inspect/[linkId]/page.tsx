@@ -7,30 +7,42 @@ import Link from "next/link";
 import {Tooltip} from "@comp/Tooltip/Tooltip";
 import Callout from "@comp/Callout/Callout";
 import Button from "@comp/Button/Button";
+import {Card} from "@comp/Card/Card";
+import {CardHead} from "@comp/Card/CardHead";
+import {CardBody} from "@comp/Card/CardBody";
+import {CardFooter} from "@comp/Card/CardFooter";
+import {H2} from "@comp/Typography/H2";
+import {H3} from "@comp/Typography/H3";
+import {P} from "@comp/Typography/P";
 
 // Context
 import {useContext} from "react";
 import {LinkContext} from "../../../contexts/link/link.context";
 
-const LinkPage = async () => {
+export default () => {
     let {data} = useContext(LinkContext);
 
     return (
         <div className="flex flex-col justify-center items-center text-left flex-1 gap-8">
-            {data.link.flagCount > 0 ? (
+            {data.link.flagCount > 0 && data.link.flagCount < 5 && (
                     <Callout title={"Warning"} type={"warning"}>
                         <p>This link has been
-                            flagged {data.link.flagCount} {data.link.flagCount === 1 ? 'time' : 'times'}!</p>
+                            flagged <span className={'font-bold'}>{data.link.flagCount} {data.link.flagCount === 1 ? 'time' : 'times'}</span>!</p>
                     </Callout>
-                ) :
-                null
+                )
             }
-            <div className="w-full max-w-xl flex flex-col bg-white shadow-xl rounded-xl">
-                <div className={"p-8"}>
-                    <h2 className="font-bold text-zinc-900 text-2xl/tight sm:text-2xl/tight float-start">
+            {data.link.flagCount >= 5 && (
+                <Callout title={"Caution"} type={"danger"}>
+                    <p>This link has been
+                        flagged <span className={'font-bold'}>{data.link.flagCount} times</span>!</p>
+                </Callout>
+            )
+            }
+            <Card structured>
+                <CardHead>
+                    <H2 className="float-start">
                         Inspecting link<br/><span className={"text-orange-500"}>{data.link.id}</span>
-                    </h2>
-                    {/* @ts-ignore workaround for `anchor-name` CSS property */}
+                    </H2>
                     <button style={{anchorName: "--active-popover"}} popoverTarget={'active-popover'} popoverTargetAction={'toggle'}
                          className={cx(
                         'cursor-help flex flex-row gap-2 items-center rounded-full py-1 px-2 text-sm float-end text-nowrap',
@@ -45,7 +57,6 @@ const LinkPage = async () => {
                         )} />
                         {data.link.active ? "Active" : "Not active"}
                     </button>
-                    {/* @ts-ignore workaround for `anchor-name` CSS property */}
                     <Tooltip style={{positionAnchor: "--active-popover"}} id={"active-popover"}>
                         <p className={cx('font-bold')}>What does that mean?</p>
                         <p>Currently, this links is {data.link.active ? "active" : "not active"}.</p>
@@ -53,36 +64,34 @@ const LinkPage = async () => {
                         <p>For safety purposes automatic redirects only work if the link does not have any
                             flags.</p>
                     </Tooltip>
-                </div>
-                <div className={"p-8 border-y grid grid-cols-2 w-full gap-4"}>
+                </CardHead>
+                <CardBody grid>
                     <div className={"w-full gap-2 flex flex-col col-span-full"}>
-                        <h3 className={"font-bold"}>Target URL</h3>
+                        <H3 className={"!text-base"}>Target URL</H3>
                         <p className={"w-full px-4 py-2 bg-zinc-200 text-zinc-600 rounded-xl border border-transparent font-mono text-wrap break-words overflow-hidden"}>{data.link.target}</p>
                     </div>
                     <div className={"gap-2 flex flex-col"}>
-                        <h3 className={"font-bold"}>Creation time</h3>
-                        <p className={"text-zinc-600"}>{new Date(data.link.createdAt).toLocaleString()}</p>
+                        <H3 className={"!text-base"}>Creation time</H3>
+                        <P>{new Date(data.link.createdAt).toLocaleString()}</P>
                     </div>
                     <div className={"gap-2 flex flex-col"}>
-                        <h3 className={"font-bold"}>Click count</h3>
-                        <p className={"text-zinc-600"}>{data.link.ClickCount > 0 ? data.link.clickCount : "No clicks yet"}</p>
+                        <H3 className={"!text-base"}>Click count</H3>
+                        <P>{data.link.ClickCount > 0 ? data.link.clickCount : "No clicks yet"}</P>
                     </div>
                     <div className={"gap-2 flex flex-col"}>
-                        <h3 className={"font-bold"}>Last modified</h3>
-                        <p className={"text-zinc-600"}>{data.link.version > 0 && data.link.updatedAt ? new Date(data.link.updatedAt).toLocaleString() : "Not modified yet"}</p>
+                        <H3 className={"!text-base"}>Last modified</H3>
+                        <P>{data.link.version > 0 && data.link.updatedAt ? new Date(data.link.updatedAt).toLocaleString() : "Not modified yet"}</P>
                     </div>
                     <div className={"gap-2 flex flex-col"}>
-                        <h3 className={"font-bold"}>Version</h3>
-                        <p className={"text-zinc-600"}>{data.link.version}</p>
+                        <H3 className={"!text-base"}>Version</H3>
+                        <P>{data.link.version}</P>
                     </div>
-                </div>
-                <div className={"col-span-full flex gap-8 p-8 justify-between items-center"}>
-                    <p className={"text-zinc-900"}>Is this link malicious or inappropriate?</p>
+                </CardBody>
+                <CardFooter>
+                    <H3>Is this link malicious or inappropriate?</H3>
                     <Link href={`/inspect/${data.link.id}/flag`} passHref><Button btnType={"danger"} effects={true}>Flag for moderation</Button></Link>
-                </div>
-            </div>
+                </CardFooter>
+            </Card>
         </div>
     )
 }
-
-export default LinkPage;
