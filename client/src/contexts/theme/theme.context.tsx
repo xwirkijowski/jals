@@ -14,8 +14,10 @@ export namespace SThemeContext {
 	}
 }
 
+const defaultTheme = SThemeContext.EThemes["dark"];
+
 export const ThemeContext = createContext<SThemeContext.TThemeContext>({
-	theme: SThemeContext.EThemes["light"],
+	theme: defaultTheme,
 	setTheme: () => {}
 })
 
@@ -30,16 +32,16 @@ export const ThemeContextWrapper = (
 		if (lsValue && ['light', 'dark'].includes(lsValue)) {
 			localTheme = SThemeContext.EThemes[lsValue];
 		} else {
-			localTheme = SThemeContext.EThemes["light"];
+			localTheme = defaultTheme;
 		}
 	}
 
-	const [theme, setTheme] = useState<SThemeContext.EThemes>(localTheme||SThemeContext.EThemes["light"]);
+	const [theme, setTheme] = useState<SThemeContext.EThemes>(localTheme||defaultTheme);
 	const value = {theme, setTheme}
 
 	useEffect(() => {
 		localStorage.setItem("theme", SThemeContext.EThemes[theme]);
-	}, [setTheme])
+	}, [theme])
 
 	return (
 		<ThemeContext.Provider value={value}>
