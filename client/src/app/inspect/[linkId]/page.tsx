@@ -1,6 +1,7 @@
 "use client"
 
 import cx from 'classnames';
+import Link from "next/link";
 
 // Components
 import {Tooltip} from "@comp/Tooltip/Tooltip";
@@ -9,8 +10,7 @@ import Button from "@comp/Button/Button";
 
 // Context
 import {useContext} from "react";
-import {LinkContext} from "../../../contexts/LinkContext";
-import Link from "next/link";
+import {LinkContext} from "../../../contexts/link/link.context";
 
 const LinkPage = async () => {
     let {data} = useContext(LinkContext);

@@ -1,7 +1,7 @@
 "use client"
 
-import {useContext, useRef} from "react";
-import {LinkContext} from "../../../../contexts/LinkContext";
+import {useContext} from "react";
+import {LinkContext} from "../../../../contexts/link/link.context";
 
 // Components
 import {FlagForm} from "../../../../actions/flag/Flag.form";

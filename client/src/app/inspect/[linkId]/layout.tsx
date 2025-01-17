@@ -2,7 +2,7 @@
 
 // Imports
 import {getClient} from '../../../lib/apollo-client';
-import {LinkContextWrapper} from "../../../contexts/LinkContext";
+import {LinkContextWrapper} from "../../../contexts/link/link.context";
 import {getSessionHeader} from "../../../lib/auth/session";
 import React from "react";
 

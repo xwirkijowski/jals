@@ -2,7 +2,7 @@
 
 import {useContext} from "react";
 
-import {LinkContext} from "../../../../../contexts/LinkContext";
+import {LinkContext} from "../../../../../contexts/link/link.context";
 
 // Components
 import {FlagForm} from "../../../../../actions/flag/Flag.form";
