@@ -9,8 +9,9 @@ type THTMLInput = React.InputHTMLAttributes<HTMLInputElement>;
 type TProps = {
     withLabel?: string
     id?: THTMLInput['id']
-    className?: string
     placeholder?: THTMLInput['placeholder']
+    className?: string
+    ref?: React.Ref<HTMLInputElement>
 } & THTMLInput;
 
 export const Input = (

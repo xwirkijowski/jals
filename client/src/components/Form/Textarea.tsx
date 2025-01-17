@@ -9,8 +9,9 @@ type THTMLTextarea = React.TextareaHTMLAttributes<HTMLTextAreaElement>;
 type TProps = {
 	withLabel?: string
 	id?: THTMLTextarea['id']
-	className?: string
 	placeholder?: THTMLTextarea['placeholder']
+	className?: string
+	ref?: React.Ref<HTMLTextAreaElement>
 } & THTMLTextarea;
 
 export const Textarea = (
