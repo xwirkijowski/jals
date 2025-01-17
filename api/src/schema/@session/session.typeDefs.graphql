@@ -3,6 +3,8 @@ type Session {
     id: String!
     "Associated user Id"
     userId: ID
+    "If user is an admin"
+    isAdmin: Boolean
     "Associated user"
     user: User
     "User-agent used while creating the session"
