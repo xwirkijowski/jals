@@ -4,6 +4,15 @@
 
 ### Functionality
 
+- Links
+  - Shortening
+  - Redirection based on link status and safety
+  - Inspection of destination, metadata
+- Accounts
+  - Password-less 2-step authentication flow
+  - Dashboard for analytics and link management
+- Light and dark theme
+
 ### Implemented Features
 #### Dynamic routes (Next.js/App router)
 Retrieving link identifiers and redirecting to inspection page on `/[linkId]/+`.
