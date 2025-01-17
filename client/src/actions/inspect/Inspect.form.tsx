@@ -6,8 +6,9 @@ import {useRef} from "react";
 import {redirect, RedirectType} from "next/navigation";
 
 import Button from "@comp/Button/Button";
+import {Input} from "@comp/Form/Input";
 
-export const Inspect = () => {
+export const InspectForm = () => {
     const inputRef = useRef<HTMLInputElement>(null);
 
     return (
@@ -22,37 +23,29 @@ export const Inspect = () => {
                     'flex group',
                     'w-full',
                     'rounded-xl',
-                    'transition-all',
-                    'duration-150',
+                    'trans',
                     'shadow-md',
                     'relative',
                     'shadow-zinc-900/20',
                     'focus-within:shadow-lg hover:shadow-lg',
                 )}>
 
-                <input
+                <Input
                     required
                     type={"text"}
                     ref={inputRef}
                     className={cx(
-                        'flex-1',
-                        'bg-white',
-                        'transition-all duration-150',
-                        'text-zinc-600 text-md caret-orange-500',
-                        'outline-none',
-                        'rounded-xl rounded-r-none',
-                        'border border-transparent border-r-0 px-4 py-2 pr-7 -mr-3',
-                        'placeholder:text-zinc-600/50',
-                        'group-focus-within:border-orange-500',
+                        'rounded-r-none',
+                        '!border-transparent border-r-0 !py-2 !pr-7 !-mr-3',
+                        'group-focus-within:!border-orange-500',
                     )} placeholder="Input your URL code or paste the full link"/>
                 <Button
-                    btnType={"dark"}
+                    btnType={"darkPrimary"}
                     type="submit"
                     className={cx(
                         'flex-0',
                         'group-focus-within:bg-orange-500 group-focus-within:hover:bg-orange-400',
                         'disabled:bg-orange-500',
-                        'hover:bg-zinc-700',
                     )}
                 >
                     Inspect

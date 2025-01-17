@@ -1,6 +1,11 @@
-import {Inspect} from "@comp/logic/Inspect/Inspect";
 import Link from "next/link";
 import React from "react";
+
+import {InspectForm} from "../../actions/inspect/Inspect.form";
+import {Card} from "@comp/Card/Card";
+import {H1} from "@comp/Typography/H1";
+import {H2} from "@comp/Typography/H2";
+import {P} from "@comp/Typography/P";
 
 export default (): React.ReactNode => {
     return (
@@ -11,10 +16,10 @@ export default (): React.ReactNode => {
                 </h2>
             </div>
             <div className="flex flex-col gap-4 justify-center text-center w-full max-w-xl">
-                <Inspect/>
-                <p className="text-zinc-600">
-                    or create a <Link href="/" className="border-b border-b-current text-orange-500 hover:text-orange-400 transition-all duration-150 font-bold">new link</Link>
-                </p>
+                <InspectForm/>
+                <P>
+                    or create a <Link href="/" className="border-b border-b-current text-orange-500 hover:text-orange-400 trans font-bold">new link</Link>
+                </P>
 
                 <div
                     className="flex flex-col gap-4 text-left w-full max-w-xl mt-8 text-zinc-600 text-md bg-white p-8 shadow-md shadow-zinc-900/20 rounded-xl">
