@@ -18,6 +18,7 @@ import {P} from "@comp/Typography/P";
 // Context
 import {useContext} from "react";
 import {LinkContext} from "../../../contexts/link/link.context";
+import {Badge} from "@comp/Badge/Badge";
 
 export default () => {
     let {data} = useContext(LinkContext);
@@ -39,25 +40,14 @@ export default () => {
             )
             }
             <Card structured>
-                <CardHead>
+                <CardHead flex={false}>
                     <H2 className="float-start">
                         Inspecting link<br/><span className={"text-orange-500"}>{data.link.id}</span>
                     </H2>
                     {/* @ts-ignore workaround for `anchorName` CSS property */}
-                    <button style={{anchorName: "--active-popover"}} popoverTarget={'active-popover'} popoverTargetAction={'toggle'}
-                         className={cx(
-                        'cursor-help flex flex-row gap-2 items-center rounded-full py-1 px-2 text-sm float-end text-nowrap',
-                        {'bg-red-100 text-red-500': !data.link.active},
-                        {'bg-green-100 text-green-500': data.link.active},
-                    )}>
-                        <span className={cx(
-                            'h-3 w-3 block rounded-full',
-                            'before:content-[""] before:animate-ping before:h-3 before:w-3 before:block before:rounded-full',
-                            {'bg-red-500 before:bg-red-500': !data.link.active},
-                            {'bg-green-500 before:bg-green-500': data.link.active},
-                        )} />
+                    <Badge badgeType={data.link.active?'success':'danger'} tooltip ping style={{anchorName: "--active-popover"}} popoverTarget={'active-popover'} popoverTargetAction={'toggle'}>
                         {data.link.active ? "Active" : "Not active"}
-                    </button>
+                    </Badge>
                     {/* @ts-ignore workaround for `positionAnchor` CSS property */}
                     <Tooltip style={{positionAnchor: "--active-popover"}} id={"active-popover"}>
                         <p className={cx('font-bold')}>What does that mean?</p>
