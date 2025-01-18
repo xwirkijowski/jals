@@ -3,6 +3,7 @@ import cx from "classnames";
 
 import {Label} from "@comp/Form/Label";
 import {inputStyles} from "@comp/Form/common.styles";
+import {SCompProps} from "@type/common";
 
 type THTMLTextarea = React.TextareaHTMLAttributes<HTMLTextAreaElement>;
 
@@ -10,9 +11,8 @@ type TProps = {
 	withLabel?: string
 	id?: THTMLTextarea['id']
 	placeholder?: THTMLTextarea['placeholder']
-	className?: string
 	ref?: React.Ref<HTMLTextAreaElement>
-} & THTMLTextarea;
+} & Omit<THTMLTextarea, 'className'> & SCompProps.TBase;
 
 export const Textarea = (
 	{withLabel = undefined, id, placeholder, className, ...props}: TProps

@@ -3,6 +3,7 @@ import cx from "classnames";
 
 import {Label} from "@comp/Form/Label";
 import {inputStyles} from "@comp/Form/common.styles";
+import {SCompProps} from "@type/common";
 
 type THTMLInput = React.InputHTMLAttributes<HTMLInputElement>;
 
@@ -10,9 +11,8 @@ type TProps = {
     withLabel?: string
     id?: THTMLInput['id']
     placeholder?: THTMLInput['placeholder']
-    className?: string
     ref?: React.Ref<HTMLInputElement>
-} & THTMLInput;
+} & Omit<THTMLInput, 'className'> & SCompProps.TBase;
 
 export const Input = (
     {withLabel = undefined, id, placeholder, className, ...props}: TProps

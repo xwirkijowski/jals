@@ -17,7 +17,7 @@ export const Label = ({id, children}: TProps): React.ReactNode => {
 			`peer-[:not(:placeholder-shown)]:top-[-.75em] peer-[:not(:placeholder-shown)]:text-sm`,
 			'peer-[:invalid:not(:placeholder-shown)]:!text-red-500',
 			'peer-valid:!text-green-500',
-			'dark:bg-gray-800',
+			'dark:bg-gray-800 dark:text-gray-400',
 		)}>{children}</label>
 	)
 }

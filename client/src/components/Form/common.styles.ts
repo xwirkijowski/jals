@@ -10,6 +10,8 @@ export const inputStyles: string[] = [
 	'disabled:border-orange-500',
 	'[&:invalid:not(:placeholder-shown)]:!border-red-500 [&:invalid:not(:placeholder-shown)]:!caret-red-500',
 	'valid:!border-green-500 valid:!caret-green-500',
-	'autofill:!shadow-[inset_0_0_0px_1000px_rgba(255,255,255)]',
-	'dark:bg-gray-800 dark:placeholder:text-gray-200/50 dark:text-gray-200 dark:border-white/10',
+	'autofill:!shadow-[inset_0_0_0px_1000px_rgba(255,255,255)] dark:!shadow-[inset_0_0_0px_1000px_rgba(31,41,55)]',
+	'autofill:!shadow-[inset_0_0_0px_1000px_rgba(255,255,255)] dark:autofill:!shadow-[inset_0_0_0px_1000px_rgba(31,41,55)]',
+	'dark:bg-gray-800 dark:placeholder:text-gray-400 dark:text-gray-200 dark:border-gray-700',
+	'[-webkit-text-fill-color:#52525b] dark:[-webkit-text-fill-color:#e5e7eb]'
 ]
