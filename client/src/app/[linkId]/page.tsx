@@ -117,7 +117,7 @@ export default async function (
 									{link.caution &&
 										<>
 											<P className={'font-bold'}>This link has been flagged or is not active.</P>
-											<P>Check if this is the destination you expected and click the button below to continue to your destination.</P>
+											<P>Check if this is the destination you expected and click the button below to continue.</P>
 										</>
 									}
 
