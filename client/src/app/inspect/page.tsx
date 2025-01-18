@@ -1,7 +1,7 @@
 import Link from "next/link";
 import React from "react";
 
-import {InspectForm} from "../../actions/inspect/Inspect.form";
+import {InspectForm} from "@act/inspect/Inspect.form";
 import {Card} from "@comp/Card/Card";
 import {H1} from "@comp/Typography/H1";
 import {H2} from "@comp/Typography/H2";

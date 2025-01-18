@@ -5,7 +5,7 @@ import {useContext} from "react";
 import {LinkContext} from "../../../../../contexts/link/link.context";
 
 // Components
-import {FlagForm} from "../../../../../actions/flag/Flag.form";
+import {FlagForm} from "@act/flag/Flag.form";
 import {ModalWrapper} from '@comp/Modal/Wrapper';
 
 export default () => {

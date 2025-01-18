@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 // Components
-import {ShortenForm} from "../actions/shorten/Shorten.form";
+import {ShortenForm} from "@act/shorten/Shorten.form";
 import {Card} from "@comp/Card/Card";
 import {H1} from "@comp/Typography/H1";
 import {H2} from "@comp/Typography/H2";

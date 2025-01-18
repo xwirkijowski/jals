@@ -4,7 +4,7 @@ import {useContext} from "react";
 import {LinkContext} from "../../../../contexts/link/link.context";
 
 // Components
-import {FlagForm} from "../../../../actions/flag/Flag.form";
+import {FlagForm} from "@act/flag/Flag.form";
 
 export default () => {
     const {data} = useContext(LinkContext);

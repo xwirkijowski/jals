@@ -19,7 +19,7 @@ export const LogInAction = async (
         variables: {
             input: {
                 email: email,
-                code: code
+                code: code,
             }
         },
         context: await getSessionHeader(true),

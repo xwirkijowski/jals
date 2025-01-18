@@ -1,4 +1,3 @@
-import React from "react";
 import {Property} from "csstype";
 
 import TextAlign = Property.TextAlign;

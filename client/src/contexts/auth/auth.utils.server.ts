@@ -33,7 +33,8 @@ export const getSession = async (cookie?: TSessionCookie) => {
 	if (cookie) {
 		const context = await getSessionHeader(true);
 
-		const {data} = await getClient().query({query: CURRENT_SESSION, context, fetchPolicy: "no-cache"})
+		const {data} = await getClient().query({query: CURRENT_SESSION, context, fetchPolicy: "no-cache"});
+
 		if (data && data?.currentSession) {
 			return data.currentSession;
 		}
