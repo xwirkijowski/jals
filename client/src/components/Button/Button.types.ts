@@ -1,4 +1,4 @@
-import React from "react";
+import {SCompProps} from "@type/common";
 
 export enum EButtonType {
 	primary = 'primary',
@@ -15,12 +15,8 @@ export enum EButtonType {
 
 export type TButtonType = keyof typeof EButtonType;
 
-export type THTMLButton = React.ButtonHTMLAttributes<HTMLButtonElement>
-
 export type TButtonProps = {
 	btnType?: TButtonType
 	effects?: boolean
-	type?: THTMLButton['type']
-	className?: string
-	children?: React.ReactNode
-} & THTMLButton
+	type?: SCompProps.THTMLButton['type']
+} & SCompProps.THTMLButton<['className']> & SCompProps.TBase<true>

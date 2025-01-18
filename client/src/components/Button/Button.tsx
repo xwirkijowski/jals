@@ -16,7 +16,7 @@ export default ({
         <button
             type={type}
             className={cx(
-                "trans px-5 py-3 text-base text-nowrap rounded-xl font-bold ",
+                "trans px-5 py-3 text-base text-nowrap rounded-xl font-bold",
                 {"shadow-xl hover:shadow-md hover:scale-[0.975]": effects},
                 typeStyles[btnType],
                 className
