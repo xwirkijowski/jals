@@ -1,4 +1,4 @@
-import { WarningAggregator, ErrorAggregator, CriticalError, FatalError } from "./src/utilities/errors";
+import { WarningAggregator, ErrorAggregator, FatalError } from "./src/utilities/errors";
 import { globalLogger as log } from "./src/utilities/logging/log";
 
 const Warnings = new WarningAggregator('Config');
@@ -67,7 +67,7 @@ if (Errors.errorCount > 0) {
 }
 
 // Stage 2 - Load extra configuration from file
-import {settings} from './settings.json';
+import settings from './settings.json';
 
 // Stage 3 - Build configuration object
 log.withDomain('log', 'Config', 'Building configuration object...')
