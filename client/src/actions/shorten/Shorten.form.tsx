@@ -10,22 +10,13 @@ import Button from "@comp/Button/Button";
 import {Input} from "@comp/Form/Input";
 
 import {ShortenAction} from "./Shorten.action";
+import {buttonStyles, formStyles, inputStyles} from "@act/shared/link/shared.link.styles";
 
 export const ShortenForm = () => {
     const [state, action, pending] = useActionState(ShortenAction, null);
 
     return (
-        <form action={action}
-            className={cx(
-                'flex group',
-                'w-full',
-                'rounded-xl',
-                'trans',
-                'shadow-md',
-                'relative',
-                'shadow-zinc-900/20',
-                'focus-within:shadow-lg hover:shadow-lg',
-            )}>
+        <form action={action} className={cx(formStyles)}>
             {state?.result?.success ? (
                 <Fragment>
                     <p className={cx(
@@ -45,31 +36,13 @@ export const ShortenForm = () => {
                         }}>Copy link</a>
                     </p>
                     <Link href={'/' + state.link.id + '/+'} passHref>
-                        <Button btnType={"success"} className={cx("flex-0")}>Inspect your link</Button>
+                        <Button btnType={"success"} className={cx("flex-0")}>Inspect link</Button>
                     </Link>
                 </Fragment>
             ) : (
                 <Fragment>
-                    <Input
-                        required
-                        type={"url"}
-                        name={"target"}
-                        disabled={pending}
-                        className={cx(
-                            'rounded-r-none',
-                            '!border-transparent border-r-0 !py-2 !pr-7 !-mr-3',
-                            'group-focus-within:!border-orange-500',
-                        )} placeholder="Paste your link here"/>
-                    <Button
-                        btnType={"darkPrimary"}
-                        type="submit"
-                        disabled={pending}
-                        className={cx(
-                            'flex-0',
-                            'group-focus-within:bg-orange-500 group-focus-within:hover:bg-orange-400',
-                            'disabled:bg-orange-500',
-                        )}
-                    >
+                    <Input required type={"url"} name={"target"} disabled={pending} className={inputStyles} placeholder="Paste your link here" />
+                    <Button btnType={"darkPrimary"} type="submit" disabled={pending} className={buttonStyles}>
                         {pending ? (<Spinner/>) : ("Shorten")}
                     </Button>
                 </Fragment>
