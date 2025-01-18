@@ -2,53 +2,41 @@
 
 import {useActionState} from "react";
 import {useRouter} from 'next/navigation';
-import cx from "classnames";
+import Link from "next/link";
 
+// Actions
 import {FlagAction} from './Flag.action';
 
 // Components
 import {Spinner} from "@comp/Spinner/Spinner";
 import Button from "@comp/Button/Button";
 import Callout from "@comp/Callout/Callout";
-import Link from "next/link";
-import {H2} from "@comp/Typography/H2";
 import {Card} from "@comp/Card/Card";
 import {CardHead} from "@comp/Card/CardHead";
 import {CardBody} from "@comp/Card/CardBody";
 import {CardFooter} from "@comp/Card/CardFooter";
 import {Textarea} from "@comp/Form/Textarea";
+import {H2} from "@comp/Typography/H2";
+import {Badge} from "@comp/Badge/Badge";
 
 // Types
 import {LinkType} from "@type/data/Link";
+import {TActionPropsMode} from "@act/shared/common.types";
 
-export const FlagForm = ({
-    link,
-    mode = 'page',
- }: {
-    link: LinkType,
-    mode: 'page'|'modal'
-}) => {
+export const FlagForm = (
+    {link, mode = 'page'}: {link: LinkType} & TActionPropsMode
+) => {
     const router = useRouter();
     const [state, action, pending] = useActionState(FlagAction.bind(null, {link}), undefined);
 
     return (
         <form action={action} className={"w-full max-w-xl"}>
             <Card structured>
-                <CardHead>
-                    <H2 className="float-start">
-                        Flag for moderation
-                    </H2>
-                    <p className={cx(
-                        'flex flex-row gap-2 items-center rounded-full py-1 px-2 text-sm float-end text-nowrap',
-                        'bg-zinc-100 text-zinc-500',
-                    )}>
-                        <span className={cx(
-                            'h-3 w-3 block rounded-full',
-                            'before:content-[""] before:animate-ping before:h-3 before:w-3 before:block before:rounded-full',
-                            'bg-zinc-500 before:bg-zinc-500',
-                        )}/>
+                <CardHead flex={false}>
+                    <H2 className="float-start">Flag for moderation</H2>
+                    <Badge badgeType={'theme'} ping>
                         {link.id}
-                    </p>
+                    </Badge>
                 </CardHead>
                 <CardBody>
                     {state?.result?.success ? (
