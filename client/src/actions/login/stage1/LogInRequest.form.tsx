@@ -5,13 +5,13 @@ import cx from "classnames";
 
 // Components
 import Link from "next/link";
-import {setupErrorCallouts} from "../../shared/mutation.utilities";
+import {setupErrorCallouts} from "@act/shared/mutation.utilities";
 import {Spinner} from "@comp/Spinner/Spinner";
 import Button from "@comp/Button/Button";
 import {Input} from "@comp/Form/Input";
 import Callout from "@comp/Callout/Callout";
 
-import {TActionProps} from "../../shared/common.types";
+import {TActionProps} from "@act/shared/common.types";
 
 export const LogInRequestForm = (
     {mode = 'page', action, state, pending}: TActionProps
