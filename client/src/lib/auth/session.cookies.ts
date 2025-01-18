@@ -10,9 +10,9 @@ const cookieExpire = 60 * 60;
 const cookieSettings = (): ResponseCookie => {
 	return {
 		httpOnly: true,
-		secure: true,
+		secure: false, // @todo change to true on prod
 		maxAge: cookieExpire,
-		sameSite: 'strict',
+		sameSite: 'lax', // @todo change to strict on prod
 		path: '/',
 	} as ResponseCookie;
 }
