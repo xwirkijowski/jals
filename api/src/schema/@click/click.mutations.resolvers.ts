@@ -1,10 +1,10 @@
-import {check, getIP, getUA, setupMeta} from "../../utilities/helpers";
-import {Result} from "../result";
+import {check, getIP, getUA, setupMeta} from "@util/helpers";
+import {Result} from "@schema/result";
 
 // Types
-import {IContext} from "../../types/context.types";
-import {THydratedClick} from "../../models/click.types";
-import {InternalError} from "../../utilities/errors";
+import {IContext} from "@type/context.types";
+import {THydratedClick} from "@model/click.types";
+import {InternalError} from "@util/errors/internal.error";
 
 // @todo Types
 

@@ -1,13 +1,13 @@
 import process from 'node:process';
 import EventEmitter from 'events';
 
-import {$DB, TDatabaseStatus} from "./database/status";
+import {$DB, TDatabaseStatus} from "@/database/status";
 import {globalLogger as log} from "./logging/log";
 
-import {Warning, FatalError} from "./errors";
+import {Warning, FatalError} from "./error";
 
 // Types
-import {IContext} from "../types/context.types";
+import {IContext} from "@type/context.types";
 import {ApolloServer} from "@apollo/server";
 import {RedisClientType} from "redis";
 import mongoose from "mongoose";

@@ -1,9 +1,10 @@
 import * as Sentry from "@sentry/node";
+
 import {globalLogger as log} from "./log";
 
 // Types
 import {NodeClient} from "@sentry/node";
-import {TConfig} from "../../types/config.types";
+import {TConfig} from "@type/config.types";
 
 export let sentryClient: undefined|NodeClient;
 

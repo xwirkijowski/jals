@@ -1,15 +1,15 @@
 // Import logger
-import { globalLogger as log } from './src/utilities/logging/log';
+import { globalLogger as log } from '@util/logging/log';
 
 // Load configuration
-import { config } from "./config";
+import { config } from "@config";
 
 // Load process commander
-import { $CMDR } from './src/utilities/commander';
+import { $CMDR } from '@util/commander';
 
 // Import database configuration and status
-import { $DB } from './src/utilities/database/status';
-import { setupMongo } from "./src/utilities/database/mongoose";
+import { $DB } from '@/database/status';
+import { setupMongo } from "@/database/mongoose";
 
 // Setup mongoose database connection
 await setupMongo(config);
@@ -20,26 +20,26 @@ import { startStandaloneServer } from '@apollo/server/standalone';
 import { ulid } from 'ulid';
 
 // Import telemetry counters (requests, warnings, errors)
-import Counters from './src/utilities/telemetryCounters';
+import Counters from '@util/telemetryCounters';
 
 // Import middleware
-import { telemetryPlugin } from "./src/plugins/telemetry.plugin";
-import { extensionsPlugin } from "./src/plugins/extensions.plugin";
+import { telemetryPlugin } from "@plugin/telemetry.plugin";
+import { extensionsPlugin } from "@plugin/extensions.plugin";
 
 // Import final schema
-import schema from './src/schema';
+import schema from '@/schema.js';
 
 // Import data models
-import clickModel from './src/models/click.model';
-import linkModel from "./src/models/link.model";
-import userModel from './src/models/user.model';
+import clickModel from '@model/click.model';
+import linkModel from '@model/link.model';
+import userModel from '@model/user.model';
 
 // Import services
-import { AuthService } from "./src/services/auth/service";
-import { MailService } from "./src/services/mail/service";
+import { AuthService } from "@service/auth/service";
+import { MailService } from "@service/mail/service";
 
 // Types
-import { IContext } from "./src/types/context.types";
+import { IContext } from "@type/context.types";
 
 // Construct Apollo server instance
 const server = new ApolloServer<IContext>({

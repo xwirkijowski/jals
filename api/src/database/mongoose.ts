@@ -1,12 +1,12 @@
 import mongoose from "mongoose";
 
-import {TConfig} from "../../types/config.types";
+import {TConfig} from "@type/config.types";
 
-import { globalLogger as log } from "../logging/log";
-import {CriticalError, FatalError, Warning} from '../errors/index';
+import { globalLogger as log } from "@util/logging/log";
+import {CriticalError, FatalError, Warning} from '@util/error';
 
 import { $DB } from './status';
-import { $CMDR } from '../commander';
+import { $CMDR } from '@util/commander';
 
 export const setupMongo = async (config: TConfig) => {
 	mongoose.set('debug', (config.server.env === 'development'));

@@ -1,14 +1,14 @@
-import {Result, TResult} from "../result";
-import {check, getIP, getUA, handleError, setupMeta} from "../../utilities/helpers";
-import {log} from "../../services/auth/service";
+import {Result, TResult} from "@schema/result";
+import {check, getIP, getUA, handleError, setupMeta} from "@util/helpers";
+import {log} from "@service/auth/service";
+import {CriticalError} from "@util/error";
 
 // Types
-import {IContext} from "../../types/context.types";
-import AuthCodeType from "../../services/auth/authCode";
-import SessionType from "../../services/auth/session";
-import {THydratedUser} from "../../models/user.types";
+import {IContext} from "@type/context.types";
+import AuthCodeType from "@service/auth/authCode";
+import SessionType from "@service/auth/session";
+import {THydratedUser} from "@model/user.types";
 import {ERequestAuthCodeAction, IAuthInput, IRequestAuthCodeInput} from "./session.types";
-import {CriticalError} from "../../utilities/errors";
 
 const handleAction = (readyInput: any) => {
 	// Set default action to `LOGIN` if none specified or invalid

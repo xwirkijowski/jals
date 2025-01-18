@@ -1,9 +1,9 @@
-import {check} from "../../utilities/helpers";
+import {check} from "@util/helpers";
 
 // Types
-import {IContext} from "../../types/context.types";
-import {THydratedClick} from "../../models/click.types";
-import {THydratedLink} from "../../models/link.types";
+import {IContext} from "@type/context.types";
+import {THydratedClick} from "@model/click.types";
+import {THydratedLink} from "@model/link.types";
 
 // @todo Types
 

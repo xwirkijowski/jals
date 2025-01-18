@@ -1,9 +1,9 @@
-import { check } from "../../utilities/helpers";
+import { check } from "@util/helpers";
 
 // Types
-import {THydratedLink} from "../../models/link.types";
-import {TId} from "../../types/id.types";
-import {IContext} from "../../types/context.types";
+import {THydratedLink} from "@model/link.types";
+import {TId} from "@type/id.types";
+import {IContext} from "@type/context.types";
 
 export default {
 	Link: {

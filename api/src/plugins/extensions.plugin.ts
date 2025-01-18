@@ -1,5 +1,5 @@
 import {ApolloServerPlugin, GraphQLRequestContextWillSendResponse, GraphQLRequestListener} from "@apollo/server";
-import {IContext} from "../types/context.types";
+import {IContext} from "@type/context.types";
 
 export function extensionsPlugin (): ApolloServerPlugin<IContext> {
 	return {

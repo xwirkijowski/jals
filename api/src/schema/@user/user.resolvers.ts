@@ -1,6 +1,6 @@
-import {IContext} from "../../types/context.types";
-import {TId} from "../../types/id.types";
-import {THydratedUser} from "../../models/user.types";
+import {IContext} from "@type/context.types";
+import {TId} from "@type/id.types";
+import {THydratedUser} from "@model/user.types";
 
 export default {
 	User: {

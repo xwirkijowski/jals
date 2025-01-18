@@ -1,16 +1,15 @@
-
 // Types and interfaces
 import {Model} from "mongoose";
-import {TConfig} from "./config.types";
-import {TDatabaseStatus} from "../utilities/database/status";
-import {TTelemetryCounters} from "../utilities/telemetryCounters";
-import {IUser} from "../models/user.types";
-import {ILink} from "../models/link.types";
-import {IClick} from "../models/click.types";
-import {TSession} from "../services/auth/session";
-import {TAuthService} from "../services/auth/service";
-import {TMailService} from "../services/mail/service";
 import {IncomingMessage, ServerResponse} from "node:http";
+import {TConfig} from "./config.types";
+import {TDatabaseStatus} from "@/database/status";
+import {TTelemetryCounters} from "@util/telemetryCounters";
+import {IUser} from "@model/user.types";
+import {ILink} from "@model/link.types";
+import {IClick} from "@model/click.types";
+import {TSession} from "@service/auth/session";
+import {TAuthService} from "@service/auth/service";
+import {TMailService} from "@service/mail/service";
 
 export type UContextSession = TSession|'invalid'|undefined;
 

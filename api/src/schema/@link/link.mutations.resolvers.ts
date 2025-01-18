@@ -1,11 +1,11 @@
-import { check, setupMeta } from "../../utilities/helpers";
-import { Result } from "../result";
+import { check, setupMeta } from "@util/helpers";
+import { Result } from "@schema/result";
 
 // Types
-import {IContext} from "../../types/context.types";
-import {THydratedLink, ILink} from "../../models/link.types";
-import {TSession} from "../../services/auth/session";
-import {InternalError} from "../../utilities/errors";
+import {IContext} from "@type/context.types";
+import {THydratedLink, ILink} from "@model/link.types";
+import {TSession} from "@service/auth/session";
+import {InternalError} from "@util/error";
 
 export default {
 	Mutation: {

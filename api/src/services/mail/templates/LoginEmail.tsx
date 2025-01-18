@@ -1,7 +1,7 @@
 import React from "react";
 
 // Config
-import {config} from '../../../../config';
+import {config} from '@config';
 const frontendAddr: string = config.settings.general.frontendAddr;
 
 // Components

@@ -1,12 +1,12 @@
 import {createClient, RedisClientType} from "redis";
 
-import { config } from '../../../config';
-import { globalLogger as log } from "../logging/log";
-import { WarningAggregator, FatalError } from '../errors/index';
+import { config } from '@config';
+import { globalLogger as log } from "@util/logging/log";
+import { WarningAggregator, FatalError } from '@util/error';
 
 const Warnings = new WarningAggregator('Redis')
 
-import { $CMDR } from '../commander';
+import { $CMDR } from '@util/commander';
 import { $DB } from './status';
 
 // Construct client

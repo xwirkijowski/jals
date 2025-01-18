@@ -1,15 +1,15 @@
 import EventEmitter from "events";
 import { Resend } from "resend";
 
-import { CriticalError } from '../../utilities/errors/index';
-import { globalLogger as log } from '../../utilities/logging/log';
+import { CriticalError } from '@util/error';
+import { globalLogger as log } from '@util/logging/log';
 export { log };
 
-import {TSettings} from "../../types/config.types";
+import {TSettings} from "@type/config.types";
 import {AuthCodeType} from "../auth/authCode";
 
 import {LoginEmail} from './templates/LoginEmail';
-import {ERequestAuthCodeAction} from "../../schema/@session/session.types";
+import {ERequestAuthCodeAction} from "@schema/@session/session.types";
 
 export type TSettingsMail = TSettings['mail'];
 

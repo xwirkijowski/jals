@@ -1,9 +1,11 @@
-import {GraphQLSchema} from "graphql/type";
+import {defaultFieldResolver} from "graphql";
 import {getDirective, MapperKind, mapSchema} from '@graphql-tools/utils';
+
 import {loadTypeDef} from "../typeDefLoader";
-import {defaultFieldResolver} from "graphql/execution";
-import {check} from "../../../utilities/helpers";
-import {IContext} from "../../../types/context.types";
+import {check} from "@util/helpers";
+
+import {IContext} from "@type/context.types";
+import {GraphQLSchema} from "graphql/type";
 
 const authDirective = (directiveName: string)=>  {
     const typeDirectiveArgumentMaps: Record<string, any> = {}

@@ -1,9 +1,9 @@
-import {globalLogger as log} from '../utilities/logging/log';
 import {ApolloServerPlugin, GraphQLRequestContextWillSendResponse, GraphQLRequestListener} from "@apollo/server";
-import {IContext} from "../types/context.types";
+import {globalLogger as log} from '@util/logging/log';
+import {IContext} from "@type/context.types";
 
-import {axiomClient as axiom} from "../utilities/logging/axiom";
-import {getIP, getUA} from "../utilities/helpers";
+import {axiomClient as axiom} from "@util/logging/axiom";
+import {getIP, getUA} from "@util/helpers";
 
 export function telemetryPlugin(): ApolloServerPlugin<IContext> {
 	return {

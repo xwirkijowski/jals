@@ -2,8 +2,8 @@ import EventEmitter from "events";
 import crypto from 'node:crypto';
 import { GraphQLError } from "graphql";
 
-import { CriticalError } from '../../utilities/errors/index';
-import { globalLogger as log } from '../../utilities/logging/log';
+import { CriticalError } from '@util/error';
+import { globalLogger as log } from '@util/logging/log';
 export { log };
 
 import Session, {TSession} from "./session";
@@ -11,8 +11,8 @@ import AuthCode, {AuthCodeType} from "./authCode";
 
 // Types
 import {IAuthCodeGenerator, ISession, IAuthCode, TSettingsAuth} from "./types";
-import {IContext, UContextSession} from "../../types/context.types";
-import {ERequestAuthCodeAction} from "../../schema/@session/session.types";
+import {IContext, UContextSession} from "@type/context.types";
+import {ERequestAuthCodeAction} from "@schema/@session/session.types";
 
 export class AuthService extends EventEmitter {
 	default_config: TSettingsAuth = {

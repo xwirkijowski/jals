@@ -1,10 +1,10 @@
 import { EntityId } from 'redis-om'
-import { check } from "../../utilities/helpers";
+import { check } from "@util/helpers";
 
 // Types
-import {IContext, UContextSession} from "../../types/context.types";
-import {TSession} from "../../services/auth/session";
-import {THydratedUser} from "../../models/user.types";
+import {IContext, UContextSession} from "@type/context.types";
+import {TSession} from "@service/auth/session";
+import {THydratedUser} from "@model/user.types";
 
 export default {
 	Session: { // No need for auth checks, since output based on session.

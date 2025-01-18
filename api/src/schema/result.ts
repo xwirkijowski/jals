@@ -1,4 +1,4 @@
-import { globalLogger as log } from "../utilities/logging/log";
+import { globalLogger as log } from "@util/logging/log";
 
 export class Result {
 	success: boolean;

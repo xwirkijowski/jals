@@ -1,13 +1,13 @@
 import {EntityId} from "redis-om";
 
-import { CriticalError } from '../../utilities/errors/index';
-import { getIP } from "../../utilities/helpers";
+import { CriticalError } from '@util/error';
+import { getIP } from "@util/helpers";
 
 import { repository as model } from "./session.model";
 import { log } from "./service";
 
 import {ISession} from "./types";
-import {IContext} from "../../types/context.types";
+import {IContext} from "@type/context.types";
 
 /**
  * @todo Implement check for expires

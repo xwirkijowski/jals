@@ -2,7 +2,7 @@ import {Axiom} from '@axiomhq/js';
 import { globalLogger as log } from './log';
 
 // Types
-import {TConfig} from "../../types/config.types";
+import {TConfig} from "@type/config.types";
 
 type TAxiom = InstanceType<typeof Axiom>;
 

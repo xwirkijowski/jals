@@ -1,4 +1,4 @@
-import {InternalError} from './error';
+import {InternalError} from './internal.error';
 
 class FatalError extends InternalError {
 	name: string = 'FatalError';

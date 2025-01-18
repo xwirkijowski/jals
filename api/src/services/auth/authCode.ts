@@ -1,12 +1,11 @@
 import { EntityId } from "redis-om";
 
-import {CriticalError, InternalError} from '../../utilities/errors/index';
+import {CriticalError, InternalError} from '@util/error';
 
 import { repository as model } from "./authCode.model";
 import { log } from "./service";
-
 import {IAuthCodeGenerator, IAuthCode} from './types';
-import {ERequestAuthCodeAction} from "../../schema/@session/session.types";
+import {ERequestAuthCodeAction} from "@schema/@session/session.types";
 
 export default class AuthCode {
 	authCodeId?: string

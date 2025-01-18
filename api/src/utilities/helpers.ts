@@ -1,12 +1,12 @@
-import mongoose, {Types} from 'mongoose';
+import mongoose from 'mongoose';
 import { GraphQLError } from "graphql";
 
-import { $DB } from "./database/status";
-import {TSession} from "../services/auth/session";
-import {IContext} from "../types/context.types";
-import {TId} from "../types/id.types";
-import {CriticalError} from "./errors";
-import {Result, TResult} from "../schema/result";
+import { $DB } from "@/database/status";
+import {TSession} from "@service/auth/session";
+import {IContext} from "@type/context.types";
+import {TId} from "@type/id.types";
+import {CriticalError} from "./error";
+import {Result, TResult} from "@schema/result";
 
 export const h = {
 	/**

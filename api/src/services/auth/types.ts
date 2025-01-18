@@ -1,7 +1,8 @@
 import {EntityId} from "redis-om";
-import {TId} from "../../types/id.types";
-import {ERequestAuthCodeAction} from "../../schema/@session/session.types";
-import {TSettings} from "../../types/config.types";
+
+import {TId} from "@type/id.types";
+import {ERequestAuthCodeAction} from "@schema/@session/session.types";
+import {TSettings} from "@type/config.types";
 
 export type TSettingsAuth = TSettings['auth'];
 
