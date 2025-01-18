@@ -2,11 +2,9 @@
 
 import cx from "classnames";
 import React from "react";
+import {SCompProps} from "@type/common";
 
-type TProps = {
-	className?: string
-	children?: React.ReactNode
-}
+type TProps = {} & SCompProps.TBase<true>
 
 export const CardFooter = (
 	{className, children}: TProps

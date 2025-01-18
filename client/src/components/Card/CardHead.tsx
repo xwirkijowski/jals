@@ -2,18 +2,19 @@
 
 import cx from "classnames";
 import React from "react";
+import {SCompProps} from "@type/common";
 
 type TProps = {
-	className?: string
-	children?: React.ReactNode
-}
+	flex?: boolean
+} & SCompProps.TBase<true>
 
 export const CardHead = (
-	{className, children}: TProps
+	{flex = true, className, children}: TProps
 ): React.ReactNode => {
 	return (
 		<div className={cx(
 			'p-8',
+			{'flex flex-col gap-4': flex},
 			className,
 		)}>
 			{children}
