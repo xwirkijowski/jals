@@ -5,7 +5,7 @@ import {AuthContext} from "../../contexts/auth/auth.context";
 
 import Link from "next/link";
 import Button from "@comp/Button/Button";
-import {LogOutButton} from "../../actions/logout/LogOut.button";
+import {LogOutButton} from "@act/logout/LogOut.button";
 import cx from "classnames";
 import {UserBadge} from "@comp/Layout/UserBadge";
 import {Tagline} from "@comp/Layout/Tagline";
@@ -29,7 +29,7 @@ export const Header = () => {
                     </>
                 ) : (
                     <>
-                        <Link href={'/login'} passHref><Button btnType={'light'}>Log In</Button></Link>
+                        <Link href={'/login'} passHref><Button btnType={'theme'}>Log In</Button></Link>
                         <Link href={'/register'} passHref><Button>Create account</Button></Link>
                     </>
                 )}
