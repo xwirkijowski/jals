@@ -1,2 +1,10 @@
+# Directories
 node_modules
-.env.*
+src
+logs
+docs
+
+# Files
+config.ts
+main.ts
+README.md
