@@ -39,7 +39,7 @@ export const refreshCookie = async (): Promise<boolean> => {
 	let payload: TSessionCookie;
 	try {
 		payload = JSON.parse(session) }
-	catch (err) { return false; } // Payload must be malformed, invalid
+	catch (err) { return false; } // Payload must be malformed, invalid @ts-ignore
 
 	cookieStore.set(cookieName, JSON.stringify(payload), cookieSettings());
 	return true;
