@@ -16,36 +16,12 @@ export const generateMetadata = async (
 	}
 }
 
-import { gql } from "@apollo/client";
-const LINK = gql`
-    query Link($linkId: ID!) {
-        link(linkId: $linkId) {
-            id
-            target
-            active
-            flagCount
-	        caution
-        }
-    }
-`;
-const CLICK_ADD = gql`
-    mutation ($input: CreateClickInput) {
-        createClick(input: $input) {
-            result {
-                success
-                errors {
-                    path
-                    msg
-                    code
-                }
-            }
-        }
-    }
-`;
 
-import { getClient } from "../../lib/apollo-client";
-import { getSessionHeader } from "../../lib/auth/session";
+import { GET_LINK, CLICK_ADD } from "./queries";
+import { getClient } from "@lib/apollo-client";
+import { getSessionHeader } from "@lib/auth/session";
 
+// Components
 import {Spinner} from "@comp/Spinner/Spinner";
 import {Tooltip} from "@comp/Tooltip/Tooltip";
 import Button from "@comp/Button/Button";
@@ -58,17 +34,15 @@ import {CardHead} from "@comp/Card/CardHead";
 import {CardBody} from "@comp/Card/CardBody";
 import {CardFooter} from "@comp/Card/CardFooter";
 
-
 export default async function (
 	{params}
 )  {
 	const linkId: string = (await params).linkId;
 	const requestContext = await getSessionHeader();
 
-	const {data: {link}, loading} = await getClient().query({query: LINK, variables: {linkId: linkId}, context: requestContext});
+	const {data: {link}, loading} = await getClient().query({query: GET_LINK, variables: {linkId: linkId}, context: requestContext});
 
 	const registerClick = async () => {
-		"use server";
 		const {data: {createClick: {click}}} = await getClient().mutate({mutation: CLICK_ADD, variables: {input: {linkId: linkId}}, context: requestContext, errorPolicy: 'all'});
 		return click;
 	}
