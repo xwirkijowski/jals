@@ -1,12 +1,12 @@
 "use client";
 
-import {Context, createContext, ReactNode} from "react";
+import {createContext, ReactNode} from "react";
 
-import {ResponseType} from '@type/data/Response';
+import {TResponse} from '@type/data/response';
 
-export const LinkContext: Context<any> = createContext(null);
+export const LinkContext = createContext<TResponse>({});
 
-export const LinkContextWrapper = ({value, children}: {value: ResponseType, children: ReactNode}) => {
+export const LinkContextWrapper = ({value, children}: {value: TResponse, children: ReactNode}) => {
     return (
         <LinkContext.Provider value={value}>
             {children}
