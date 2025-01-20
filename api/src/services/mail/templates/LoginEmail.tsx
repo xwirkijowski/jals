@@ -12,7 +12,7 @@ import {Footer} from "./components/Footer";
 // Types
 import {IEmailData} from "../service";
 
-import styles, {authCodeWrapper} from './styles';
+import styles from './styles';
 
 export const LoginEmail = (data: IEmailData): React.ReactNode => {
     const authCode = [];
