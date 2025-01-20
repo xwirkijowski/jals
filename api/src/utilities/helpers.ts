@@ -244,15 +244,14 @@ export const check = {
 }
 
 
-// @todo Types and rework
 export const getIP = (req: IContext['req']): string|undefined => {
 	if (!req) return undefined;
 
-	return ((req?.headers?.["p9s-user-ip"] || req?.headers?.["x-forwarded-for"] || req?.headers?.["x-real-ip"] || req?.socket?.remoteAddress || undefined) as string);
+	return ((req?.headers?.["jals-user-addr"] || req?.headers?.["x-forwarded-for"] || req?.headers?.["x-real-ip"] || req?.socket?.remoteAddress) as string) ||  undefined;
 }
 
 export const getUA = (req: IContext['req']): string|undefined => {
-	return req.headers?.['user-agent'] || undefined;
+	return ((req.headers?.['jals-user-agent'] || req.headers?.['user-agent']) as string) || undefined;
 }
 
 // @todo Types
