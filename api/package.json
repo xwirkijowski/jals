@@ -15,7 +15,7 @@
     "api-compile": "tsc && tsc-alias && npm run api-copyfiles",
     "api-start": "node dist/main.js",
     "api-compile-and-start": "npm run api-compile && node dist/main.js",
-    "api-dev": "tsx --tsconfig ./tsconfig.json main.ts"
+    "api-dev": "tsx watch --tsconfig ./tsconfig.json main.ts"
   },
   "devDependencies": {
     "@types/luxon": "^3.4.2",
