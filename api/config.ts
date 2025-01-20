@@ -1,13 +1,13 @@
-import { WarningAggregator, ErrorAggregator, CriticalError, FatalError } from "./src/utilities/errors";
-import { globalLogger as log } from "./src/utilities/logging/log";
+import { WarningAggregator, ErrorAggregator, FatalError } from "@util/error";
+import { globalLogger as log } from "@util/logging/log";
 
 const Warnings = new WarningAggregator('Config');
 const Errors = new ErrorAggregator('Config');
 
-import {ConfigType, ConfigDefaultsType} from "./src/types/config.types";
+import {TConfig, TConfigDefaults} from "@type/config.types";
 
 // Defaults
-const defaults: ConfigDefaultsType = {
+const defaults: TConfigDefaults = {
     server: {
         port: 4000,
         host: '127.0.0.1',
@@ -67,7 +67,7 @@ if (Errors.errorCount > 0) {
 }
 
 // Stage 2 - Load extra configuration from file
-import {settings} from './settings.json';
+import settings from './settings.json' with {type: 'json'};
 
 // Stage 3 - Build configuration object
 log.withDomain('log', 'Config', 'Building configuration object...')
@@ -79,7 +79,7 @@ const credentials = (user: string, password: string): string => {
     } else return '';
 }
 
-const config: ConfigType = {
+const config: TConfig = {
     server: {
         host: process.env?.SERVER_HOST || defaults.server.host,
         port: Number(process.env?.SERVER_PORT) || defaults.server.port,
@@ -137,8 +137,8 @@ log.withDomain('success', 'Config', `Configuration loaded in ${(performance.now(
 timer = undefined;
 
 // Logging integrations setup
-import {setupAxiom} from './src/utilities/logging/axiom';
-import {setupSentry} from './src/utilities/logging/sentry';
+import {setupAxiom} from '@util/logging/axiom';
+import {setupSentry} from '@util/logging/sentry';
 setupAxiom(config);
 setupSentry(config);
 

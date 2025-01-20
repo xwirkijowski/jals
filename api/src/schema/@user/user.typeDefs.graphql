@@ -1,0 +1,34 @@
+type User {
+    "ObjectID of the user"
+    id: ID!
+    "User's email address"
+    email: EmailAddress!
+    "Is user an admin?"
+    isAdmin: Boolean!
+
+    createdBy: User @auth
+    createdAt: DateTime
+    updatedBy: User @auth
+    updatedAt: DateTime
+    version: Int
+}
+
+type UserConnection {
+    edges: [UserEdge]!
+    pageInfo: PageInfo!
+}
+
+type UserEdge {
+    cursor: String!
+    node: User!
+}
+
+extend type Query {
+    user(userId: ID!): User @auth
+
+    users(
+        page: Int
+        perPage: Int
+    ): UserConnection @auth
+}
+

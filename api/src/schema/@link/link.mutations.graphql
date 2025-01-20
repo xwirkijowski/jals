@@ -1,0 +1,51 @@
+# Payloads
+
+type CreateLinkPayload {
+	result: Result!
+	link: Link
+}
+
+type UpdateLinkPayload {
+	result: Result!
+	link: Link
+}
+
+type DeleteLinkPayload {
+	result: Result!
+}
+
+type FlagLinkPayload {
+	result: Result!
+	link: Link
+}
+
+# Inputs
+
+input CreateLinkInput {
+	target: String!
+}
+
+input UpdateLinkInput {
+	linkId: ID!
+	target: String
+	active: Boolean
+}
+
+input DeleteLinkInput {
+	linkId: ID!
+}
+
+input FlagLinkInput {
+	linkId: ID!
+	note: String!
+}
+
+# Extend
+
+extend type Mutation {
+	createLink(input: CreateLinkInput!): CreateLinkPayload
+	updateLink(input: UpdateLinkInput!): UpdateLinkPayload @auth(level: SESSION)
+	deleteLink(input: DeleteLinkInput!): DeleteLinkPayload @auth(level: SESSION)
+
+	flagLink(input: FlagLinkInput!): FlagLinkPayload
+}

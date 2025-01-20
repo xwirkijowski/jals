@@ -1,13 +1,13 @@
 import {EntityId} from "redis-om";
 
-import { CriticalError } from '../../utilities/errors/index';
-import { getIP } from "../../utilities/helpers";
+import { CriticalError } from '@util/error';
+import { getIP } from "@util/helpers";
 
 import { repository as model } from "./session.model";
 import { log } from "./service";
 
-import {SessionInterface} from "./types";
-import {IncomingMessage} from "node:http";
+import {ISession} from "./types";
+import {IContext} from "@type/context.types";
 
 /**
  * @todo Implement check for expires
@@ -15,7 +15,7 @@ import {IncomingMessage} from "node:http";
 
 export default class Session {
 	sessionId?: string;
-	userId: SessionInterface["userId"];
+	userId: ISession["userId"];
 	isAdmin: boolean = false;
 	userAgent?: string;
 	userAddr?: string;
@@ -23,7 +23,7 @@ export default class Session {
 	updatedAt?: Date|string;
 	version: number = 0;
 
-	constructor(props: SessionInterface, rId: string, request?: IncomingMessage) {
+	constructor(props: ISession, rId: string, request?: IContext['req']) {
 		if (!props?.userId) { // @todo Change caller handling, no support for throw atm
 			throw new CriticalError('Session creation failed, no userId provided!', 'SESSION_MISSING_ARGS', 'AuthService', true, {requestId: rId, ...props})
 		}
@@ -40,15 +40,34 @@ export default class Session {
 		return this;
 	}
 
-	static async find(sessionId: string, rId: string) {
+	static async find(sessionId: string, rId: string): Promise<TSession> {
 		const node = await model.fetch(sessionId);
 
 		node.sessionId = node[(EntityId as unknown as string)];
 
-		return (node?.userId) ? new Session((node as SessionInterface), rId) : undefined;
+		return (node?.userId) ? new Session((node as ISession), rId) : undefined;
 	}
 
-	refresh = async (expiresIn: number, rId: string) => {
+	static async findByUserId(userId: ISession['userId'], rId: string): Promise<Array<TSession>> {
+		const nodes = await model.search()
+			.where('userId').equals(userId as string)
+			.return.all();
+
+		let sessions: Array<TSession> = [];
+
+		if (nodes.length > 0) {
+			nodes.forEach(node => {
+				if (node?.userId === userId) {
+					node.sessionId = node[(EntityId as unknown as string)];
+					sessions.push(new Session((node as ISession), rId));
+				}
+			})
+		}
+
+		return sessions;
+	}
+
+	refresh = async (expiresIn: number, rId: string): Promise<this> => {
 		if (!this.sessionId) return undefined;
 
 		this.updatedAt = new Date();
@@ -61,7 +80,7 @@ export default class Session {
 		return this;
 	}
 
-	save = async (expiresIn: number, rId: string) => {
+	save = async (expiresIn: number, rId: string): Promise<this> => {
 		if (this.sessionId) return undefined;
 
 		this.createdAt = new Date().toISOString(); // Set close to insertion
@@ -81,7 +100,23 @@ export default class Session {
 			return undefined;
 		}
 	}
+
+	remove = async (rId: string): Promise<boolean> => {
+		if (!this.sessionId) throw new CriticalError('Cannot remove AuthCode without identifier', 'SESSION_REMOVE_NO_ID', 'AuthService', true, {requestId: rId, authCode: this});
+
+		// Remove the entity
+		await model.remove(this.sessionId);
+
+		// Fetch ID to confirm deletion
+		const node = await model.fetch(this.sessionId);
+
+		if (node.code) {
+			throw new CriticalError('Session removal failed!', 'SESSION_REMOVE_FAULT', 'AuthService', true, {requestId: rId, authCode: this});
+		} else {
+			return true;
+		}
+	}
 }
 
 // Export class type
-export type SessionType = InstanceType<typeof Session>;
+export type TSession = InstanceType<typeof Session>;

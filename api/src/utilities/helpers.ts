@@ -1,12 +1,12 @@
 import mongoose from 'mongoose';
 import { GraphQLError } from "graphql";
 
-import {IncomingMessage} from "node:http";
-import { $DB } from "./database/status";
-import {SessionType} from "../services/auth/session";
-import {ContextInterface} from "../types/context.types";
-import {IdType} from "../types/id.types";
-import {CriticalError} from "./errors";
+import { $DB } from "@/database/status";
+import {TSession} from "@service/auth/session";
+import {IContext} from "@type/context.types";
+import {TId} from "@type/id.types";
+import {CriticalError} from "./error";
+import {Result, TResult} from "@schema/result";
 
 export const h = {
 	/**
@@ -37,9 +37,27 @@ export const h = {
 	}
 }
 
+// Types
+
+export interface IValidateData {
+	type: 'string'|'number'|'boolean'|'ObjectId'
+	normalize?: boolean
+	optional?: boolean
+	length?: number
+}
+
+export type TValidateData = {
+	[key: string]: IValidateData // | TValidateData
+}
+
+/**
+ *
+ */
 export const check = {
 	/**
 	 * Validate if defined and non-null
+	 *
+	 * @deprecated
 	 *
 	 * @param	input					Input field.
 	 * @param	type					Expected type of input.
@@ -60,6 +78,87 @@ export const check = {
 			else throw new GraphQLError('Input empty or wrong type', {extensions: {code: 'BAD_USER_INPUT'}});
 		}
 	},
+	// @todo Documentation, better types, implement pattern for email and web addresses
+	prepareInput: (input: unknown, struct: TValidateData, result: TResult = new Result()): {readyInput?: any, result: TResult} => {
+		const e = (path: string, key: string, condition?: any) => {
+			const code = {
+				malformed: 'BAD_USER_INPUT',
+				invalid: 'INPUT_INVALID',
+				type: 'INPUT_WRONG_TYPE',
+				empty: 'INPUT_EMPTY',
+			}
+
+			const message = {
+				malformed: '',
+				invalid: '',
+				length: `Input field ${path} must have exactly ${condition} length`,
+				type: `Input field ${path} is of wrong type`,
+				empty: `Input field ${path} is empty`,
+			}
+
+			return [code[key] as string, path as string, message[key] as string] as const;
+		}
+
+		let readyInput = {};
+
+		// Validate the input object
+		if (typeof input !== 'object') return {readyInput, result: result.addError('BAD_USER_INPUT', 'input', 'Input wrong type')};
+		else if (Object.keys(input).length === 0) return {readyInput, result: result.addError('INPUT_EMPTY', 'input', 'Input empty')};
+
+		for (const [key, data] of Object.entries(struct)) {
+			const normalize: boolean = data?.normalize || false;
+			const optional: boolean = data?.optional || false;
+
+			let inputValue = input[key];
+			const path = `input.${key}`
+
+			// Check if not null or undefined
+			if (!optional && (!inputValue || (inputValue && !check.nonNull(inputValue)))) {
+				result.addError(...e(path, 'empty'));
+				continue;
+			} else if (optional && !inputValue) continue;
+
+			// Handle generic string
+			if (data.type === 'string') {
+				if (typeof inputValue !== data.type) {
+					result.addError(...e(path, 'type'));
+					continue;
+				} else if (inputValue.length === 0) {
+					result.addError(...e(path, 'empty'));
+					continue;
+				} else if (data.length && inputValue.length !== data.length) {
+					result.addError(...e(path, 'length', data.length));
+					continue;
+				}
+
+				readyInput[key] = (normalize) ? String(inputValue).normalize('NFKD') : String(inputValue);
+			} else if (data.type === 'boolean') {
+				if (typeof inputValue !== data.type) {
+					result.addError(...e(path, 'type'));
+					continue;
+				}
+
+				readyInput[key] = Boolean(inputValue);
+			} else if (data.type === 'number') {
+				if (typeof inputValue !== data.type) {
+					result.addError(...e(path, 'type'));
+					continue;
+				}
+
+				readyInput[key] = Number(inputValue);
+			} else if (data.type === 'ObjectId') {
+				if (!mongoose.isValidObjectId(inputValue)) {
+					result.addError(...e(path, 'type'));
+					continue;
+				}
+
+				readyInput[key] = inputValue;
+			}
+		}
+
+		return {readyInput, result}
+	},
+	nonNull: (v: string|number|boolean|Object|Array<string|number|boolean|Object>): boolean => (v !== undefined && v !== null),
 	needs: (system: string):void|GraphQLError => {
 		if (system === 'mongo' && $DB.mongo !== 'connected') {
 			throw new GraphQLError('Database unavailable.', { extensions: { code: 'INTERNAL_SERVER_ERROR' } });
@@ -67,8 +166,8 @@ export const check = {
 			throw new GraphQLError('Session database unavailable.', { extensions: { code: 'INTERNAL_SERVER_ERROR' } });
 		}
 	},
-	isSessionValid: (session: ContextInterface["session"]): session is SessionType => (!!session && session !== 'invalid'),
-	session: (session: ContextInterface["session"]): true|GraphQLError => {
+	isSessionValid: (session: IContext["session"]): session is TSession => (session && session !== 'invalid'),
+	session: (session: IContext["session"]): true|GraphQLError => {
 		if (check.isSessionValid(session)) return true;
 
 		throw new GraphQLError('Unauthenticated. You need to be logged in to access this resource.', {
@@ -88,13 +187,13 @@ export const check = {
 	 *
 	 * @return	Boolean|GraphQLError	If checks pass, return true, else error.
 	 */
-	isOwner: (session:ContextInterface["session"] = undefined, createdBy: IdType): true|GraphQLError => {
+	isOwner: (session:IContext["session"] = undefined, createdBy: TId): true|GraphQLError => {
 		// Handle no session
 		check.session(session)
 
 		let authorized: boolean = false; // Default to false
 
-		if ((session as SessionType).userId === createdBy || (session as SessionType).isAdmin) authorized = true;
+		if ((session as TSession)?.userId === createdBy || (session as TSession)?.isAdmin === true) authorized = true;
 
 		// Handle user not authorized
 		if (!authorized) {
@@ -119,7 +218,7 @@ export const check = {
 	 *
 	 * @return	Boolean|GraphQLError	If checks pass, return true, else error.
 	 */
-	isAdmin: (session: ContextInterface["session"] = undefined, silent: boolean = false): boolean|GraphQLError => {
+	isAdmin: (session: IContext["session"] = undefined, silent: boolean = false): boolean|GraphQLError => {
 		// Handle no session
 		check.session(session)
 
@@ -127,7 +226,7 @@ export const check = {
 
 		let authorized: boolean = false; // Default to false
 
-		if ((session as SessionType).isAdmin) authorized = true;
+		if ((session as TSession).isAdmin) authorized = true;
 
 		// Handle user not authorized
 		if (!authorized && !silent) {
@@ -145,19 +244,18 @@ export const check = {
 }
 
 
-// @todo Types and rework
-export const getIP = (req: IncomingMessage): string|undefined => {
+export const getIP = (req: IContext['req']): string|undefined => {
 	if (!req) return undefined;
 
-	return ((req?.headers?.["p9s-user-ip"] || req?.headers?.["x-forwarded-for"] || req?.headers?.["x-real-ip"] || req?.socket?.remoteAddress || undefined) as string);
+	return ((req?.headers?.["jals-user-addr"] || req?.headers?.["x-forwarded-for"] || req?.headers?.["x-real-ip"] || req?.socket?.remoteAddress) as string) ||  undefined;
 }
 
-export const getUA = (req: IncomingMessage): string|undefined => {
-	return req.headers?.['user-agent'] || undefined;
+export const getUA = (req: IContext['req']): string|undefined => {
+	return ((req.headers?.['jals-user-agent'] || req.headers?.['user-agent']) as string) || undefined;
 }
 
 // @todo Types
-export const setupMeta = (session: ContextInterface["session"], input: any, node:any = undefined) => {
+export const setupMeta = (session: IContext["session"], input: any, node:any = undefined) => {
 	const timestamp = new Date().toISOString();
 
 	if (!node) {

@@ -1,15 +1,42 @@
 {
   "compilerOptions": {
-    "target": "es2022",
-    "module": "es2022",
-    "moduleResolution": "node",
-    "outDir": "build",
+    "outDir": "dist",
+    "target": "ES2022",
+    "lib": [
+      "ESNext"
+    ],
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "skipLibCheck": true,
     "strict": false,
     "declaration": true,
+    "declarationMap": true,
     "sourceMap": true,
-    "declarationMap": false,
     "esModuleInterop": true,
     "resolveJsonModule": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "allowJs": true,
+    "baseUrl": ".",
+    "checkJs": false,
+    "pretty": true,
+    "removeComments": true,
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "paths": {
+      "@/*": ["src/*"],
+      "@model/*": ["src/models/*"],
+      "@plugin/*": ["src/plugins/*"],
+      "@schema/*": ["src/schema/*"],
+      "@service/*": ["src/services/*"],
+      "@type/*": ["src/types/*"],
+      "@util/*": ["src/utilities/*"],
+      "@config": ["config.js"]
+    }
+  },
+  "include": ["main.ts", "config.ts", "src/**/*"],
+  "exclude": ["node_modules", "dist"],
+  "tsc-alias": {
+    "resolveFullPaths": true,
   }
 }

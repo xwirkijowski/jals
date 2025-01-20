@@ -1,0 +1,49 @@
+type Link {
+	id: ID!
+	target: String!
+
+	clicks: ClickConnection
+	clickCount: Int
+	flags: [LinkFlag!]
+	flagCount: Int
+	active: Boolean!
+	caution: Boolean!
+
+	createdBy: User @auth
+	createdAt: DateTime!
+	updatedBy: User @auth
+	updatedAt: DateTime
+	version: Int!
+}
+
+type LinkConnection {
+	edges: [LinkEdge]
+	nodes: [Link]
+	pageInfo: PageInfo!
+}
+
+type LinkEdge {
+	cursor: String!
+	node: Link!
+}
+
+type LinkFlag {
+	note: String!
+	createdAt: DateTime!
+	createdBy: User! @auth
+}
+
+extend type Query {
+	link (
+		linkId: ID!
+	): Link
+
+	links (
+		page: Int
+		perPage: Int
+
+		target: String
+		hasFlags: Boolean
+		createdBy: ID
+	): LinkConnection @auth(level: SESSION)
+}

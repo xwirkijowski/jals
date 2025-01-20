@@ -1,5 +1,6 @@
 import React from "react";
-import Callout from "@comp/Callout/Callout";
+
+import {Callout} from "@comp/Callout/Callout";
 
 export const setupErrorCallouts = (state: any) => {
     const errorCallouts: React.JSX.Element[] = [];
@@ -12,6 +13,8 @@ export const setupErrorCallouts = (state: any) => {
                 content = "Looks like you don't have an account yet!";
             } else if (item.code === 'ALREADY_EXISTS') {
                 content = 'Looks like you already have an account!';
+            } else if (item.code === 'INVALID_CODE') {
+                content = 'Code invalid or already used!'
             } else if (item?.code) {
                 content = item.msg
                     ? `${item.message} (${item.code})`

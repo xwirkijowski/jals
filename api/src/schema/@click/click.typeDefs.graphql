@@ -1,0 +1,36 @@
+type Click {
+    id: ID!
+    link: Link!
+    userAgent: String
+    platform: String
+    isMobile: Boolean
+    ipAddress: IPAddress @auth
+
+    createdBy: User @auth
+    createdAt: DateTime!
+    version: Int!
+}
+
+type ClickConnection {
+    edges: [ClickEdge]!
+    pageInfo: PageInfo!
+}
+
+type ClickEdge {
+    cursor: String!
+    node: Click!
+}
+
+extend type Query {
+    click(clickId: ID!): Click @auth
+
+    clicks(
+        page: Int
+        perPage: Int
+        linkId: ID!
+    ): ClickConnection! @auth(level: SESSION)
+
+    countClicks(
+        linkId: ID!
+    ): Int @auth
+}

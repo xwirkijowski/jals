@@ -2,23 +2,23 @@ import {Axiom} from '@axiomhq/js';
 import { globalLogger as log } from './log';
 
 // Types
-import {ConfigType} from "../../types/config.types";
+import {TConfig} from "@type/config.types";
 
-type AxiomType = InstanceType<typeof Axiom>;
+type TAxiom = InstanceType<typeof Axiom>;
 
 export let axiomClient: undefined|InstanceType<typeof AxiomWrapper>;
 
-export const setupAxiom = (config: ConfigType):void => {
+export const setupAxiom = (config: TConfig): void => {
     if (config) {
         axiomClient = new AxiomWrapper(config);
     }
 }
 
 class AxiomWrapper {
-    client: AxiomType;
+    client: TAxiom;
     dataset: string;
 
-    constructor (config: ConfigType) {
+    constructor (config: TConfig) {
         this.dataset = config?.settings?.axiom?.dataset;
 
         if (!this.dataset) {
@@ -35,13 +35,13 @@ class AxiomWrapper {
         return this;
     }
 
-    ingest = (subset: string|undefined = undefined, payload: object) => {
+    ingest = (subset: string|undefined = undefined, payload: object): void => {
         if (!this.client) return;
 
-        const dataset = (subset) ? this.dataset+'-'+subset : this.dataset;
+        const dataset: string = (subset) ? this.dataset+'-'+subset : this.dataset;
 
         this.client.ingest(dataset, payload)
     }
 
-    getClient = () => this.client
+    getClient = (): TAxiom => this.client
 }

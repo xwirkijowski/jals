@@ -1,0 +1,32 @@
+# Payloads
+
+type UpdateUserPayload {
+    result: Result!
+    user: User
+}
+
+type DeleteUserPayload {
+    result: Result!
+}
+
+# Inputs
+
+input UpdateUserInput {
+    "ObjectID of the user"
+    userId: ID!
+    "User's email address"
+    email: EmailAddress!
+    "Is user an admin?"
+    isAdmin: Boolean!
+}
+
+input DeleteUserInput {
+    userId: ID!
+}
+
+# Extends
+
+extend type Mutation {
+    updateUser(input: UpdateUserInput): UpdateUserPayload @auth
+    deleteUser(input: DeleteUserInput): DeleteUserPayload @auth
+}

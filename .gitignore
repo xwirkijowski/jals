@@ -2,6 +2,7 @@ build/
 dist/
 out/
 logs/
+.next/
 
 .env
 .env*
@@ -10,5 +11,3 @@ logs/
 .idea/
 .run/
 node_modules/
-
-package-lock.json

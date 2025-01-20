@@ -2,14 +2,18 @@
 
 import {useContext} from "react";
 
-import {LinkContext} from "../../../../../contexts/LinkContext";
+import {LinkContext} from "@ctx/link/link.context";
 
 // Components
-import {FlagForm} from "../../../../../actions/flag/Flag.form";
+import {FlagForm} from "@act/flag/Flag.form";
 import {ModalWrapper} from '@comp/Modal/Wrapper';
 
-export default () => {
+const Page = () => {
     const {data} = useContext(LinkContext);
+
+    // @todo Handle broken context edge case
+
+    if (!data?.link) {return null}
 
     return (
         <ModalWrapper>
@@ -17,3 +21,5 @@ export default () => {
         </ModalWrapper>
     )
 }
+
+export default Page;

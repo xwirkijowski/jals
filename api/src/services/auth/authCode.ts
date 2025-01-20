@@ -1,22 +1,21 @@
 import { EntityId } from "redis-om";
 
-import {CriticalError, InternalError} from '../../utilities/errors/index';
+import {CriticalError, InternalError} from '@util/error';
 
 import { repository as model } from "./authCode.model";
 import { log } from "./service";
-
-import {AuthCodeGenerator, AuthCodeInterface} from './types';
-import {ERequestAuthCodeAction} from "../../schema/session/session.mutations.types";
+import {IAuthCodeGenerator, IAuthCode} from './types';
+import {ERequestAuthCodeAction} from "@schema/@session/session.types";
 
 export default class AuthCode {
 	authCodeId?: string
 	action?: string
 	code?: string
-	userId?: AuthCodeInterface["userId"]
+	userId?: IAuthCode["userId"]
 	userEmail?: string
 	createdAt?: string|Date
 
-	constructor (props: AuthCodeInterface , rId?: string, generator?: AuthCodeGenerator) {
+	constructor (props: IAuthCode , rId?: string, generator?: IAuthCodeGenerator) {
 		if (props?.[EntityId] && props?.code) { // Create new instance from existing
 			this.authCodeId = props[EntityId];
 			this.action = props.action;
@@ -43,7 +42,7 @@ export default class AuthCode {
 		return this;
 	}
 
-	static async find (userId: AuthCodeInterface["userId"], code: string, action: ERequestAuthCodeAction, rId: string): Promise<AuthCodeType> {
+	static async find (userId: IAuthCode["userId"], code: string, action: IAuthCode["action"], rId: string): Promise<AuthCodeType> {
 		let node;
 
 		if (action === ERequestAuthCodeAction['LOGIN']) {
@@ -60,7 +59,7 @@ export default class AuthCode {
 				.return.first();
 		}
 
-		return (node?.code) ? new AuthCode((node as AuthCodeInterface)) : undefined;
+		return (node?.code) ? new AuthCode((node as IAuthCode)) : undefined;
 	}
 
 	save = async (expiresIn: number, rId: string): Promise<this> => {
@@ -79,7 +78,23 @@ export default class AuthCode {
 
 			return this;
 		} else {
-			throw new CriticalError('AuthCode save failed!', 'AUTHCODE_SAVE_FAULT', 'AuthService', true, {requestId: rId, authCode: this})
+			throw new CriticalError('AuthCode save failed!', 'AUTHCODE_SAVE_FAULT', 'AuthService', true, {requestId: rId, authCode: this});
+		}
+	}
+
+	remove = async (rId: string): Promise<boolean> => {
+		if (!this.authCodeId) throw new CriticalError('Cannot remove AuthCode without identifier', 'AUTHCODE_REMOVE_NO_ID', 'AuthService', true, {requestId: rId, authCode: this});
+
+		// Remove the entity
+		await model.remove(this.authCodeId);
+
+		// Fetch ID to confirm deletion
+		const node = await model.fetch(this.authCodeId);
+
+		if (node.code) {
+			throw new CriticalError('AuthCode removal failed!', 'AUTHCODE_REMOVE_FAULT', 'AuthService', true, {requestId: rId, authCode: this});
+		} else {
+			return true;
 		}
 	}
 }

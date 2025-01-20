@@ -1,22 +1,24 @@
 {
   "name": "jals-client",
-  "version": "2.0.0",
+  "version": "2.2.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "client-dev": "next dev",
+    "client-build": "next build",
+    "client-start": "next start",
+    "client-lint": "next lint"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@apollo/client": "^3.12.4",
     "@apollo/experimental-nextjs-app-support": "^0.11.7",
+    "bootstrap-icons": "^1.11.3",
     "classnames": "^2.5.1",
     "graphql": "^16.10.0",
-    "next": "^15.1.3",
+    "js-cookie": "^3.0.5",
+    "next": "^15.1.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },

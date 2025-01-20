@@ -1,42 +1,54 @@
+"use server";
+
 import React from "react";
 
 // Metadata
-import type {Metadata} from 'next';
-export const metadata: Metadata = {
+import type {Metadata, Viewport} from 'next';
+export const generateMetadata = async (): Promise<Metadata> => ({
     title: {
         template: "%s - jals.wxme.dev",
-        default: 'JALS on Next.js - jals.wxme.dev'
+        default: 'JALS on Next.js - jals.wxme.dev',
     }
-}
-export const viewport: string = "width=device-width"
+})
+export const generateViewport = async (): Promise<Viewport> => ({
+    width: 'device-width',
+});
 
 // Import global styles
 import '../css/globals.css';
 
-import {ApolloWrapper} from '../contexts/ApolloWrapper';
-import {AuthContextWrapper} from "../contexts/AuthContext";
+
+// Contexts
+import {getUser} from "@ctx/auth/auth.utils.server";
+import {AuthContextWrapper} from "@ctx/auth/auth.context";
+import {ThemeContextWrapper} from "@ctx/theme/theme.context";
 
 // Components
-import {Footer} from '@comp/layout/Footer';
-import {Header} from '@comp/layout/Header';
+import {Body} from "@comp/Layout/Body";
+import {Header} from '@comp/Layout/Header';
+import {Footer} from '@comp/Layout/Footer';
+import {getCookie} from "@lib/auth/session.cookies";
 
-const RootLayout = (
+const RootLayout = async (
     {children, modal}: { children: React.ReactNode, modal: React.ReactNode }
 ) => {
+    const session = await getCookie();
+    const user = await getUser(session);
+
     return (
         <html lang="en" className="bg-white">
-            <ApolloWrapper>
-                <AuthContextWrapper value={false}>
-                    <body className="flex items-center justify-center min-h-screen">
+            <AuthContextWrapper session={session} user={user}>
+                <ThemeContextWrapper>
+                    <Body>
                         <Header/>
                         <main className="w-full flex-1 px-8 flex">
                             {modal}
                             {children}
                         </main>
-                        <Footer/>
-                    </body>
-                </AuthContextWrapper>
-            </ApolloWrapper>
+                        <Footer version={process?.env?.npm_package_version} />
+                    </Body>
+                </ThemeContextWrapper>
+            </AuthContextWrapper>
         </html>
     )
 }

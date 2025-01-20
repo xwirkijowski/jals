@@ -1,35 +1,29 @@
 import {EntityId} from "redis-om";
-import {IdType} from "../../types/id.types";
-import {ERequestAuthCodeAction} from "../../schema/session/session.mutations.types";
 
-export type AuthServiceConfig = {
-    code: {
-        length: number
-        expiresIn: number
-    }
-    session: {
-        expiresIn: number
-    }
-}
+import {TId} from "@type/id.types";
+import {ERequestAuthCodeAction} from "@schema/@session/session.types";
+import {TSettings} from "@type/config.types";
 
-export interface AuthCodeGenerator {
+export type TSettingsAuth = TSettings['auth'];
+
+export interface IAuthCodeGenerator {
     (rId: string): string;
 }
 
-export type AuthCodeInterface = {
+export type IAuthCode = {
     [EntityId]?: string
     authCodeId?: string
-    userId?: IdType;
+    userId?: TId;
     userEmail: string
     action: ERequestAuthCodeAction
     code?: string
     createdAt?: Date | string
 }
 
-export interface SessionInterface {
+export interface ISession {
     [EntityId]?: string
     sessionId?: string
-    userId: IdType;
+    userId: TId;
     isAdmin: boolean
     userAgent?: string
     userAddr?: string

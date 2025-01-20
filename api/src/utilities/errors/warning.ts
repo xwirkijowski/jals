@@ -54,7 +54,7 @@ class Warning {
 		if (axiom) {
 			axiom.ingest(`error`, {
 				level: 'warning',
-				warnId: this.warnId,
+				id: this.warnId,
 				domain: this.domain||null,
 				msg: this.message,
 				...(this.code && {code: this.code}),
@@ -71,8 +71,6 @@ export {Warning};
  * WarningAggregator
  *
  * Groups warnings together on per module basis. Stores warning count and a list of warning codes.
- *
- *
  */
 class WarningAggregator {
 	domain: string;

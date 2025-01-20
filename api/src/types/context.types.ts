@@ -1,31 +1,31 @@
-import Counters from "../utilities/telemetryCounters";
-
 // Types and interfaces
 import {Model} from "mongoose";
-import {IncomingMessage} from "node:http";
-import {ConfigType} from "./config.types";
-import {DatabaseStatusType} from "../utilities/database/status";
-import {UserInterface} from "./models/user.types";
-import {LinkInterface} from "./models/link.types";
-import {ClickInterface} from "./models/click.types";
-import {SessionType} from "../services/auth/session";
-import {AuthServiceType} from "../services/auth/service";
-import {MailServiceType} from "../services/mail/service";
+import {IncomingMessage, ServerResponse} from "node:http";
+import {TConfig} from "./config.types";
+import {TDatabaseStatus} from "@/database/status";
+import {TTelemetryCounters} from "@util/telemetryCounters";
+import {IUser} from "@model/user.types";
+import {ILink} from "@model/link.types";
+import {IClick} from "@model/click.types";
+import {TSession} from "@service/auth/session";
+import {TAuthService} from "@service/auth/service";
+import {TMailService} from "@service/mail/service";
 
-export type ContextSessionUnion = SessionType|'invalid'|undefined;
+export type UContextSession = TSession|'invalid'|undefined;
 
-export interface ContextInterface {
-    session: ContextSessionUnion
+export interface IContext {
+    session: UContextSession
     req: IncomingMessage
-    pagination: ConfigType["server"]["pagination"]
+    res: ServerResponse<IncomingMessage>
+    pagination: TConfig["server"]["pagination"]
     models: {
-        user: Model<UserInterface>
-        link: Model<LinkInterface>
-        click: Model<ClickInterface>
+        user: Model<IUser>
+        link: Model<ILink>
+        click: Model<IClick>
     }
     services: {
-        auth: AuthServiceType
-        mail: MailServiceType
+        auth: TAuthService
+        mail: TMailService
     }
     internal: {
         requestId: string
@@ -33,8 +33,8 @@ export interface ContextInterface {
         requestTimestamp: Date
         statistics: {
             timeStartup: Date
-            counters: typeof Counters
+            counters: TTelemetryCounters
         }
     }
-    systemStatus: DatabaseStatusType
+    systemStatus: TDatabaseStatus
 }

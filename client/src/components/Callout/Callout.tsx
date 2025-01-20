@@ -1,5 +1,6 @@
 import cx from 'classnames';
 import React from 'react';
+import {SCompProps} from "@type/common";
 
 // Types
 
@@ -15,8 +16,7 @@ enum CalloutTypeEnum {
 
 type CalloutType = keyof typeof CalloutTypeEnum;
 
-// Styles
-
+// Styles @todo Support dark mode
 const typeStyles: Record<CalloutType, string> = {
     primary: 'text-white bg-orange-500  shadow-orange-500/20',
     success: 'text-white bg-green-500  shadow-green-500/20',
@@ -27,18 +27,14 @@ const typeStyles: Record<CalloutType, string> = {
     dark: 'text-white bg-zinc-900  shadow-zinc-900/20',
 }
 
-export default ({
-    title,
-    type = 'light',
-    className,
-    children,
-    ...props
-}: {
+type TProps = {
     title?: string,
     type?: CalloutType,
-    className?: string
-    children?: React.ReactNode,
-} & React.HTMLAttributes<HTMLDivElement>) => {
+} & React.HTMLAttributes<HTMLDivElement> & SCompProps.TBase<true>
+
+export const Callout = (
+    {title, type = 'light', className, children, ...props}: TProps
+): React.ReactNode => {
     return (
         <div className={cx(
             "max-w-xl p-4 items-center shadow-xl rounded-xl w-full flex gap-4",

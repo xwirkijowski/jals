@@ -1,7 +1,7 @@
 import React from "react";
 
 // Config
-import {config} from '../../../../config';
+import {config} from '@config';
 const frontendAddr: string = config.settings.general.frontendAddr;
 
 // Components
@@ -10,11 +10,11 @@ import {Header} from "./components/Header";
 import {Footer} from "./components/Footer";
 
 // Types
-import {EmailDataInterface} from "../service";
+import {IEmailData} from "../service";
 
-import styles, {authCodeWrapper} from './styles';
+import styles from './styles';
 
-export const LoginEmail = (data: EmailDataInterface): React.ReactNode => {
+export const LoginEmail = (data: IEmailData): React.ReactNode => {
     const authCode = [];
 
     data.authCode.code.split('').forEach((c, i) => authCode.push(

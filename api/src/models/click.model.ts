@@ -1,10 +1,10 @@
 import mongoose, {Schema} from 'mongoose';
 
-import {ClickInterface} from "../types/models/click.types";
+import {IClick} from "./click.types";
 
-export default mongoose.model<ClickInterface>(
+export default mongoose.model<IClick>(
 	'Click',
-	new mongoose.Schema<ClickInterface>({
+	new mongoose.Schema<IClick>({
 		linkId: {
 			type: Schema.Types.ObjectId,
 			ref: "Link",

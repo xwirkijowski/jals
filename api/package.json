@@ -1,23 +1,29 @@
 {
   "name": "jals-server",
-  "version": "2.0.0",
+  "version": "2.1.0",
+  "private": true,
   "description": "",
   "keywords": [],
   "homepage": "",
   "license": "ISC",
   "author": "Sebastian Wirkijowski <sebastian@wirkijowski.me> (https://wirkijowski.me/)",
-  "main": "./dist/main.cjs",
-  "module": "./dist/main.esm.js",
+  "main": "./dist/main.js",
+  "types": "./dist/main.d.ts",
   "type": "module",
   "scripts": {
-    "api-ts-compile": "tsc",
-    "api-ts-dev": "tsx watch main.ts"
+    "api-copyfiles": "copyfiles \"src/**/*.graphql\" dist",
+    "api-compile": "tsc && tsc-alias && npm run api-copyfiles",
+    "api-start": "node dist/main.js",
+    "api-compile-and-start": "npm run api-compile && node dist/main.js",
+    "api-dev": "tsx watch --tsconfig ./tsconfig.json main.ts"
   },
   "devDependencies": {
     "@types/luxon": "^3.4.2",
     "@types/node": "^22.10.5",
     "@types/react": "^19.0.2",
     "@types/react-dom": "^19.0.2",
+    "copyfiles": "^2.4.1",
+    "tsc-alias": "^1.8.10",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2"
   },
@@ -27,6 +33,7 @@
     "@graphql-tools/load-files": "^7.0.0",
     "@graphql-tools/merge": "^9.0.8",
     "@graphql-tools/schema": "^10.0.7",
+    "@graphql-tools/utils": "^10.7.2",
     "@sentry/node": "^8.47.0",
     "@sentry/profiling-node": "^8.47.0",
     "eudoros": "^1.5.0",
@@ -43,6 +50,5 @@
     "redis-om": "^0.4.7",
     "resend": "^4.0.1",
     "ulid": "^2.3.0"
-  },
-  "private": true
+  }
 }

@@ -1,34 +1,34 @@
 import EventEmitter from "events";
 import { Resend } from "resend";
 
-import { CriticalError } from '../../utilities/errors/index';
-import { globalLogger as log } from '../../utilities/logging/log';
+import { CriticalError } from '@util/error';
+import { globalLogger as log } from '@util/logging/log';
 export { log };
 
-import {SettingsType} from "../../types/config.types";
+import {TSettings} from "@type/config.types";
 import {AuthCodeType} from "../auth/authCode";
 
 import {LoginEmail} from './templates/LoginEmail';
-import {ERequestAuthCodeAction} from "../../schema/session/session.mutations.types";
+import {ERequestAuthCodeAction} from "@schema/@session/session.types";
 
-export type MailServiceConfig = SettingsType['mail'];
+export type TSettingsMail = TSettings['mail'];
 
-type ResendType = InstanceType<typeof Resend>;
+type TResend = InstanceType<typeof Resend>;
 
-export let resendClient: undefined|ResendType;
+export let resendClient: undefined|TResend;
 
 export class MailService extends EventEmitter {
-    default_config: MailServiceConfig = {
+    default_config: TSettingsMail = {
         senderAddr: "jals@wirkijowski.dev",
         senderName: "Just Another Link Shortener",
     }
 
-    config: MailServiceConfig;
-    client: Resend;
+    config: TSettingsMail;
+    client: TResend;
 
     fromString: string;
 
-    constructor (config?: MailServiceConfig, secret?: string) {
+    constructor (config?: TSettingsMail, secret?: string) {
         super();
 
         log.withDomain('log', 'MailService', 'Loading MailService configuration...');
@@ -45,14 +45,14 @@ export class MailService extends EventEmitter {
         return this;
     }
 
-    create = (to: string, subject: string, data: Omit<EmailDataInterface, 'requestId'>, rId: string) => {
+    create = (to: string, subject: string, data: Omit<IEmailData, 'requestId'>, rId: string): TEmail => {
         return new Email(to, this.fromString, subject, {...data, requestId: rId});
     }
 }
 
-export type MailServiceType = InstanceType<typeof MailService>;
+export type TMailService = InstanceType<typeof MailService>;
 
-export interface EmailDataInterface {
+export interface IEmailData {
     authCode?: AuthCodeType
     userAgent?: string
     userAddr?: string
@@ -67,9 +67,9 @@ class Email {
     from: string;
     subject: string;
 
-    data: object;
+    data: IEmailData;
 
-    constructor(to: string, from: string, subject: string, data: EmailDataInterface) {
+    constructor(to: string, from: string, subject: string, data: IEmailData) {
         this.requestId = data.requestId;
         this.to = to;
         this.from = from;
@@ -79,14 +79,14 @@ class Email {
         return this;
     }
 
-    send = async  () => {
+    send = async  (): Promise<string> => {
         if (!resendClient) throw new CriticalError(`No client initialized, cannot send mail!`, 'MAIL_NO_CLIENT', 'MailService')
 
         const {data, error} = await resendClient.emails.send({
             from: this.from,
             to: this.to,
             subject: this.subject,
-            react: LoginEmail(({...this.data, requestId: this.requestId} as EmailDataInterface)),
+            react: LoginEmail(({...this.data, requestId: this.requestId} as IEmailData)),
         });
 
         if (error) {
@@ -96,3 +96,5 @@ class Email {
         return data.id
     }
 }
+
+export type TEmail = InstanceType<typeof Email>;

@@ -1,12 +1,16 @@
+"use server";
+
 // Imports
-import {getClient} from '../../../apollo-client';
-import {LinkContextWrapper} from "../../../contexts/LinkContext";
+import {getClient} from '@lib/apollo-client';
+import {LinkContextWrapper} from "@ctx/link/link.context";
+import {getHeaders} from "@lib/auth/session";
+import {LinkNotFound} from "@comp/Logic/NotFound";
 import React from "react";
 
 // Metadata
-import {Metadata, ResolvingMetadata} from "next";
+import {Metadata} from "next";
 export const generateMetadata = async (
-    { params }
+    { params, modal } // @ts-ignore Fuck next.js
 ): Promise<Metadata> => {
     const linkId = (await params).linkId;
     return {
@@ -35,7 +39,7 @@ const LINK = gql`
     }
 `;
 
-export default async ({
+const Layout = async ({
     modal,
     children,
     params,
@@ -45,14 +49,22 @@ export default async ({
     params: any
 }) => {
     const linkId: string = (await params).linkId;
-    const {data} = await getClient().query({query: LINK, variables: {linkId: linkId}});
 
-    console.log(data)
+    // @todo Add types for this query
+    const {data} = await getClient().query({query: LINK, variables: {linkId: linkId}, context: await getHeaders()});
 
     return (
-        <LinkContextWrapper value={{data}}>
-            {modal}
-            {children}
-        </LinkContextWrapper>
+        <>
+            {data?.link ? (
+                <LinkContextWrapper value={{data}}>
+                    {modal}
+                    {children}
+                </LinkContextWrapper>
+            ) : (
+                <LinkNotFound linkId={linkId} context={'inspect'} />
+            )}
+        </>
     )
 }
+
+export default Layout;
