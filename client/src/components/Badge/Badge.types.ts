@@ -15,7 +15,7 @@ export enum EBadgeType {
 	light = 'light',
 	dark = 'dark',
 	theme = 'theme',
-	themeInverse = 'theme',
+	themeInverse = 'themeInverse',
 }
 
 export type TBadgeType = keyof typeof EBadgeType;
