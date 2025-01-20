@@ -34,7 +34,7 @@ export const FlagForm = (
             <Card structured>
                 <CardHead flex={false}>
                     <H2 className="float-start">Flag for moderation</H2>
-                    <Badge badgeType={'theme'} ping>
+                    <Badge badgeType={'theme'}>
                         {link.id}
                     </Badge>
                 </CardHead>
