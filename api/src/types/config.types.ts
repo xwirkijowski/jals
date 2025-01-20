@@ -72,7 +72,7 @@ export type TConfig = {
     mongo: TMongoConfig
     secrets: TSecretsConfig
     settings: TSettings
-};
+}
 
 export type TConfigDefaults = Partial<{
     [Property in keyof TConfig]: Partial<TConfig[Property]>
