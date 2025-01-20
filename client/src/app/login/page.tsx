@@ -4,8 +4,10 @@ import React from "react";
 
 import {LogInWrapper} from "@act/login/LogInWrapper";
 
-export default () => {
+const Page = () => {
     return (
         <LogInWrapper mode={'page'} />
     )
 }
+
+export default Page;

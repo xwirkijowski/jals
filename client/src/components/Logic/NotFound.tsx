@@ -11,7 +11,7 @@ export const LinkNotFound = ({linkId, context}): React.ReactNode => {
 	return (
 		<div className={cx('flex-col gap-4 flex items-center max-w-lg w-full')}>
 			<H1 align={"center"}>404</H1>
-			<H2 align={"center"}>We couldn't find your link</H2>
+			<H2 align={"center"}>We couldn&apos;t find your link</H2>
 			<div className={"flex text-center"}>
 				<p className={"w-full px-4 py-2 bg-zinc-200 text-zinc-600 rounded-xl border border-transparent font-mono text-wrap break-words overflow-hidden"}>{linkId}</p>
 			</div>

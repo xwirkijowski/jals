@@ -4,8 +4,10 @@ import React from "react";
 
 import {RegisterWrapper} from "@act/register/RegisterWrapper";
 
-export default () => {
+const Page = () => {
     return (
-        <RegisterWrapper mode={'page'} />
+        <RegisterWrapper mode={'page'}/>
     )
 }
+
+export default Page;

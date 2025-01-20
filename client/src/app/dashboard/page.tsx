@@ -1,10 +1,10 @@
 "use client";
 
 import React, {useContext} from "react";
-import {AuthContext} from "../../contexts/auth/auth.context";
+import {AuthContext} from "@ctx/auth/auth.context";
 import {useRouter} from "next/navigation";
 
-export default () => {
+const Page = () => {
 	const auth = useContext(AuthContext);
 	const authValid: boolean = (auth !== null);
 	const router = useRouter();
@@ -22,3 +22,5 @@ export default () => {
 		</div>
 	)
 }
+
+export default Page;

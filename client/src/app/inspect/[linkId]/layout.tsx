@@ -1,16 +1,16 @@
 "use server";
 
 // Imports
-import {getClient} from '../../../lib/apollo-client';
-import {LinkContextWrapper} from "../../../contexts/link/link.context";
-import {getSessionHeader} from "../../../lib/auth/session";
+import {getClient} from '@lib/apollo-client';
+import {LinkContextWrapper} from "@ctx/link/link.context";
+import {getHeaders} from "@lib/auth/session";
 import {LinkNotFound} from "@comp/Logic/NotFound";
 import React from "react";
 
 // Metadata
 import {Metadata} from "next";
 export const generateMetadata = async (
-    { params }
+    { params, modal } // @ts-ignore Fuck next.js
 ): Promise<Metadata> => {
     const linkId = (await params).linkId;
     return {
@@ -39,7 +39,7 @@ const LINK = gql`
     }
 `;
 
-export default async ({
+const Layout = async ({
     modal,
     children,
     params,
@@ -49,7 +49,9 @@ export default async ({
     params: any
 }) => {
     const linkId: string = (await params).linkId;
-    const {data} = await getClient().query({query: LINK, variables: {linkId: linkId}, context: await getSessionHeader()});
+
+    // @todo Add types for this query
+    const {data} = await getClient().query({query: LINK, variables: {linkId: linkId}, context: await getHeaders()});
 
     return (
         <>
@@ -64,3 +66,5 @@ export default async ({
         </>
     )
 }
+
+export default Layout;

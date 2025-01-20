@@ -1,6 +1,7 @@
 "use client"
 
 import cx from 'classnames';
+import React, {useContext} from "react";
 import Link from "next/link";
 
 // Components
@@ -14,14 +15,17 @@ import {CardFooter} from "@comp/Card/CardFooter";
 import {H2} from "@comp/Typography/H2";
 import {H3} from "@comp/Typography/H3";
 import {P} from "@comp/Typography/P";
-
-// Context
-import {useContext} from "react";
-import {LinkContext} from "../../../contexts/link/link.context";
 import {Badge} from "@comp/Badge/Badge";
 
-export default () => {
-    let {data} = useContext(LinkContext);
+// Context
+import {LinkContext} from "@ctx/link/link.context";
+
+const Page = (): React.ReactNode => {
+    const {data} = useContext(LinkContext);
+
+    // @todo Handle broken context edge case
+
+    if (!data?.link) {return null}
 
     return (
         <div className="flex flex-col justify-center items-center text-left flex-1 gap-8">
@@ -68,7 +72,7 @@ export default () => {
                     </div>
                     <div className={"gap-2 flex flex-col"}>
                         <H3 className={"!text-base"}>Click count</H3>
-                        <P>{data.link.ClickCount > 0 ? data.link.clickCount : "No clicks yet"}</P>
+                        <P>{data.link.clickCount > 0 ? data.link.clickCount : "No clicks yet"}</P>
                     </div>
                     <div className={"gap-2 flex flex-col"}>
                         <H3 className={"!text-base"}>Last modified</H3>
@@ -87,3 +91,5 @@ export default () => {
         </div>
     )
 }
+
+export default Page;

@@ -1,5 +1,7 @@
 "use server";
 
+// @todo Refactor into client and server components to capture detailed user agent via hints API
+
 import cx from "classnames";
 import React from "react";
 import { redirect } from "next/navigation";
@@ -16,10 +18,9 @@ export const generateMetadata = async (
 	}
 }
 
-
 import { GET_LINK, CLICK_ADD } from "./queries";
 import { getClient } from "@lib/apollo-client";
-import { getSessionHeader } from "@lib/auth/session";
+import { getHeaders } from "@lib/auth/session";
 
 // Components
 import {Spinner} from "@comp/Spinner/Spinner";
@@ -34,11 +35,11 @@ import {CardHead} from "@comp/Card/CardHead";
 import {CardBody} from "@comp/Card/CardBody";
 import {CardFooter} from "@comp/Card/CardFooter";
 
-export default async function (
+const Page = async (
 	{params}
-)  {
+) => {
 	const linkId: string = (await params).linkId;
-	const requestContext = await getSessionHeader();
+	const requestContext = await getHeaders();
 
 	const {data: {link}, loading} = await getClient().query({query: GET_LINK, variables: {linkId: linkId}, context: requestContext});
 
@@ -121,3 +122,5 @@ export default async function (
 		</div>
 	)
 }
+
+export default Page;

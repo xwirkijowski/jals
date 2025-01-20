@@ -7,7 +7,7 @@ import {H1} from "@comp/Typography/H1";
 import {H2} from "@comp/Typography/H2";
 import {P} from "@comp/Typography/P";
 
-export default (): React.ReactNode => {
+const Page = (): React.ReactNode => {
     return (
         <div className="flex flex-col justify-center items-center flex-1 gap-8">
             <div className="text-center">
@@ -30,3 +30,5 @@ export default (): React.ReactNode => {
         </div>
     )
 }
+
+export default Page;

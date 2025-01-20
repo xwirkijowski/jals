@@ -5,14 +5,14 @@ import {Label} from "@comp/Form/Label";
 import {inputStyles} from "@comp/Form/common.styles";
 import {SCompProps} from "@type/common";
 
-type THTMLTextarea = React.TextareaHTMLAttributes<HTMLTextAreaElement>;
+type THTMLTextarea = SCompProps.THTMLTextarea<['className']>;
 
 type TProps = {
 	withLabel?: string
 	id?: THTMLTextarea['id']
 	placeholder?: THTMLTextarea['placeholder']
 	ref?: React.Ref<HTMLTextAreaElement>
-} & Omit<THTMLTextarea, 'className'> & SCompProps.TBase;
+} & THTMLTextarea & SCompProps.TBase;
 
 export const Textarea = (
 	{withLabel = undefined, id, placeholder, className, ...props}: TProps

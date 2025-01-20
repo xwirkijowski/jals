@@ -1,6 +1,6 @@
 import {permanentRedirect} from "next/navigation";
 
-const LinkPage = async (
+const Page = async (
     {params}
 ) => {
     const linkId = (await params).linkId;
@@ -8,4 +8,4 @@ const LinkPage = async (
     permanentRedirect('/inspect/'+linkId);
 }
 
-export default LinkPage;
+export default Page;

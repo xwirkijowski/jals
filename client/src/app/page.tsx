@@ -22,7 +22,7 @@ const Page = () => {
                     <P>You input your long URL into <span className={"font-bold"}>JALS</span>, and in return, you receive a unique short identifier. This is especially convenient for UTM tagging!</P>
                     <P>Each time someone uses your new short link, we collect a timestamp of the visit and basic information about their browser and system (User-Agent header), and also their IP address.</P>
                     <P>All data is collected during a single point of contact, when the user is being redirected. We do not use any cookies and do not track any visitors. <span className={"font-bold"}>We do not provide direct access to logged IP addresses.</span></P>
-                    <P>You can gain access to all visits ("clicks") on your short links by creating a free account!</P>
+                    <P>You can gain access to all visits (&quot;clicks&quot;) on your short links by creating a free account!</P>
                 </Card>
             </div>
         </div>
