@@ -1,7 +1,5 @@
 'use client';
 
-import {useRouter} from 'next/navigation';
-
 import {TActionProps} from "@act/shared/common.types";
 
 // Components
@@ -17,11 +15,11 @@ import {CardBody} from "@comp/Card/CardBody";
 import {CardFooter} from "@comp/Card/CardFooter";
 import {H2} from "@comp/Typography/H2";
 import {P} from "@comp/Typography/P";
+import {CloseButton} from "@act/shared/CloseButton";
 
 export const LogInRequestForm = (
     {mode = 'page', action, state, pending}: TActionProps
 ) => {
-    const router = useRouter();
     const errorCallouts = setupErrorCallouts(state);
 
     return (
@@ -43,7 +41,7 @@ export const LogInRequestForm = (
                     )}
                 </CardBody>
                 <CardFooter>
-                    <Button btnType={'theme'} onClick={()=>router.back()}>Close</Button>
+                    <CloseButton mode={mode} />
                     <div className={'flex gap-4'}>
                         <Link href={'/register'} passHref replace>
                             <Button btnType={'theme'} disabled={pending} effects={false}>Register</Button>

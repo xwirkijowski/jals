@@ -1,24 +1,23 @@
 "use server";
 
-import {LinkType} from "@type/data/Link";
+import {TResult} from "@type/data/response";
+import {TLink} from "@type/data/link";
 
 import {FLAG_LINK} from "./Flag.queries";
-import {LinkMutationDataType} from "@type/data/MutationData";
-import {getClient} from "../../lib/apollo-client";
-import {getSessionHeader} from "../../lib/auth/session";
+import {getClient} from "@lib/apollo-client";
+import {getHeaders} from "@lib/auth/session";
 import {revalidatePath} from "next/cache";
 
-
 export const FlagAction = async (
-    {link}: {link: LinkType},
-    state: LinkMutationDataType,
+    {link}: {link: TLink},
+    state,
     formData: FormData
 ) => {
     // @todo Validate data
     const note = formData.get('note');
 
     // Set up mutation
-    const {data: {flagLink: data}} = await getClient().mutate({
+    const res = await getClient().mutate({
         mutation: FLAG_LINK,
         variables: {
             input: {
@@ -26,8 +25,11 @@ export const FlagAction = async (
                 note: note,
             }
         },
-        context: await getSessionHeader(),
+        context: await getHeaders(),
+        errorPolicy: 'all',
     });
+
+    const data: TResult = res.data.flagLink.result;
 
     // Revalidate data
     revalidatePath('/inspect/[linkId]', 'layout')

@@ -31,7 +31,7 @@ export const ShortenForm = () => {
                         'placeholder:text-zinc-600/50',
                         'border-green-500')}>
                         {state.link.id}
-                        <a className={cx('float-end border-b border-b-current cursor-pointer text-orange-500 hover:text-orange-400 trans text-sm font-bold')} onClick={e => {
+                        <a className={cx('float-end border-b border-b-current cursor-pointer text-orange-500 hover:text-orange-400 trans text-sm font-bold')} onClick={() => {
                             navigator.clipboard.writeText(window.location.href + state.link.id)
                         }}>Copy link</a>
                     </p>

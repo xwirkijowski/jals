@@ -1,10 +1,9 @@
 "use server";
 
 import {LOG_IN} from "./LogIn.query";
-import {getClient} from "../../../lib/apollo-client";
-import {ResponseType} from "@type/data/Response";
-import {getSessionHeader} from "../../../lib/auth/session";
-import {createCookie} from "../../../lib/auth/session.cookies";
+import {getClient} from "@lib/apollo-client";
+import {getHeaders} from "@lib/auth/session";
+import {createCookie} from "@lib/auth/session.cookies";
 import {revalidatePath} from "next/cache";
 
 export const LogInAction = async (
@@ -22,7 +21,8 @@ export const LogInAction = async (
                 code: code,
             }
         },
-        context: await getSessionHeader(),
+        context: await getHeaders(),
+        errorPolicy: 'all',
     })
 
     // Create session cookie

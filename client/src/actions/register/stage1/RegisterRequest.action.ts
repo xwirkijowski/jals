@@ -1,12 +1,11 @@
 "use server";
 
 import {REQUEST_AUTH_CODE} from "@act/shared/auth/shared.auth.query";
-import {getClient} from "../../../lib/apollo-client";
-import {ResponseType} from "@type/data/Response";
-import {getSessionHeader} from "../../../lib/auth/session";
+import {getClient} from "@lib/apollo-client";
+import {getHeaders} from "@lib/auth/session";
 
 export const RegisterRequestAction = async (
-    state: ResponseType,
+    state,
     formData: FormData
 ) => {
     const email = formData.get('email');
@@ -19,7 +18,8 @@ export const RegisterRequestAction = async (
                 action: 'REGISTER',
             }
         },
-        context: await getSessionHeader(),
+        context: await getHeaders(),
+        errorPolicy: 'all',
     })
 
     return {

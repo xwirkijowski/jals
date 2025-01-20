@@ -1,9 +1,8 @@
 "use server";
 
 import {REQUEST_AUTH_CODE} from "@act/shared/auth/shared.auth.query";
-import {getClient} from "../../../lib/apollo-client";
-import {ResponseType} from "@type/data/Response";
-import {getSessionHeader} from "../../../lib/auth/session";
+import {getClient} from "@lib/apollo-client";
+import {getHeaders} from "@lib/auth/session";
 
 export const LogInRequestAction = async (
     state: ResponseType,
@@ -19,7 +18,8 @@ export const LogInRequestAction = async (
                 action: 'LOGIN',
             }
         },
-        context: await getSessionHeader(),
+        context: await getHeaders(),
+        errorPolicy: 'all',
     })
 
     const data = res.data.requestAuthCode;
