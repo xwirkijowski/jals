@@ -3,18 +3,18 @@ services:
     container_name: "jals_redis"
     image: "redis/redis-stack:latest"
     ports: 
-      - "10013:6379"
-      - "10014:8001"
+      - "10023:6379"
+      - "10024:8001"
   mongo:
     container_name: "jals_mongo"
     image: "mongodb/mongodb-community-server:latest"
     ports:
-      - "10012:27017"
+      - "10022:27017"
   api:
     container_name: "jals_api"
     image: "xwirkijowski/jals-api:latest"
     ports:
-      - "10011:4000"
+      - "10021:4000"
     environment:
       NODE_ENV: "development"
       SERVER_HOST: api
@@ -41,10 +41,10 @@ services:
       - context: /client
       - dockerfile: ./docker/dev.Dockerfile
     ports:
-      - "10010:3000"
+      - "10020:3000"
     environment:
       NODE_ENV: "development"
-      API_STRING: "https://api.jals2.wirkijowski.dev/"
+      API_STRING: "http://api:4000/"
     depends_on:
       - redis
       - mongo

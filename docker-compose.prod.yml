@@ -27,4 +27,4 @@ services:
       - "10010:3000"
     environment:
       NODE_ENV: "production"
-      API_STRING: "https://api.jals2.wirkijowski.dev/"
+      API_STRING: "http://api:4000/"

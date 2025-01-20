@@ -3,7 +3,7 @@ services:
     container_name: "jals_api"
     image: "xwirkijowski/jals-api:latest"
     ports:
-      - "10011:4000"
+      - "10021:4000"
     environment:
       NODE_ENV: "development"
       SERVER_HOST: api
@@ -27,8 +27,7 @@ services:
       - context: /client
       - dockerfile: ./docker/dev.Dockerfile
     ports:
-      - "10010:3000"
+      - "10020:3000"
     environment:
       NODE_ENV: "development"
-      API_HOST: api
-      API_PORT: 4010
+      API_STRING: "http://api:4000/"
