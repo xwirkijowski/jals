@@ -1,18 +1,15 @@
 "use client";
 
 import React, {useContext} from "react";
-import {SThemeContext, ThemeContext} from "../../contexts/theme/theme.context";
+import {ThemeContext} from "@ctx/theme/theme.context";
 import cx from "classnames";
-
-import EThemes = SThemeContext.EThemes;
 
 type TProps = {
     version: string | undefined
 }
 
 export const Footer = ({version}: TProps): React.ReactNode => {
-    const {theme, setTheme} = useContext(ThemeContext);
-    const nextValue = (theme === EThemes.dark) ? EThemes.light : EThemes.dark;
+    const {handleTheme} = useContext(ThemeContext);
 
     return (
         <footer className={cx(
@@ -29,7 +26,7 @@ export const Footer = ({version}: TProps): React.ReactNode => {
 
             </div>
             <div className={cx('flex items-end')}>
-                <button onClick={() => setTheme(nextValue)}>Switch theme</button>
+                <button onClick={() => handleTheme()}>Switch theme</button>
             </div>
         </footer>
     )
