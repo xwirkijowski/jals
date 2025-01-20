@@ -5,8 +5,7 @@ import Link from "next/link";
 
 // Components
 import {Tooltip} from "@comp/Tooltip/Tooltip";
-import Callout from "@comp/Callout/Callout";
-import Button from "@comp/Button/Button";
+import {Callout} from "@comp/Callout/Callout";
 import {Button} from "@comp/Button/Button";
 import {Card} from "@comp/Card/Card";
 import {CardHead} from "@comp/Card/CardHead";

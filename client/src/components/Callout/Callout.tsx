@@ -32,9 +32,9 @@ type TProps = {
     type?: CalloutType,
 } & React.HTMLAttributes<HTMLDivElement> & SCompProps.TBase<true>
 
-export default (
+export const Callout = (
     {title, type = 'light', className, children, ...props}: TProps
-) => {
+): React.ReactNode => {
     return (
         <div className={cx(
             "max-w-xl p-4 items-center shadow-xl rounded-xl w-full flex gap-4",

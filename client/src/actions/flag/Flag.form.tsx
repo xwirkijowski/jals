@@ -9,8 +9,8 @@ import {FlagAction} from './Flag.action';
 
 // Components
 import {Spinner} from "@comp/Spinner/Spinner";
-import Callout from "@comp/Callout/Callout";
 import {Button} from "@comp/Button/Button";
+import {Callout} from "@comp/Callout/Callout";
 import {Card} from "@comp/Card/Card";
 import {CardHead} from "@comp/Card/CardHead";
 import {CardBody} from "@comp/Card/CardBody";
