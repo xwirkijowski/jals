@@ -22,7 +22,7 @@ export const RegisterAction = async (
                 code: code,
             }
         },
-        context: await getSessionHeader(true),
+        context: await getSessionHeader(),
     })
 
     // Create session cookie

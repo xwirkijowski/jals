@@ -19,7 +19,7 @@ export const RegisterRequestAction = async (
                 action: 'REGISTER',
             }
         },
-        context: await getSessionHeader(true),
+        context: await getSessionHeader(),
     })
 
     return {

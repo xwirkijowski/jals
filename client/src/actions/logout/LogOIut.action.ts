@@ -13,7 +13,7 @@ export const LogOutAction = async (
 
 	const {data: {logOut: data}} = await getClient().mutate({
 		mutation: LOG_OUT,
-		context: await getSessionHeader(true),
+		context: await getSessionHeader(),
 	})
 
 	await deleteCookie()

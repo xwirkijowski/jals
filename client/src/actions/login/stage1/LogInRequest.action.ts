@@ -11,7 +11,7 @@ export const LogInRequestAction = async (
 ) => {
     const email = formData.get('email');
 
-    const {data: {requestAuthCode: data}} = await getClient().mutate({
+    const res = await getClient().mutate({
         mutation: REQUEST_AUTH_CODE,
         variables: {
             input: {
@@ -19,8 +19,10 @@ export const LogInRequestAction = async (
                 action: 'LOGIN',
             }
         },
-        context: await getSessionHeader(true),
+        context: await getSessionHeader(),
     })
+
+    const data = res.data.requestAuthCode;
 
     return {
         ...data,

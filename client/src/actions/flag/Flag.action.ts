@@ -26,7 +26,7 @@ export const FlagAction = async (
                 note: note,
             }
         },
-        context: await getSessionHeader(true),
+        context: await getSessionHeader(),
     });
 
     // Revalidate data

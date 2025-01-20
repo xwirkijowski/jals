@@ -17,6 +17,8 @@ export const InspectForm = () => {
         redirect('inspect/'+inputRef?.current?.value, ('push' as RedirectType))
     }
 
+    // @todo Add action to support resolving target to link
+
     return (
         <div className={cx('flex w-full flex-col gap-8')}>
             <form onSubmit={(e) => submit(e)} className={cx(formStyles)}>

@@ -20,7 +20,7 @@ export const ShortenAction = async (
                 target: target,
             }
         },
-        context: await getSessionHeader(true),
+        context: await getSessionHeader(),
     });
 
     return data;

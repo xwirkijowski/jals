@@ -49,7 +49,7 @@ export default async ({
     params: any
 }) => {
     const linkId: string = (await params).linkId;
-    const {data} = await getClient().query({query: LINK, variables: {linkId: linkId}, context: await getSessionHeader(true)});
+    const {data} = await getClient().query({query: LINK, variables: {linkId: linkId}, context: await getSessionHeader()});
 
     return (
         <>

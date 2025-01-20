@@ -63,7 +63,7 @@ export default async function (
 	{params}
 )  {
 	const linkId: string = (await params).linkId;
-	const requestContext = await getSessionHeader(true);
+	const requestContext = await getSessionHeader();
 
 	const {data: {link}, loading} = await getClient().query({query: LINK, variables: {linkId: linkId}, context: requestContext});
 

@@ -22,7 +22,7 @@ export const LogInAction = async (
                 code: code,
             }
         },
-        context: await getSessionHeader(true),
+        context: await getSessionHeader(),
     })
 
     // Create session cookie
