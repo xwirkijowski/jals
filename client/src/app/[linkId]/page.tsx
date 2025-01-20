@@ -24,7 +24,7 @@ import { getSessionHeader } from "@lib/auth/session";
 // Components
 import {Spinner} from "@comp/Spinner/Spinner";
 import {Tooltip} from "@comp/Tooltip/Tooltip";
-import Button from "@comp/Button/Button";
+import {Button} from "@comp/Button/Button";
 import {LinkNotFound} from "@comp/Logic/NotFound";
 import {Badge} from "@comp/Badge/Badge";
 import {H2} from "@comp/Typography/H2";

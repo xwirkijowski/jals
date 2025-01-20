@@ -5,7 +5,7 @@ import cx from "classnames";
 import {useRef} from "react";
 import {redirect, RedirectType} from "next/navigation";
 
-import Button from "@comp/Button/Button";
+import {Button} from "@comp/Button/Button";
 import {Input} from "@comp/Form/Input";
 import {buttonStyles, formStyles, inputStyles} from "@act/shared/link/shared.link.styles";
 

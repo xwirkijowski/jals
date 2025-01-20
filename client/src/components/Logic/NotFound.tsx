@@ -2,7 +2,7 @@
 
 import cx from "classnames";
 import Link from "next/link";
-import Button from "@comp/Button/Button";
+import {Button} from "@comp/Button/Button";
 import React from "react";
 import {H1} from "@comp/Typography/H1";
 import {H2} from "@comp/Typography/H2";

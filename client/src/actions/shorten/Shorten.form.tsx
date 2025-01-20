@@ -6,7 +6,7 @@ import {Fragment, useActionState} from "react";
 // Components
 import Link from "next/link";
 import {Spinner} from "@comp/Spinner/Spinner";
-import Button from "@comp/Button/Button";
+import {Button} from "@comp/Button/Button";
 import {Input} from "@comp/Form/Input";
 
 import {ShortenAction} from "./Shorten.action";

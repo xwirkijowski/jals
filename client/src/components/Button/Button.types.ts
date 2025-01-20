@@ -9,7 +9,7 @@ export enum EButtonType {
 	light = 'light',
 	dark = 'dark',
 	theme = 'theme',
-	themeInverse = 'theme',
+	themeInverse = 'themeInverse',
 	darkPrimary = 'darkPrimary',
 }
 

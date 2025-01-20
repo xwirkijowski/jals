@@ -4,7 +4,7 @@ import React from 'react';
 import {TButtonProps} from "@comp/Button/Button.types";
 import {typeStyles} from "@comp/Button/Button.styles";
 
-export default ({
+export const Button = ({
     btnType = 'primary',
     effects = false,
     type = 'button',

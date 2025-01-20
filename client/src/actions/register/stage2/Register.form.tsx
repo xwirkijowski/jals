@@ -6,7 +6,7 @@ import {TActionProps} from "@act/shared/common.types";
 // Components
 import {setupErrorCallouts} from "@act/shared/mutation.utilities";
 import {Spinner} from "@comp/Spinner/Spinner";
-import Button from "@comp/Button/Button";
+import {Button} from "@comp/Button/Button";
 import {Input} from "@comp/Form/Input";
 import Callout from "@comp/Callout/Callout";
 import {Card} from "@comp/Card/Card";

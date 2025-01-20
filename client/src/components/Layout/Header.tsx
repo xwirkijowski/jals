@@ -4,7 +4,7 @@ import {useContext} from "react";
 import {AuthContext} from "@ctx/auth/auth.context";
 
 import Link from "next/link";
-import Button from "@comp/Button/Button";
+import {Button} from "@comp/Button/Button";
 import {LogOutButton} from "@act/logout/LogOut.button";
 import cx from "classnames";
 import {UserBadge} from "@comp/Layout/UserBadge";

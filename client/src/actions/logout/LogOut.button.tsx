@@ -6,7 +6,7 @@ import {LogOutAction} from "./LogOIut.action";
 import {ThemeContext} from "../../contexts/theme/theme.context";
 
 // Components
-import Button from "@comp/Button/Button";
+import {Button} from "@comp/Button/Button";
 import {Spinner} from "@comp/Spinner/Spinner";
 
 
