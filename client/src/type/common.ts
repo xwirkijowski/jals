@@ -4,7 +4,7 @@ export namespace SCompProps {
 	/**
 	 * Universal base for all components
 	 */
-	export type TBase<children extends Boolean = false> = {
+	export type TBase<children extends boolean = false> = {
 		className?: string | Array<string>
 	} & (children extends true ? {children?: React.ReactNode} : {})
 
@@ -13,7 +13,7 @@ export namespace SCompProps {
 	 */
 	type Button = React.ButtonHTMLAttributes<HTMLButtonElement>
 	type Input = React.InputHTMLAttributes<HTMLInputElement>
-	type Textarea = React.InputHTMLAttributes<HTMLTextAreaElement>
+	type Textarea = React.TextareaHTMLAttributes<HTMLTextAreaElement>
 
 	/**
 	 * Specific HTML elements with optional inline omits
