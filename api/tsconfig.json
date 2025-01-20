@@ -19,7 +19,7 @@
     "baseUrl": ".",
     "checkJs": false,
     "pretty": true,
-    "removeComments": false,
+    "removeComments": true,
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
