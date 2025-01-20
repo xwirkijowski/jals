@@ -17,16 +17,17 @@ export const generateViewport = async (): Promise<Viewport> => ({
 // Import global styles
 import '../css/globals.css';
 
+
 // Contexts
-import {AuthContextWrapper} from "../contexts/auth/auth.context";
-import {ThemeContextWrapper} from "../contexts/theme/theme.context";
+import {getUser} from "@ctx/auth/auth.utils.server";
+import {AuthContextWrapper} from "@ctx/auth/auth.context";
+import {ThemeContextWrapper} from "@ctx/theme/theme.context";
 
 // Components
 import {Body} from "@comp/Layout/Body";
 import {Header} from '@comp/Layout/Header';
 import {Footer} from '@comp/Layout/Footer';
-import {getCookie} from "../lib/auth/session.cookies";
-import {getUser} from "../contexts/auth/auth.utils.server";
+import {getCookie} from "@lib/auth/session.cookies";
 
 const RootLayout = async (
     {children, modal}: { children: React.ReactNode, modal: React.ReactNode }

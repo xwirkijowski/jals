@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "client-dev": "next dev",
+    "client-build": "next build",
+    "client-start": "next start",
+    "client-lint": "next lint"
   },
   "author": "",
   "license": "ISC",

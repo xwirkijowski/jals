@@ -5,6 +5,7 @@
       "@act/*": ["actions/*"],
       "@comp/*": ["components/*"],
       "@type/*": ["type/*"],
+      "@ctx/*": ["contexts/*"],
       "@lib/*": ["lib/*"],
     },
     "target": "ES2017",

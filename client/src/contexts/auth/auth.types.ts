@@ -1,4 +1,4 @@
-import {TSessionCookie} from "../../lib/auth/session.types";
+import {TSessionCookie} from "@lib/auth/session.types";
 
 export type TAuthContext = {
 	session: TAuthContextUnion;

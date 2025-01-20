@@ -3,7 +3,7 @@
 import cx from "classnames";
 import React, {useContext} from "react";
 
-import {ThemeContext} from "../../contexts/theme/theme.context";
+import {ThemeContext} from "@ctx/theme/theme.context";
 
 type TProps = {
 	children: React.ReactNode;

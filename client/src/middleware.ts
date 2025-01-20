@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import {getCookie, refreshCookie, deleteCookie} from "./lib/auth/session.cookies";
-import {TSessionCookie} from "./lib/auth/session.types";
-import {getSession} from "./contexts/auth/auth.utils.server";
+import {getCookie, refreshCookie, deleteCookie} from "@lib/auth/session.cookies";
+import {TSessionCookie} from "@lib/auth/session.types";
+import {getSession} from "@ctx/auth/auth.utils.server";
 
 const protectedRoutes = ['/dashboard']
 const authRoutes = ['/login', '/register']

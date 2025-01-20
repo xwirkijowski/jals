@@ -1,7 +1,7 @@
 "use client"
 
 import {useContext} from "react";
-import {AuthContext} from "../../contexts/auth/auth.context";
+import {AuthContext} from "@ctx/auth/auth.context";
 
 import Link from "next/link";
 import Button from "@comp/Button/Button";
