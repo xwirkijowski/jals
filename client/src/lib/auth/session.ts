@@ -1,20 +1,26 @@
 import 'server-only';
 import {getCookie} from "./session.cookies";
-import {headers} from "next/headers";
+import {headers as Headers} from "next/headers";
 
-export const getSessionHeader = async () => {
+export const getHeaders = async () => {
+	const agent = (await Headers()).get('user-agent');
+	const addr = (await Headers()).get('x-forwarded-for');
+
+	const userHeaders = {
+		"jals-user-agent": agent,
+		"jals-user-addr": addr,
+	}
+
 	const session = await getCookie();
-	if (!session || !session?.sessionId) return undefined;
+
+	if (!session || !session?.sessionId) return {headers: userHeaders};
 	else {
 		const auth = 'Bearer ' + session.sessionId;
-		const agent = (await headers()).get('user-agent');
-		const addr = (await headers()).get('x-forwarded-for');
 
 		return {
 			headers: {
 				authorization: auth,
-				"jals-user-agent": agent,
-				"jals-user-addr": addr,
+				...userHeaders
 			}
 		}
 	}
