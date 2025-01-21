@@ -36,13 +36,31 @@ I began work on a refactor in december 2024. Primary goal was to gain practical 
 
 ### Environment
 
-- Nginx
 - Redis-Stack
+- MongoDB Community
+- Docker with compose
 
 
 ## Functionality
 
-[...]
+### Operational
+- [x] Session management on both client and api
+- [x] Auth code transactional emails
+- [x] Short link creation
+- [x] Redirection logic with safeguards
+- [x] Link inspection (`/inspect/[linkId]` & `/[linkId]/+`)
+- [x] Reporting functionality — link flagging
+- [x] User-agent and address collection (`@todo levarage User-Agent Client Hints API`)
+- [x] Light and dark themes
+
+### Planned & In-progress
+- [ ] Magic link functionality
+- [ ] Transitions, animations
+- [ ] Dashboards
+- [ ] Link management
+- [ ] User management
+- [ ] Client to API health checks
+- [ ] Full query error handling
 
 ---
 ## Version 1 (2021)

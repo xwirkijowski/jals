@@ -31,5 +31,9 @@ Link context implementation on `/inspect` route;
 
 ## Walkthrough
 
-### Authentication Flow
+### Authentication
 
+In JALSv2, users can both register and log in without ever using passwords. My approach focuses on one-time codes generated on the server and provided to users by a transactional email via Resend.
+
+![client-auth-flow-1.png](../repository/client-auth-flow-1.png)
+![client-auth-flow-2.png](../repository/client-auth-flow-2.png)
