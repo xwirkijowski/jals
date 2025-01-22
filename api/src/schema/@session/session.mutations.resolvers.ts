@@ -1,11 +1,11 @@
 import {Result, TResult} from "@schema/result";
 import {check, getIP, getUA, handleError, setupMeta} from "@util/helpers";
-import {log} from "@service/auth/service";
+import {globalLogger as log} from '@util/logging/log';
 import {CriticalError} from "@util/error";
 
 // Types
 import {IContext} from "@type/context.types";
-import AuthCodeType from "@service/auth/authCode";
+import AuthCodeType, {TAuthCodeInstance} from "@service/auth/authCode";
 import SessionType from "@service/auth/session";
 import {THydratedUser} from "@model/user.types";
 import {ERequestAuthCodeAction, IAuthInput, IRequestAuthCodeInput} from "./session.types";
@@ -78,16 +78,13 @@ export default {
 				return result.addError('ALREADY_EXISTS').response();
 			}
 
-			let codeNode: AuthCodeType|void;
-			try {
-				if (action === 'LOGIN') {
-					codeNode = await services.auth.createCode(userNode._id, userNode.email, action, requestId);
-				} else if (action === 'REGISTER') {
-					codeNode = await services.auth.createCode(undefined, readyInput.email, action, requestId);
-				}
-			} catch (err) {
-				handleError(err, 'Resolvers'); return result.addError('INTERNAL_ERROR').response();
-			}
+			const codeNode: TAuthCodeInstance|undefined = await services.auth.requestCode(
+				(action === 'LOGIN')?userNode._id:undefined,
+				(action === 'LOGIN')?userNode.email:readyInput.email,
+				action,
+				requestId
+			)
+			if (!codeNode) return result.addError('INTERNAL_ERROR').response();
 
 			// Send the email
 			let emailTransaction: string|void
@@ -117,22 +114,13 @@ export default {
 			const {readyInput, result} = validateAuthInput(input);
 			if (result.hasErrors()) return result.response();
 
-			// Get user by email
+			// Get user by email, return response if not found
 			const userNode: THydratedUser = await user.findOne({email: readyInput.email})
+			if (!userNode) return result.addError('INVALID_CREDENTIALS').response();
 
-			// If no user found return operation failed
-			if (!userNode) {
-				return result.addError('INVALID_CREDENTIALS').response();
-			}
-
-			// Check code
-			let codeNode: AuthCodeType|false;
-			try {
-				codeNode = await services.auth.checkCode(userNode._id, readyInput.code, ERequestAuthCodeAction['LOGIN'], requestId);
-				if (!codeNode) return result.addError('INVALID_CODE', undefined, 'Login failed, invalid code').response();
-			} catch (err) {
-				handleError(err, 'Resolvers'); return result.addError('INTERNAL_ERROR').response();
-			}
+			// Check code, return response if not found
+			const codeNode: TAuthCodeInstance|undefined = await services.auth.checkCode(userNode._id, readyInput.code, ERequestAuthCodeAction['LOGIN'], requestId);
+			if (!codeNode) return result.addError('CODE_NOT_FOUND').response();
 
 			// Create a session
 			let sessionNode: SessionType|boolean;
@@ -175,15 +163,10 @@ export default {
 			if (userNode) {
 				return result.addError('INVALID_CREDENTIALS').response();
 			}
-
-			// Check code
-			let codeNode: AuthCodeType|false;
-			try {
-				codeNode = await services.auth.checkCode(undefined, readyInput.code, ERequestAuthCodeAction['REGISTER'], requestId);
-				if (!codeNode) return result.addError('INVALID_CODE', undefined, 'Login failed, invalid code').response(true);
-			} catch (err) {
-				handleError(err, 'Resolvers'); return result.addError('INTERNAL_ERROR').response();
-			}
+			
+			// Check code, return response if not found
+			const codeNode: TAuthCodeInstance|undefined = await services.auth.checkCode(undefined, readyInput.code, ERequestAuthCodeAction['REGISTER'], requestId);
+			if (!codeNode) return result.addError('CODE_NOT_FOUND').response();
 
 			// Construct new user and set up metadata
 			const newUser = setupMeta(session, {

@@ -1,103 +1,189 @@
 import { EntityId } from "redis-om";
 
 import {CriticalError, InternalError} from '@util/error';
-
+import {globalLogger as log} from '@util/logging/log';
 import { repository as model } from "./authCode.model";
-import { log } from "./service";
-import {IAuthCodeGenerator, IAuthCode} from './types';
+
+// Types
+import {IAuthCodeGenerator, IAuthCode, IAuthCodeEntity, TAuthCode} from './types';
 import {ERequestAuthCodeAction} from "@schema/@session/session.types";
+import {TId} from "@type/id.types";
 
 export default class AuthCode {
-	authCodeId?: string
-	action?: string
-	code?: string
+	authCodeId?: IAuthCode["authCodeId"]
 	userId?: IAuthCode["userId"]
-	userEmail?: string
-	createdAt?: string|Date
+	userEmail: IAuthCode["userEmail"]
+	code?: IAuthCode["code"]
+	action: IAuthCode["action"]
+	createdAt?: IAuthCode["createdAt"]
+	
+	domain: string = "AuthService->Code"
 
-	constructor (props: IAuthCode , rId?: string, generator?: IAuthCodeGenerator) {
-		if (props?.[EntityId] && props?.code) { // Create new instance from existing
+	constructor (props: TAuthCode, rId?: TId, generator?: IAuthCodeGenerator) {
+		if (props?.[EntityId] && props?.code) {
+			// Create new instance from existing entity
+
 			this.authCodeId = props[EntityId];
 			this.action = props.action;
 			this.code = props.code;
 			this.userId = props.userId;
 			this.userEmail = props.userEmail;
 			this.createdAt = props.createdAt;
-		} else { // New instance to insert
-			if (!props) return this; // No properties to use, pass to `Find` existing code
-
-			// @todo Change caller handling, no support for throw atm
-			else if ((props?.action === 'LOGIN' && !props?.userId) || !props?.userEmail) {
-				throw new CriticalError('Code creation failed, no userId and userEmail provided!', 'AUTHCODE_MISSING_ARGS', 'AuthService', true, {requestId: rId, ...props})
+		} else {
+			// New instance to create entity
+			
+			if ((props?.action === 'LOGIN' && !props?.userId) || !props?.userEmail) {
+				throw new CriticalError('Code creation failed, no userId and userEmail provided!', 'AUTHCODE_MISSING_ARGS', this.domain, true, {requestId: rId, ...props})
 			} else if (!generator) {
-				throw new CriticalError('No generator passed to AuthCode constructor', 'AUTHCODE_MISSING_ARGS', 'AuthService', true, {requestId: rId, ...props})
+				throw new CriticalError('No generator passed to AuthCode constructor', 'AUTHCODE_MISSING_ARGS', this.domain, true, {requestId: rId, ...props})
 			}
 
 			this.action = props.action;
 			this.userId = props?.userId?.toString();
 			this.userEmail = props.userEmail.toString();
-			this.code = generator((rId as string));
+			this.code = generator(rId);
 		}
 
 		return this;
 	}
+	
+	/**
+	 * Retrieve an AuthCode entity that matches the parameters.
+	 * Changes query based on action.
+	 *
+	 * @since 2.1.1
+	 * @static
+	 * @async
+	 *
+	 * @throws  InternalError   Missing parameters, cannot search
+	 * @param   userId  The ID of the user for which the code is to be created, undefined if used for registration
+	 * @param   code    Authentication code string
+	 * @param   action  Context in which the code will be used
+	 * @param   rId     The unique request ID
+	 * @return  Promise<TAuthCodeInstance>
+	 */
+	static async find (userId: TAuthCode["userId"], code: string, action: ERequestAuthCodeAction = ERequestAuthCodeAction.LOGIN, rId: TId): Promise<TAuthCodeInstance> {
+		if ((action === ERequestAuthCodeAction['LOGIN'] && !userId) || !code || !action) throw new InternalError('Cannot search without required parameters', 'AUTHCODE_FIND_MISSING_ARGS', "AuthService->Code", true, {requestId: rId})
 
-	static async find (userId: IAuthCode["userId"], code: string, action: IAuthCode["action"], rId: string): Promise<AuthCodeType> {
-		let node;
-
-		if (action === ERequestAuthCodeAction['LOGIN']) {
-			node = await model.search()
-				.where('userId').equals(userId as string)
+		const node: IAuthCode = (action === ERequestAuthCodeAction['LOGIN'])
+			? await model.search()
+				.where('userId').equals(userId)
 				.and('code').equals(code)
 				.and('action').equals(action)
-				.return.first();
-		}
-		else {
-			node = await model.search()
+				.return.first()
+			: await model.search()
 				.where('code').equals(code)
 				.and('action').equals(action)
 				.return.first();
-		}
 
-		return (node?.code) ? new AuthCode((node as IAuthCode)) : undefined;
+		return (this.isValid(node)) ? new AuthCode(node) : undefined;
 	}
+	
+	/**
+	 * Save AuthCode instance as an entity.
+	 * Puts the instance into the database.
+	 *
+	 * @since 2.1.1
+	 * @async
+	 *
+	 * @throws  InternalError   Cannot save, instance already exists as an entity
+	 * @throws  CriticalError   Saving failed for unknown reasons
+	 * @param   expiresIn   AuthCode max age
+	 * @param   rId         The unique request ID
+	 * @return  Promise<AuthCodeInstance>
+	 */
+	async save (expiresIn: number, rId: TId): Promise<this> {
+		if (this.authCodeId) throw new InternalError('Cannot save existing AuthCode', 'AUTHCODE_SAVE_EXISTS', this.domain, true, {requestId: rId});
 
-	save = async (expiresIn: number, rId: string): Promise<this> => {
-		if (this.authCodeId) throw new InternalError('Cannot save existing AuthCode', 'AUTHCODE_SAVE_EXISTS', 'AuthService', true, {requestId: rId, authCode: this});
+		this.createdAt = new Date().toISOString();
 
-		this.createdAt = new Date().toISOString(); // Set close to insertion
-
-		const node = await model.save(this);
+		const node: IAuthCodeEntity = await model.save(this as TAuthCode);
 
 		if (node.code) {
-			this.authCodeId = node[(EntityId as unknown as string)];
+			this.authCodeId = node[EntityId];
 
-			await model.expire(node[(EntityId as unknown as string)], expiresIn);
+			await model.expire(node[EntityId], expiresIn);
 
-			log.withDomain('audit', 'AuthService', "Authentication code created", {userId: this.userId, authCodeId: this.authCodeId, requestId: rId});
+			log.withDomain('audit', this.domain, "Authentication code created", {requestId: rId});
 
 			return this;
 		} else {
-			throw new CriticalError('AuthCode save failed!', 'AUTHCODE_SAVE_FAULT', 'AuthService', true, {requestId: rId, authCode: this});
+			throw new CriticalError('AuthCode save failed!', 'AUTHCODE_SAVE_FAULT', this.domain, true, {requestId: rId});
 		}
 	}
+	
+	/**
+	 * Checks if the entity is valid, i.e. is not null
+	 *
+	 * @since 2.1.1
+	 * @private
+	 * @static
+	 *
+	 * @param   node    The AuthCode entity
+	 * @return  boolean
+	 */
+	private static isValid (node: IAuthCode): boolean {
+		return !!(node?.code)
+	}
+	
+	/**
+	 * Checks if the entity was successfully removed from the database
+	 *
+	 * @since 2.1.1
+	 * @private
+	 * @static
+	 * @async
+	 *
+	 * @param   authCodeId  AuthCode identifier
+	 * @param   report      If true, will create (not throw) CriticalError for failed entity removal
+	 * @param   rId         The unique request ID
+	 * @return  Promise<boolean>    Does entity exist?
+	 */
+	private static async checkExists (authCodeId: TAuthCode['authCodeId'], report: boolean = true, rId: TId): Promise<boolean> {
+		const node = await model.fetch(authCodeId as string);
+		
+		if (report && node?.code) new CriticalError('AuthCode removal failed!', 'AUTHCODE_REMOVE_FAULT', "AuthService->Code", true, {requestId: rId});
+		
+		return this.isValid(node)
+	}
+	
+	/**
+	 * Removes an AuthCode entity from repository
+	 *
+	 * @since 2.1.1
+	 * @static
+	 * @async
+	 *
+	 * @throws  CriticalError   Missing parameters, cannot remove without identifier
+	 * @param   authCodeId  AuthCode identifier
+	 * @param   rId         The unique request ID
+	 * @return  Promise<boolean>    Was AuthCode removed successfully?
+	 */
+	static async remove (authCodeId: TAuthCode['authCodeId'], rId: TId): Promise<boolean> {
+		if (!authCodeId) throw new CriticalError('Cannot remove AuthCode without identifier', 'AUTHCODE_REMOVE_NO_ID', "AuthService->Code", true, {requestId: rId, authCode: this});
+		
+		await model.remove(authCodeId as string);
 
-	remove = async (rId: string): Promise<boolean> => {
-		if (!this.authCodeId) throw new CriticalError('Cannot remove AuthCode without identifier', 'AUTHCODE_REMOVE_NO_ID', 'AuthService', true, {requestId: rId, authCode: this});
-
-		// Remove the entity
-		await model.remove(this.authCodeId);
-
-		// Fetch ID to confirm deletion
-		const node = await model.fetch(this.authCodeId);
-
-		if (node.code) {
-			throw new CriticalError('AuthCode removal failed!', 'AUTHCODE_REMOVE_FAULT', 'AuthService', true, {requestId: rId, authCode: this});
-		} else {
-			return true;
-		}
+		return (await AuthCode.checkExists(authCodeId, true,  rId) === false)
+	}
+	
+	/**
+	 * Removes an AuthCode entity from repository
+	 *
+	 * @since 2.1.1
+	 * @async
+	 *
+	 * @throws  CriticalError   Malformed or not saved instance used, cannot remove without identifier
+	 * @param   rId     The unique request ID
+	 * @return  Promise<boolean>    Was AuthCode removed successfully?
+	 */
+	async remove (rId: TId): Promise<boolean> {
+		if (!this.authCodeId) throw new CriticalError('Cannot remove AuthCode without identifier', 'AUTHCODE_REMOVE_NO_ID', this.domain, true, {requestId: rId, authCode: this});
+		
+		await model.remove(this.authCodeId as string);
+		
+		return (await AuthCode.checkExists(this.authCodeId, true, rId) === false)
 	}
 }
 
-// Export class type
-export type AuthCodeType = InstanceType<typeof AuthCode>;
+export type TAuthCodeInstance = InstanceType<typeof AuthCode>;

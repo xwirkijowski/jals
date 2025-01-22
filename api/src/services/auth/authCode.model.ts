@@ -1,8 +1,9 @@
 import { Repository, Schema } from 'redis-om';
 
 import { client } from '@/database/redis';
+import {IAuthCodeEntity} from "@service/auth/types";
 
-export const repository = new Repository(new Schema(
+export const repository = new Repository<IAuthCodeEntity>(new Schema(
 	'authCode', {
 		action: { type: 'string' },
 		userId: { type: 'string' },

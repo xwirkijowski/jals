@@ -35,8 +35,8 @@ import linkModel from '@model/link.model';
 import userModel from '@model/user.model';
 
 // Import services
-import { AuthService } from "@service/auth/service";
-import { MailService } from "@service/mail/service";
+import { $AuthService } from "@service/auth/service";
+import { $MailService } from "@service/mail/service";
 
 // Types
 import { IContext } from "@type/context.types";
@@ -62,8 +62,8 @@ const statistics = {
 
 // Services
 const services = {
-	auth: new AuthService(config.settings.auth),
-	mail: new MailService(config.settings.mail, config.secrets.resend),
+	auth: $AuthService,
+	mail: $MailService,
 }
 
 // Launch the Apollo server

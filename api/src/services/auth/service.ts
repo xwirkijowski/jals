@@ -1,29 +1,33 @@
 import EventEmitter from "events";
-import crypto from 'node:crypto';
 import { GraphQLError } from "graphql";
 
-import { CriticalError } from '@util/error';
-import { globalLogger as log } from '@util/logging/log';
-export { log };
+import {config} from "@config";
+import {globalLogger as log} from '@util/logging/log';
+
+import {AuthCodeManager, TAuthCodeManager} from "@service/auth/authCode.manager";
+import {SessionManager, TSessionManager} from "@service/auth/session.manager";
 
 import Session, {TSession} from "./session";
-import AuthCode, {AuthCodeType} from "./authCode";
+import {TAuthCodeInstance} from "./authCode";
 
 // Types
-import {IAuthCodeGenerator, ISession, IAuthCode, TSettingsAuth} from "./types";
+import {ISession, TSettingsAuth} from "./types";
 import {IContext, UContextSession} from "@type/context.types";
 import {ERequestAuthCodeAction} from "@schema/@session/session.types";
+import {TId} from "@type/id.types";
 
 export class AuthService extends EventEmitter {
-	default_config: TSettingsAuth = {
+	private default_config: TSettingsAuth = {
 		code: {
-			length: 6,
+			length: 8,
 			expiresIn: 60 * 5,
 		},
 		session: {
 			expiresIn: 60 * 30,
 		},
 	}
+	private authCodeManager: TAuthCodeManager;
+	private sessionManager: TSessionManager;
 
 	config: TSettingsAuth;
 
@@ -33,6 +37,8 @@ export class AuthService extends EventEmitter {
 		log.withDomain('log', 'AuthService', 'Loading AuthService configuration...');
 
 		this.config = {...this.default_config, ...config} // @todo Deep join
+		this.authCodeManager = new AuthCodeManager(this.config.code);
+		this.sessionManager = new SessionManager(this.config.session);
 
 		log.withDomain('success', 'AuthService', 'AuthService started!')
 		return this;
@@ -46,8 +52,10 @@ export class AuthService extends EventEmitter {
 			}
 		});
 	}
-
-	// Session block
+	
+	/**
+	 * Session segment
+	 */
 
 	/**
 	 * Authentication method, handles session on request
@@ -98,52 +106,38 @@ export class AuthService extends EventEmitter {
 		if (!userId) return undefined; // Silent fail, variable should be checked beforehand
 		return await Session.findByUserId(userId, rId);
 	}
-
-	// Authentication code block
-
-	generateCode: IAuthCodeGenerator = (rId: string): string => {
-		const length = this.config.code.length;
-
-		if (length <= 0) {
-			throw new CriticalError("Auth length must be greater than 0! Cannot generate auth code.", 'AUTH_CONFIG_FAULT', 'AuthService', true, {requestId: rId});
-		}
-
-		let code = '';
-		while (code.length < length) {
-			const byte = crypto.randomBytes(1)[0];
-
-			if (byte < 250) {
-				code += (byte % 10).toString();
-			}
-		}
-
-		return code;
-	}
-
-	createCode = async (userId: IAuthCode["userId"], userEmail: string, action: IAuthCode["action"], rId: string) => {
-		return await new AuthCode({userId, userEmail, action}, rId, this.generateCode).save(this.config.code.expiresIn, rId).catch(e => console.log('caught', e)); // Catch internal errors, return false on fail
+	
+	/**
+	 * AuthCode segment
+	 */
+	
+	/**
+	 *
+	 * @param userId
+	 * @param userEmail
+	 * @param action
+	 * @param rId
+	 */
+	requestCode = async (userId: TId|undefined, userEmail: string, action: ERequestAuthCodeAction, rId: TId): Promise<TAuthCodeInstance|undefined> => {
+		return await this.authCodeManager.createNew(userId.toString(), userEmail, action, rId);
 	}
 
 	/**
 	 * Check if supplied code exists.
 	 *
-	 * @param   userId
-	 * @param   code
-	 * @param	action
+	 * @param   userId  The user ID to check against
+	 * @param   code    The authentication code string
+	 * @param	action  Context of the authentication code
 	 * @param   rId
 	 *
-	 * @returns    {Promise<AuthCode|false>}	If AuthCode found, return AuthCode instance;
-	 *                                        	If no AuthCode found, return false;
+	 * @return Promise<AuthCode>
+	 * @return Promise<undefined>
 	 */
-	checkCode = async (userId: IAuthCode["userId"], code: string, action: IAuthCode["action"], rId: string): Promise<AuthCode|false> => {
-		if ((action === ERequestAuthCodeAction['LOGIN'] && !userId) || !code || !rId) {
-			throw new CriticalError('Missing arguments, cannot check AuthCode', 'AUTH_CHECK_CODE_FAULT', 'AuthService', true, {userId, code, action, requestId: rId});
-		}
-
-		const node: AuthCodeType|undefined = await AuthCode.find(userId, code, action, rId);
-
-		return (node?.code) ? node : false;
+	checkCode = async (userId: TId|undefined, code: string, action: ERequestAuthCodeAction, rId: TId): Promise<TAuthCodeInstance|undefined> => {
+		return await this.authCodeManager.retrieve(userId.toString(), code, action, rId);
 	}
 }
 
 export type TAuthService = InstanceType<typeof AuthService>;
+
+export const $AuthService = new AuthService(config.settings.auth);
