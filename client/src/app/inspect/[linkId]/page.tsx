@@ -16,6 +16,7 @@ import {H2} from "@comp/Typography/H2";
 import {H3} from "@comp/Typography/H3";
 import {P} from "@comp/Typography/P";
 import {Badge} from "@comp/Badge/Badge";
+import {DateToLocaleString} from "@comp/DateLocaleString/DateToLocaleString";
 
 // Context
 import {LinkContext} from "@ctx/link/link.context";
@@ -68,7 +69,7 @@ const Page = (): React.ReactNode => {
                     </div>
                     <div className={"gap-2 flex flex-col"}>
                         <H3 className={"!text-base"}>Creation time</H3>
-                        <P>{new Date(data.link.createdAt).toLocaleString()}</P>
+                        <P><DateToLocaleString value={data.link.createdAt} /></P>
                     </div>
                     <div className={"gap-2 flex flex-col"}>
                         <H3 className={"!text-base"}>Click count</H3>
@@ -76,7 +77,7 @@ const Page = (): React.ReactNode => {
                     </div>
                     <div className={"gap-2 flex flex-col"}>
                         <H3 className={"!text-base"}>Last modified</H3>
-                        <P>{data.link.version > 0 && data.link.updatedAt ? new Date(data.link.updatedAt).toLocaleString() : "Not modified yet"}</P>
+                        <P>{data.link.version > 0 && data.link.updatedAt ? <DateToLocaleString value={data.link.updatedAt} /> : "Not modified yet"}</P>
                     </div>
                     <div className={"gap-2 flex flex-col"}>
                         <H3 className={"!text-base"}>Version</H3>
