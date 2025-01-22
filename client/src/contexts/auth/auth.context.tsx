@@ -1,7 +1,7 @@
 "use client";
 
 
-import {createContext, ReactNode, Suspense} from "react";
+import {createContext, ReactNode} from "react";
 import {TAuthContext, TAuthContextUnion, TCurrentUser} from "./auth.types";
 
 export const AuthContext = createContext<TAuthContext>({
@@ -14,9 +14,7 @@ export const AuthContextWrapper = (
     {session: TAuthContextUnion, user: TCurrentUser, children: ReactNode}) => {
     return (
         <AuthContext.Provider value={{session, user}}>
-            <Suspense fallback={null}>
-                {children}
-            </Suspense>
+            {children}
         </AuthContext.Provider>
     )
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import React, {createContext, useState} from "react";
+import React, {createContext, useEffect, useState} from "react";
 
 export namespace SThemeContext {
 	export enum EThemes {
@@ -26,17 +26,20 @@ export const ThemeContext = createContext<SThemeContext.TThemeContext>({
 export const ThemeContextWrapper = (
 	{children}: {children: React.ReactNode}
 ) => {
+	const [theme, setTheme] = useState<SThemeContext.EThemes>(defaultTheme);
+
 	let localTheme: SThemeContext.EThemes = defaultTheme;
 
-	if (typeof window !== "undefined") {
-		const lsValue: string | null = localStorage.getItem("theme");
+	useEffect(() => {
+		if (typeof window !== "undefined") {
+			const lsValue: string | null = localStorage.getItem("theme");
 
-		if (lsValue && ['light', 'dark'].includes(lsValue)) {
-			localTheme = SThemeContext.EThemes[lsValue];
+			if (lsValue && ['light', 'dark'].includes(lsValue)) {
+				localTheme = SThemeContext.EThemes[lsValue];
+				setTheme(localTheme);
+			}
 		}
-	}
-
-	const [theme, setTheme] = useState<SThemeContext.EThemes>(localTheme||defaultTheme);
+	}, []);
 
 	const handleTheme = () => {
 		const nextTheme = (theme === SThemeContext.EThemes.dark) ? SThemeContext.EThemes.light : SThemeContext.EThemes.dark
