@@ -1,12 +1,12 @@
 import EventEmitter from "events";
 import { Resend } from "resend";
 
+import {config} from "@config";
+import {globalLogger as log} from '@util/logging/log';
 import { CriticalError } from '@util/error';
-import { globalLogger as log } from '@util/logging/log';
-export { log };
 
 import {TSettings} from "@type/config.types";
-import {AuthCodeType} from "../auth/authCode";
+import {TAuthCodeInstance} from "../auth/authCode";
 
 import {LoginEmail} from './templates/LoginEmail';
 import {ERequestAuthCodeAction} from "@schema/@session/session.types";
@@ -53,7 +53,7 @@ export class MailService extends EventEmitter {
 export type TMailService = InstanceType<typeof MailService>;
 
 export interface IEmailData {
-    authCode?: AuthCodeType
+    authCode?: TAuthCodeInstance
     userAgent?: string
     userAddr?: string
     requestId?: string
@@ -96,5 +96,7 @@ class Email {
         return data.id
     }
 }
+
+export const $MailService = new MailService(config.settings.mail, config.secrets.resend)
 
 export type TEmail = InstanceType<typeof Email>;

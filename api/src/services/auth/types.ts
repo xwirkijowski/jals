@@ -32,7 +32,7 @@ export interface IAuthCodeEntity extends IAuthCode, Entity {}
 
 export interface ISession {
     sessionId?: string
-    userId: TId;
+    userId: string;
     isAdmin: boolean
     userAgent?: string
     userAddr?: string
@@ -43,7 +43,7 @@ export interface ISession {
 
 export type TSession = {
     sessionId?: string
-    userId: TId;
+    userId: string;
     isAdmin: boolean
     userAgent?: string
     userAddr?: string
@@ -52,4 +52,4 @@ export type TSession = {
     version?: number
 }
 
-export interface IAuthCodeEntity extends IAuthCode, Entity {}
+export interface ISessionEntity extends ISession, Entity {}

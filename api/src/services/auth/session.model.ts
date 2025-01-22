@@ -1,9 +1,10 @@
 import crypto from 'node:crypto';
-import { Repository, Schema } from 'redis-om';
+import {Repository, Schema} from 'redis-om';
 
-import { client } from '@/database/redis';
+import {client} from '@/database/redis';
+import {ISessionEntity} from "@service/auth/types";
 
-export const repository = new Repository(new Schema(
+export const repository = new Repository<ISessionEntity>(new Schema(
 	'session', {
 		userId: {type: 'string'},
 		isAdmin: {type: 'boolean'},

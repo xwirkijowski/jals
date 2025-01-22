@@ -6,7 +6,7 @@ import {CriticalError} from "@util/error";
 // Types
 import {IContext} from "@type/context.types";
 import AuthCodeType, {TAuthCodeInstance} from "@service/auth/authCode";
-import SessionType from "@service/auth/session";
+import SessionType, {TSessionInstance} from "@service/auth/session";
 import {THydratedUser} from "@model/user.types";
 import {ERequestAuthCodeAction, IAuthInput, IRequestAuthCodeInput} from "./session.types";
 
@@ -81,8 +81,7 @@ export default {
 			const codeNode: TAuthCodeInstance|undefined = await services.auth.requestCode(
 				(action === 'LOGIN')?userNode._id:undefined,
 				(action === 'LOGIN')?userNode.email:readyInput.email,
-				action,
-				requestId
+				action, requestId
 			)
 			if (!codeNode) return result.addError('INTERNAL_ERROR').response();
 
@@ -121,21 +120,14 @@ export default {
 			// Check code, return response if not found
 			const codeNode: TAuthCodeInstance|undefined = await services.auth.checkCode(userNode._id, readyInput.code, ERequestAuthCodeAction['LOGIN'], requestId);
 			if (!codeNode) return result.addError('CODE_NOT_FOUND').response();
-
+			
 			// Create a session
-			let sessionNode: SessionType|boolean;
-			try {
-				sessionNode = await services.auth.createSession(userNode._id, userNode.isAdmin, req, res, requestId);
-			} catch (err) {
-				handleError(err, 'Resolvers'); return result.addError('INTERNAL_ERROR').response();
-			}
+			const sessionNode: TSessionInstance|undefined = await services.auth.createSession(userNode._id, userNode.isAdmin, req, requestId);
+			if (!sessionNode) return result.addError('INTERNAL_ERROR').response();
 
 			// Invalidate used code
-			try {
-				await codeNode.remove(requestId);
-			} catch (err) {
-				handleError(err, 'Resolvers'); return result.addError('INTERNAL_ERROR').response();
-			}
+			const invalidateCode = await services.auth.invalidateCode(codeNode, requestId);
+			if (!invalidateCode) return result.addError('INTERNAL_ERROR').response();
 
 			if (sessionNode) {
 				return result.response(true, {
@@ -184,21 +176,14 @@ export default {
 			}
 
 			log.withDomain('audit', 'Resolvers', "New user registered", {userId: createdUser._id, requestId: requestId});
-
+			
 			// Create a session
-			let sessionNode: SessionType|boolean;
-			try {
-				sessionNode = await services.auth.createSession(createdUser._id, false, req, res, requestId);
-			}  catch (err) {
-				handleError(err, 'Resolvers'); return result.addError('INTERNAL_ERROR').response();
-			}
-
+			const sessionNode: TSessionInstance|undefined = await services.auth.createSession(userNode._id, false, req, requestId);
+			if (!sessionNode) return result.addError('INTERNAL_ERROR').response();
+			
 			// Invalidate used code
-			try {
-				await codeNode.remove(requestId);
-			} catch (err) {
-				handleError(err, 'Resolvers'); return result.addError('INTERNAL_ERROR').response();
-			}
+			const invalidateCode = await services.auth.invalidateCode(codeNode, requestId);
+			if (!invalidateCode) return result.addError('INTERNAL_ERROR').response();
 
 			if (sessionNode) {
 				return result.response(true, {
@@ -209,7 +194,7 @@ export default {
 				return result.addError('LOGIN_FAILED', undefined, 'Unknown problem occurred, cannot log in.').response();
 			}
 		},
-		logOut: async (_: any, __:any, {session, internal: {requestId}}: IContext) => {
+		logOut: async (_: any, __:any, {services: {auth}, session, internal: {requestId}}: IContext) => {
 			check.needs('redis');
 			check.needs('mongo');
 
@@ -217,12 +202,9 @@ export default {
 
 			const result = new Result();
 
-			try {
-				await session.remove(requestId);
-			} catch (err) {
-				handleError(err, 'Resolvers'); return result.addError('LOGOUT_FAILED', undefined, 'Unknown problem occurred, cannot log out and remove session.').response();
-			}
-
+			const invalidateSession = await auth.invalidateSession(session, requestId);
+			if (!invalidateSession) return result.addError('LOGOUT_FAILED', undefined, 'Unknown problem occurred, cannot log out and remove session.').response();
+			
 			session = undefined;
 
 			return result.response()

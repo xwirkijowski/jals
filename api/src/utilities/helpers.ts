@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import { GraphQLError } from "graphql";
 
 import { $DB } from "@/database/status";
-import {TSession} from "@service/auth/session";
+import {TSessionInstance} from "@service/auth/session";
 import {IContext} from "@type/context.types";
 import {TId} from "@type/id.types";
 import {CriticalError} from "./error";
@@ -166,7 +166,7 @@ export const check = {
 			throw new GraphQLError('Session database unavailable.', { extensions: { code: 'INTERNAL_SERVER_ERROR' } });
 		}
 	},
-	isSessionValid: (session: IContext["session"]): session is TSession => (session && session !== 'invalid'),
+	isSessionValid: (session: IContext["session"]): session is TSessionInstance => (session && session !== 'invalid'),
 	session: (session: IContext["session"]): true|GraphQLError => {
 		if (check.isSessionValid(session)) return true;
 
@@ -193,7 +193,7 @@ export const check = {
 
 		let authorized: boolean = false; // Default to false
 
-		if ((session as TSession)?.userId === createdBy || (session as TSession)?.isAdmin === true) authorized = true;
+		if ((session as TSessionInstance)?.userId === createdBy || (session as TSessionInstance)?.isAdmin === true) authorized = true;
 
 		// Handle user not authorized
 		if (!authorized) {
@@ -226,7 +226,7 @@ export const check = {
 
 		let authorized: boolean = false; // Default to false
 
-		if ((session as TSession).isAdmin) authorized = true;
+		if ((session as TSessionInstance).isAdmin) authorized = true;
 
 		// Handle user not authorized
 		if (!authorized && !silent) {

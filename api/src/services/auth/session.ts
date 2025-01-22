@@ -1,13 +1,14 @@
 import {EntityId} from "redis-om";
 
-import { CriticalError } from '@util/error';
-import { getIP } from "@util/helpers";
+import {CriticalError, InternalError} from '@util/error';
+import {getIP, getUA} from "@util/helpers";
 
 import { repository as model } from "./session.model";
-import { log } from "./service";
+import {globalLogger as log} from '@util/logging/log';
 
-import {ISession} from "./types";
+import {ISession, ISessionEntity, TSession} from "./types";
 import {IContext} from "@type/context.types";
+import {TId} from "@type/id.types";
 
 /**
  * @todo Implement check for expires
@@ -22,101 +23,221 @@ export default class Session {
 	createdAt?: Date|string;
 	updatedAt?: Date|string;
 	version: number = 0;
-
-	constructor(props: ISession, rId: string, request?: IContext['req']) {
-		if (!props?.userId) { // @todo Change caller handling, no support for throw atm
-			throw new CriticalError('Session creation failed, no userId provided!', 'SESSION_MISSING_ARGS', 'AuthService', true, {requestId: rId, ...props})
+	
+	static domain: string = "AuthService->Code"
+	
+	/**
+	 * Session constructor
+	 *
+	 * @since 2.0.0
+	 *
+	 * @throws  CriticalError   Cannot create Session, missing props (userId)
+	 * @param   props   The data for the session to be built from
+	 * @param   request Request received by the server, used to extract user-agent and address
+	 * @param   rId     Unique request ID
+	 * @return  TSessionInstance
+	 */
+	constructor(props: ISession, request: IContext['req'] = undefined, rId: TId) {
+		if (!props?.userId) {
+			throw new CriticalError('Session creation failed, no userId provided!', 'SESSION_MISSING_ARGS', Session.domain, true, {requestId: rId})
 		}
 
-		this.sessionId = props?.sessionId;
+		this.sessionId = props?.sessionId; // Assigned only when creating instance from existing entity
 		this.userId = props.userId.toString();
-		this.isAdmin = Boolean(props?.isAdmin)||false;
-		this.userAgent = props?.userAgent?.toString() || request?.headers?.['user-agent'] || undefined;
+		this.isAdmin = Boolean(props?.isAdmin) || false;
+		this.userAgent = props?.userAgent?.toString() || request && getUA(request)?.toString() || undefined;
 		this.userAddr = props?.userAddr?.toString() || request && getIP(request)?.toString() || undefined;
 		this.createdAt = props?.createdAt ? new Date(props.createdAt) : undefined;
 		this.updatedAt = props?.updatedAt ? new Date(props.updatedAt) : undefined;
-		this.version = props?.version || 0;
+		this.version = Number(props?.version) || 0;
 
 		return this;
 	}
+	
+	/**
+	 * Retrieve a Session entity that matches the parameters.
+	 *
+	 * @since 2.0.0
+	 * @static
+	 * @async
+	 *
+	 * @throws  InternalError   Missing parameters, cannot search
+	 * @param   sessionId   The ID of the session to fetch
+	 * @param   rId         Unique request ID
+	 * @return  Promise<TSessionInstance|undefined>
+	 */
+	static async find(sessionId: TSession['sessionId'], rId: TId): Promise<TSessionInstance|undefined> {
+		if (!sessionId) throw new InternalError('Cannot search without required parameters', 'SESSION_FIND_MISSING_ARGS', Session.domain, true, {requestId: rId});
+		
+		const node: ISessionEntity = await model.fetch(sessionId);
 
-	static async find(sessionId: string, rId: string): Promise<TSession> {
-		const node = await model.fetch(sessionId);
+		node.sessionId = node[EntityId];
 
-		node.sessionId = node[(EntityId as unknown as string)];
-
-		return (node?.userId) ? new Session((node as ISession), rId) : undefined;
+		return (this.isValid(node)) ? new Session(node, undefined, rId) : undefined;
 	}
-
-	static async findByUserId(userId: ISession['userId'], rId: string): Promise<Array<TSession>> {
-		const nodes = await model.search()
-			.where('userId').equals(userId as string)
+	
+	/**
+	 * Retrieve a Session entity that matches the parameters.
+	 *
+	 * @since 2.0.0
+	 * @static
+	 * @async
+	 *
+	 * @throws  InternalError   Missing parameters, cannot search
+	 * @param   userId  The ID of the user to filter for
+	 * @param   rId     Unique request ID
+	 * @return  Promise<TSessionInstance[]|undefined>
+	 */
+	static async findByUserId(userId: TSession['userId'], rId: TId): Promise<TSessionInstance[]|undefined> {
+		if (!userId) throw new InternalError('Cannot search without required parameters', 'SESSION_FINDMANY_MISSING_ARGS', Session.domain, true, {requestId: rId});
+		
+		const nodes: Array<ISessionEntity> = await model.search()
+			.where('userId').equals(userId)
 			.return.all();
 
-		let sessions: Array<TSession> = [];
+		let sessions: TSessionInstance[] = [];
 
 		if (nodes.length > 0) {
-			nodes.forEach(node => {
+			nodes.forEach((node: ISessionEntity) => {
 				if (node?.userId === userId) {
-					node.sessionId = node[(EntityId as unknown as string)];
-					sessions.push(new Session((node as ISession), rId));
+					node.sessionId = node[EntityId];
+					sessions.push(new Session(node, undefined, rId));
 				}
 			})
-		}
-
-		return sessions;
+			
+			return sessions;
+		} else {return undefined}
 	}
+	
+	/**
+	 * Save Session instance as an entity.
+	 * Puts the instance into the database.
+	 *
+	 * @since 2.1.1
+	 * @async
+	 *
+	 * @throws  InternalError   Cannot save, instance already exists as an entity
+	 * @throws  CriticalError   Saving failed for unknown reasons
+	 * @param   expiresIn   Session max age
+	 * @param   rId         Unique request ID
+	 * @return  Promise<TSessionInstance>
+	 */
+	async save (expiresIn: number, rId: TId): Promise<this> {
+		if (this.sessionId) throw new InternalError('Cannot save existing Session', 'SESSION_SAVE_EXISTS', Session.domain, true, {requestId: rId});
 
-	refresh = async (expiresIn: number, rId: string): Promise<this> => {
+		this.createdAt = new Date().toISOString()
+
+		const node: ISessionEntity = await model.save(this as TSession);
+		
+		if (Session.isValid(node)) {
+			this.sessionId = node[EntityId];
+
+			await model.expire(this.sessionId, expiresIn);
+
+			log.withDomain('audit', Session.domain, "Session created", {requestId: rId});
+
+			return this;
+		} else {
+			throw new CriticalError("Session save failed!", 'SESSION_SAVE_FAULT', Session.domain, true, {requestId: rId});
+		}
+	}
+	
+	/**
+	 * Updates the Session instance and entity.
+	 * Changes the `updatedAt` and `version` field, updates max age.
+	 *
+	 * @since 2.0.0
+	 * @async
+	 *
+	 * @param   expiresIn   Session max age
+	 * @param   rId         Unique request ID
+	 * @return  Promise<TSessionInstance>
+	 */
+	refresh = async (expiresIn: number, rId: TId): Promise<this> => {
 		if (!this.sessionId) return undefined;
 
 		this.updatedAt = new Date();
 		this.version++;
-
-		// Save updated session and update TTL
-		await model.save(this.sessionId, this)
+		
+		await model.save(this.sessionId, this as TSession)
 		await model.expire(this.sessionId, expiresIn);
 
 		return this;
 	}
-
-	save = async (expiresIn: number, rId: string): Promise<this> => {
-		if (this.sessionId) return undefined;
-
-		this.createdAt = new Date().toISOString(); // Set close to insertion
-
-		const node = await model.save(this);
-
-		if (node.userId) {
-			this.sessionId = node[(EntityId as unknown as string)];
-
-			await model.expire((this.sessionId as string), expiresIn);
-
-			log.withDomain('audit', 'AuthService', "Session created", {userId: this.userId, sessionId: this.sessionId, requestId: rId});
-
-			return this;
-		} else {
-			new CriticalError("Session save failed!", 'SESSION_SAVE_FAULT', 'AuthService', true, {requestId: rId, session: this});
-			return undefined;
-		}
+	
+	/**
+	 * Checks if the entity is valid, i.e. is not null
+	 *
+	 * @since 2.1.1
+	 * @private
+	 * @static
+	 *
+	 * @param   node    The Session entity
+	 * @return  boolean
+	 */
+	private static isValid (node: ISession): boolean {
+		return !!(node?.userId)
 	}
-
-	remove = async (rId: string): Promise<boolean> => {
-		if (!this.sessionId) throw new CriticalError('Cannot remove AuthCode without identifier', 'SESSION_REMOVE_NO_ID', 'AuthService', true, {requestId: rId, authCode: this});
-
-		// Remove the entity
+	
+	/**
+	 * Checks if the entity was successfully removed from the database
+	 *
+	 * @since 2.1.1
+	 * @private
+	 * @static
+	 * @async
+	 *
+	 * @param   sessionId   Session identifier
+	 * @param   report      If true, will create (not throw) CriticalError for failed entity removal
+	 * @param   rId         Unique request ID
+	 * @return  Promise<boolean>    Does entity exist?
+	 */
+	private static async checkExists (sessionId: TSession['sessionId'], report: boolean = true, rId: TId): Promise<boolean> {
+		const node: ISessionEntity = await model.fetch(sessionId as string);
+		
+		if (report && Session.isValid(node)) new CriticalError('Session removal failed!', 'SESSION_REMOVE_FAULT', Session.domain, true, {requestId: rId});
+		
+		return Session.isValid(node)
+	}
+	
+	/**
+	 * Removes a Session entity from repository
+	 *
+	 * @since 2.0.0
+	 * @static
+	 * @async
+	 *
+	 * @throws  CriticalError   Missing parameters, cannot remove without identifier
+	 * @param   sessionId   Session identifier
+	 * @param   rId         Unique request ID
+	 * @return  Promise<boolean>    Was Session removed successfully?
+	 */
+	static async remove (sessionId: TSession['sessionId'], rId: TId): Promise<boolean> {
+		if (!sessionId) throw new CriticalError('Cannot remove Session without identifier', 'SESSION_REMOVE_NO_ID', Session.domain, true, {requestId: rId});
+		
+		await model.remove(sessionId);
+		
+		return (await Session.checkExists(sessionId, true, rId) === false)
+	}
+	
+	/**
+	 * Removes a Session entity from repository
+	 *
+	 * @since 2.1.1
+	 * @async
+	 *
+	 * @throws  CriticalError   Malformed or not saved instance used, cannot remove without identifier
+	 * @param   rId     TUnique request ID
+	 * @return  Promise<boolean>    Was Session removed successfully?
+	 */
+	remove = async (rId: TId): Promise<boolean> => {
+		if (!this.sessionId) throw new CriticalError('Cannot remove AuthCode without identifier', 'SESSION_REMOVE_NO_ID', Session.domain, true, {requestId: rId});
+		
 		await model.remove(this.sessionId);
 
-		// Fetch ID to confirm deletion
-		const node = await model.fetch(this.sessionId);
-
-		if (node.code) {
-			throw new CriticalError('Session removal failed!', 'SESSION_REMOVE_FAULT', 'AuthService', true, {requestId: rId, authCode: this});
-		} else {
-			return true;
-		}
+		return (await Session.checkExists(this.sessionId, true, rId) === false)
 	}
 }
 
 // Export class type
-export type TSession = InstanceType<typeof Session>;
+export type TSessionInstance = InstanceType<typeof Session>;

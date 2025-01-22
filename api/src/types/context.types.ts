@@ -7,11 +7,11 @@ import {TTelemetryCounters} from "@util/telemetryCounters";
 import {IUser} from "@model/user.types";
 import {ILink} from "@model/link.types";
 import {IClick} from "@model/click.types";
-import {TSession} from "@service/auth/session";
+import {TSessionInstance} from "@service/auth/session";
 import {TAuthService} from "@service/auth/service";
 import {TMailService} from "@service/mail/service";
 
-export type UContextSession = TSession|'invalid'|undefined;
+export type UContextSession = TSessionInstance|'invalid'|undefined;
 
 export interface IContext {
     session: UContextSession

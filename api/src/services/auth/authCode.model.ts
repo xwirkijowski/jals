@@ -1,6 +1,6 @@
-import { Repository, Schema } from 'redis-om';
+import {Repository, Schema} from 'redis-om';
 
-import { client } from '@/database/redis';
+import {client} from '@/database/redis';
 import {IAuthCodeEntity} from "@service/auth/types";
 
 export const repository = new Repository<IAuthCodeEntity>(new Schema(
