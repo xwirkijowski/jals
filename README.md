@@ -6,6 +6,7 @@ A simple solution for shortening links built with React, Next.js and GraphQL wit
 
 I began work on a refactor in december 2024. Primary goal was to gain practical knowledge of current React (v19) and Next.js (v15) features, including the new App router. As a secondary goal, client application was to fully leverage TailwindCSS and PostCSS features.
 
+> **Now live!** Development stage preview available at [jals2.wirkijowski.dev](https://jals2.wirkijowski.dev/)
 
 ## Technology stack
 
