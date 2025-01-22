@@ -14,7 +14,7 @@ export const LogOutButton = () => {
 	const [state, action, pending] = useActionState(LogOutAction, undefined);
 
 	if (!pending && state?.result?.success) {
-		router.back();
+		router.push('/'); // @todo Add history detection to avoid leaving site
 	}
 
 	return (
