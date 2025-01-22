@@ -9,7 +9,7 @@ import {axiomClient as axiom} from '../logging/axiom';
  * The Warning class is an informal pseudo-Error that is by itself does not block any operations.
  *
  */
-class Warning {
+export class Warning {
 	name: string = 'Warning';
 	warnId: string;
 	message: string;
@@ -65,14 +65,12 @@ class Warning {
 	}
 }
 
-export {Warning};
-
 /**
  * WarningAggregator
  *
  * Groups warnings together on per module basis. Stores warning count and a list of warning codes.
  */
-class WarningAggregator {
+export class WarningAggregator {
 	domain: string;
 	warnings: Warning[] = [];
 	warningCount: number = 0;
@@ -100,4 +98,4 @@ class WarningAggregator {
 	getDomain = (): string|undefined => this.domain;
 }
 
-export {WarningAggregator};
+export type TWarningAggregator = InstanceType<typeof WarningAggregator>;

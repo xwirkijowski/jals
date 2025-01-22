@@ -100,7 +100,7 @@ class InternalError extends Error implements Partial<Error> {
 
 export {InternalError};
 
-class ErrorAggregator {
+export class ErrorAggregator {
 	domain: string;
 	errors: InternalError[] = [];
 	errorCount: number = 0;
@@ -137,4 +137,4 @@ class ErrorAggregator {
 	getDomain = (): string => this.domain;
 }
 
-export {ErrorAggregator}
+export type TErrorAggregator = InstanceType<typeof ErrorAggregator>;
