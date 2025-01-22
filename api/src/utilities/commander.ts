@@ -119,12 +119,12 @@ class Commander extends EventEmitter {
 	}
 
 	async shutdown (cause: string): Promise<void> {
-		// Add pooling if commander not ready
+		// @todo Add pooling if commander not ready
 		if (this.status !== 'ready') throw new FatalError('Cannot initiate graceful shutdown! Commander not ready!', 'CMDR_NOT_READY', 'Commander', true);
 
-		this.emit('shutdown');
-
 		console.error(`\x1b[1m\x1b[31m[\x1b[33mSHUTDOWN-SHUTDOWN-SHUTDOWN\x1b[31m] Received shutdown signal, cause: ${cause}`);
+
+		this.emit('shutdown');
 
 		// Step 1 — Stop listening for new connections and start wind down
 		const stopServer = await this.#closeServer()
@@ -146,4 +146,4 @@ export type TCommander = InstanceType<typeof Commander>;
 export const $CMDR = new Commander();
 
 $CMDR.on('ready', () => log.withDomain('success', 'Commander', 'Commander ready!'));
-$CMDR.on('applied', (arg) => log.withDomain('log', 'Commander', `Applied ${arg} to commander instance.`))
+$CMDR.on('applied', (arg) => log.withDomain('log', 'Commander', `Applied ${arg} to commander instance`))
