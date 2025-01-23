@@ -50,14 +50,162 @@ export type TValidateData = {
 	[key: string]: IValidateData // | TValidateData
 }
 
-/**
- *
- */
+// @todo Refactor to deduplicate and optimize
+class Validator {
+	errorCode = {
+		malformed: 'BAD_USER_INPUT',
+		invalid: 'INPUT_INVALID',
+		type: 'INPUT_WRONG_TYPE',
+		empty: 'INPUT_EMPTY',
+	}
+	
+	private buildError (path: string, key: string, condition?: any) {
+		const message = {
+			malformed: '',
+			invalid: '',
+			length: `Input field ${path} must have exactly ${condition} length`,
+			type: `Input field ${path} is of wrong type`,
+			empty: `Input field ${path} is empty`,
+		}
+		
+		return [this.errorCode[key] as string, path as string, message[key] as string] as const;
+	}
+	
+	private buildGraphQLError (path: string, key: string, condition?: any): GraphQLError {
+		const message = {
+			malformed: '',
+			invalid: '',
+			length: `Input field ${path} must have exactly ${condition} length`,
+			type: `Input field ${path} is of wrong type`,
+			empty: `Input field ${path} is empty`,
+		}
+		
+		return new GraphQLError(message[key], {path: [path], extensions: {code: this.errorCode[key]}})
+	}
+	
+	prepareArgs (input: unknown, struct: TValidateData): any {
+		let readyArgs = {};
+		const errors: GraphQLError[] = [];
+	
+		if (typeof input !== 'object' || Object.keys(input).length === 0) throw new GraphQLError('Input empty or wrong type', {extensions: {code: 'BAD_USER_INPUT'}})
+		
+		for (const [key, data] of Object.entries(struct)) {
+			const normalize: boolean = data?.normalize || false;
+			const optional: boolean = data?.optional || false;
+			
+			let inputValue = input[key];
+			
+			if (!optional && (!inputValue || (inputValue && !check.nonNull(inputValue)))) {
+				errors.push(this.buildGraphQLError(key, 'empty'))
+				continue;
+			} else if (optional && !inputValue) continue;
+			
+			if (data.type === 'string') {
+				if (typeof inputValue !== data.type) {
+					errors.push(this.buildGraphQLError(key, 'type'))
+					continue;
+				} else if (inputValue.length === 0) {
+					errors.push(this.buildGraphQLError(key, 'empty'))
+					continue;
+				} else if (data.length && inputValue.length !== data.length) {
+					errors.push(this.buildGraphQLError(key, 'length', data.length))
+					continue;
+				}
+				
+				readyArgs[key] = (normalize) ? String(inputValue).normalize('NFKD') : String(inputValue);
+			} else if (data.type === 'boolean') {
+				if (typeof inputValue !== data.type) {
+					errors.push(this.buildGraphQLError(key, 'type'))
+					continue;
+				}
+				
+				readyArgs[key] = Boolean(inputValue);
+			} else if (data.type === 'number') {
+				if (typeof inputValue !== data.type) {
+					errors.push(this.buildGraphQLError(key, 'type'))
+					continue;
+				}
+				
+				readyArgs[key] = Number(inputValue);
+			} else if (data.type === 'ObjectId') {
+				if (!mongoose.isValidObjectId(inputValue)) {
+					errors.push(this.buildGraphQLError(key, 'type'))
+					continue;
+				}
+				
+				readyArgs[key] = inputValue;
+			}
+		}
+		
+		if (errors.length > 0) throw AggregateError(errors);
+		
+		return readyArgs
+	}
+	
+	prepareInput (input: unknown, struct: TValidateData, result: TResult = new Result()): {readyInput?: any, result: TResult} {
+		let readyInput = {};
+		
+		if (typeof input !== 'object') {return {readyInput, result: result.addError('BAD_USER_INPUT', 'input', 'Input wrong type')}}
+		else if (Object.keys(input).length === 0) return {readyInput, result: result.addError('INPUT_EMPTY', 'input', 'Input empty')};
+
+		for (const [key, data] of Object.entries(struct)) {
+			const normalize: boolean = data?.normalize || false;
+			const optional: boolean = data?.optional || false;
+			
+			let inputValue = input[key];
+			const path = `input.${key}`
+			
+			if (!optional && (!inputValue || (inputValue && !check.nonNull(inputValue)))) {
+				result.addError(...this.buildError(path, 'empty'));
+				continue;
+			} else if (optional && !inputValue) continue;
+			
+			if (data.type === 'string') {
+				if (typeof inputValue !== data.type) {
+					result.addError(...this.buildError(path, 'type'));
+					continue;
+				} else if (inputValue.length === 0) {
+					result.addError(...this.buildError(path, 'empty'));
+					continue;
+				} else if (data.length && inputValue.length !== data.length) {
+					result.addError(...this.buildError(path, 'length', data.length));
+					continue;
+				}
+				
+				readyInput[key] = (normalize) ? String(inputValue).normalize('NFKD') : String(inputValue);
+			} else if (data.type === 'boolean') {
+				if (typeof inputValue !== data.type) {
+					result.addError(...this.buildError(path, 'type'));
+					continue;
+				}
+				
+				readyInput[key] = Boolean(inputValue);
+			} else if (data.type === 'number') {
+				if (typeof inputValue !== data.type) {
+					result.addError(...this.buildError(path, 'type'));
+					continue;
+				}
+				
+				readyInput[key] = Number(inputValue);
+			} else if (data.type === 'ObjectId') {
+				if (!mongoose.isValidObjectId(inputValue)) {
+					result.addError(...this.buildError(path, 'type'));
+					continue;
+				}
+				
+				readyInput[key] = inputValue;
+			}
+		}
+	
+		return {readyInput, result}
+	}
+}
+
 export const check = {
+	validator: new Validator(),
+	
 	/**
 	 * Validate if defined and non-null
-	 *
-	 * @deprecated
 	 *
 	 * @param	input					Input field.
 	 * @param	type					Expected type of input.
@@ -79,85 +227,6 @@ export const check = {
 		}
 	},
 	// @todo Documentation, better types, implement pattern for email and web addresses
-	prepareInput: (input: unknown, struct: TValidateData, result: TResult = new Result()): {readyInput?: any, result: TResult} => {
-		const e = (path: string, key: string, condition?: any) => {
-			const code = {
-				malformed: 'BAD_USER_INPUT',
-				invalid: 'INPUT_INVALID',
-				type: 'INPUT_WRONG_TYPE',
-				empty: 'INPUT_EMPTY',
-			}
-
-			const message = {
-				malformed: '',
-				invalid: '',
-				length: `Input field ${path} must have exactly ${condition} length`,
-				type: `Input field ${path} is of wrong type`,
-				empty: `Input field ${path} is empty`,
-			}
-
-			return [code[key] as string, path as string, message[key] as string] as const;
-		}
-
-		let readyInput = {};
-
-		// Validate the input object
-		if (typeof input !== 'object') return {readyInput, result: result.addError('BAD_USER_INPUT', 'input', 'Input wrong type')};
-		else if (Object.keys(input).length === 0) return {readyInput, result: result.addError('INPUT_EMPTY', 'input', 'Input empty')};
-
-		for (const [key, data] of Object.entries(struct)) {
-			const normalize: boolean = data?.normalize || false;
-			const optional: boolean = data?.optional || false;
-
-			let inputValue = input[key];
-			const path = `input.${key}`
-
-			// Check if not null or undefined
-			if (!optional && (!inputValue || (inputValue && !check.nonNull(inputValue)))) {
-				result.addError(...e(path, 'empty'));
-				continue;
-			} else if (optional && !inputValue) continue;
-
-			// Handle generic string
-			if (data.type === 'string') {
-				if (typeof inputValue !== data.type) {
-					result.addError(...e(path, 'type'));
-					continue;
-				} else if (inputValue.length === 0) {
-					result.addError(...e(path, 'empty'));
-					continue;
-				} else if (data.length && inputValue.length !== data.length) {
-					result.addError(...e(path, 'length', data.length));
-					continue;
-				}
-
-				readyInput[key] = (normalize) ? String(inputValue).normalize('NFKD') : String(inputValue);
-			} else if (data.type === 'boolean') {
-				if (typeof inputValue !== data.type) {
-					result.addError(...e(path, 'type'));
-					continue;
-				}
-
-				readyInput[key] = Boolean(inputValue);
-			} else if (data.type === 'number') {
-				if (typeof inputValue !== data.type) {
-					result.addError(...e(path, 'type'));
-					continue;
-				}
-
-				readyInput[key] = Number(inputValue);
-			} else if (data.type === 'ObjectId') {
-				if (!mongoose.isValidObjectId(inputValue)) {
-					result.addError(...e(path, 'type'));
-					continue;
-				}
-
-				readyInput[key] = inputValue;
-			}
-		}
-
-		return {readyInput, result}
-	},
 	nonNull: (v: string|number|boolean|Object|Array<string|number|boolean|Object>): boolean => (v !== undefined && v !== null),
 	needs: (system: string):void|GraphQLError => {
 		if (system === 'mongo' && $DB.mongo !== 'connected') {
