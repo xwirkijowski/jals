@@ -185,14 +185,14 @@ export default class Session {
 	 * @async
 	 *
 	 * @param   sessionId   Session identifier
-	 * @param   report      If true, will create (not throw) CriticalError for failed entity removal
+	 * @param   report      If true, will create and throw CriticalError for failed entity removal
 	 * @param   rId         Unique request ID
 	 * @return  Promise<boolean>    Does entity exist?
 	 */
 	private static async checkExists (sessionId: TSession['sessionId'], report: boolean = true, rId: TId): Promise<boolean> {
 		const node: ISessionEntity = await model.fetch(sessionId as string);
 		
-		if (report && Session.isValid(node)) new CriticalError('Session removal failed!', 'SESSION_REMOVE_FAULT', Session.domain, true, {requestId: rId});
+		if (report && Session.isValid(node)) throw new CriticalError('Session removal failed!', 'SESSION_REMOVE_FAULT', Session.domain, true, {requestId: rId});
 		
 		return Session.isValid(node)
 	}
