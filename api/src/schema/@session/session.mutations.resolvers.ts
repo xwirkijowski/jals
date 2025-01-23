@@ -23,7 +23,7 @@ const handleAction = (readyInput: any) => {
 }
 
 const validateAuthInput = (input: IAuthInput): { readyInput: IAuthInput, result: TResult } => {
-	const {readyInput, result} = check.prepareInput(input, {
+	const {readyInput, result} = check.validator.prepareInput(input, {
 		email: {
 			type: 'string',
 		},
@@ -56,7 +56,7 @@ export default {
 			if (check.isSessionValid(session)) return new Result().addError('ALREADY_LOGGED_IN').response();
 
 			// Validate required input fields
-			const {readyInput, result} = check.prepareInput(input, {
+			const {readyInput, result} = check.validator.prepareInput(input, {
 				email: {
 					type: 'string',
 					normalize: true,

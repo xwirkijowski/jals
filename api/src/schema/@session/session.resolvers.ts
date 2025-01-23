@@ -1,5 +1,5 @@
-import { EntityId } from 'redis-om'
-import { check } from "@util/helpers";
+import {EntityId} from 'redis-om'
+import {check} from "@util/helpers";
 
 // Types
 import {IContext, UContextSession} from "@type/context.types";
@@ -12,23 +12,25 @@ export default {
 		user: async ({userId}: TSessionInstance, _: any, {models: {user}}: IContext): Promise<THydratedUser> => (userId) ? await user.findOne({_id: userId}) : null,
 	},
 	Query: {
-		session: async (_: any, {sessionId}, {services: {auth}, internal: {requestId}}: IContext): Promise<TSessionInstance> => {
+		session: async (_: any, args: {sessionId: string}, {services: {auth}, internal: {requestId}}: IContext): Promise<TSessionInstance> => {
 			check.needs('redis');
-			check.validate(sessionId, 'string');
+			const readyArgs = check.validator.prepareArgs(args, {
+				sessionId: {
+					type: 'ObjectId',
+				}
+			})
 
-			const sessionNode = await auth.retrieveSession(sessionId, requestId);
-
-			return (sessionNode?.userId) ? sessionNode : null;
+			return await auth.retrieveSession(readyArgs.sessionId, requestId);
 		},
-		sessionsByUser: async (_: any, {userId}, {services: {auth}, internal: {requestId}}: IContext): Promise<TSessionInstance[]> => {
+		sessionsByUser: async (_: any, args: {userId: string}, {services: {auth}, internal: {requestId}}: IContext): Promise<TSessionInstance[]> => {
 			check.needs('redis');
-			check.validate(userId, 'string');
+			const readyArgs = check.validator.prepareArgs(args, {
+				userId: {
+					type: 'ObjectId',
+				}
+			})
 
-			const sessionNodes = await auth.retrieveSessionByUserId(userId, requestId);
-
-			console.log(sessionNodes);
-
-			return sessionNodes;
+			return await auth.retrieveSessionByUserId(readyArgs.userId, requestId);
 		},
 		currentUser: async (_: any, __: any, {models: {user}, session}: IContext): Promise<THydratedUser> => {
 			check.needs('redis');
