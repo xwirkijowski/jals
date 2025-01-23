@@ -41,7 +41,7 @@ export class MailService extends EventEmitter {
 
         this.fromString = `${this.config.senderName} <${this.config.senderAddr}>`
 
-        log.withDomain('success', 'MailService', 'AuthService started!')
+        log.withDomain('success', 'MailService', 'MailService started!')
         return this;
     }
 
