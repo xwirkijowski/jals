@@ -25,6 +25,8 @@ class Commander extends EventEmitter {
 
 		this.status = 'not-ready';
 		this.DB = $DB;
+		
+		return this;
 	}
 
 	#isReady = (): void => {
