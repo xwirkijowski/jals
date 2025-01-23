@@ -218,6 +218,29 @@ export default class Session {
 	}
 	
 	/**
+	 * Removes multiple Session entities from repository
+	 *
+	 * @since 2.1.1
+	 * @static
+	 * @async
+	 *
+	 * @throws  CriticalError   Missing parameters, cannot remove without identifier
+	 * @param   sessionIds  Session identifiers
+	 * @param   rId         Unique request ID
+	 * @return  Promise<boolean>    Was Session removed successfully?
+	 */
+	static async removeMany (sessionIds: TSession['sessionId'][], rId: TId): Promise<boolean> {
+		if (!sessionIds || sessionIds.length === 0) throw new CriticalError('Cannot remove Session without identifiers', 'SESSION_REMOVEMANY_NO_ID', Session.domain, true, {requestId: rId});
+		
+		await model.remove(sessionIds);
+		
+		const checks: Promise<boolean>[] = sessionIds.map((sessionId: string) => Session.checkExists(sessionId, true, rId));
+		const results: boolean[] = await Promise.all(checks);
+		
+		return results.every((exists: boolean) => !exists);
+	}
+	
+	/**
 	 * Removes a Session entity from repository
 	 *
 	 * @since 2.1.1

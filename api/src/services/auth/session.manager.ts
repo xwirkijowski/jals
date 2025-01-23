@@ -173,6 +173,28 @@ class SessionManager extends Manager {
 			return false;
 		}
 	}
+	
+	/**
+	 * Remove all sessions from the database
+	 *
+	 * @since   2.1.1
+	 * @async
+	 *
+	 * @param   userId  The ID of the user to filter for
+	 * @param   rId     Unique request ID
+	 * @return  Promise<number|boolean>    Deleted sessions count or false if failed
+	 */
+	async removeByUserId (userId: TId, rId: TId): Promise<number|boolean> {
+		try {
+			const sessions: TSessionInstance[] = await this.retrieveByUserId(userId, rId);
+			const sessionIds: string[] = sessions.map(({sessionId}: TSessionInstance): string => sessionId);
+			
+			return (await Session.removeMany(sessionIds, rId)) ? sessionIds.length : false;
+		} catch (e) {
+			this.processError(e);
+			return false;
+		}
+	}
 }
 
 export type TSessionManager = InstanceType<typeof SessionManager>;

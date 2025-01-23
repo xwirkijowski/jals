@@ -9,6 +9,7 @@ import AuthCodeType, {TAuthCodeInstance} from "@service/auth/authCode";
 import SessionType, {TSessionInstance} from "@service/auth/session";
 import {THydratedUser} from "@model/user.types";
 import {ERequestAuthCodeAction, IAuthInput, IRequestAuthCodeInput} from "./session.types";
+import {TId} from "@type/id.types";
 
 const handleAction = (readyInput: any) => {
 	// Set default action to `LOGIN` if none specified or invalid
@@ -199,7 +200,7 @@ export default {
 			check.needs('mongo');
 
 			if (!check.isSessionValid(session)) return new Result().addError('NOT_LOGGED_IN').response()
-
+			
 			const result = new Result();
 
 			const invalidateSession = await auth.invalidateSession(session, requestId);
@@ -208,7 +209,28 @@ export default {
 			session = undefined;
 
 			return result.response()
+		},
+		logOutAll: async (_: any, __:any, {services: {auth}, session, internal: {requestId}}: IContext) => {
+			check.needs('redis');
+			check.needs('mongo');
+			
+			if (!check.isSessionValid(session)) return new Result().addError('NOT_LOGGED_IN').response()
+			
+			const result = new Result();
+			
+			const invalidateSessions = await auth.invalidateAllSessions(session.userId, requestId);
+			if (!invalidateSessions) return result.addError('LOGOUT_ALL_FAILED', undefined, 'Unknown problem occurred, cannot remove all sessions.').response();
+			
+			session = undefined;
+			
+			return result.response(true, {deletedCount: invalidateSessions});
+		},
+		deleteSession: async (_: any, input: {sessionId: string}, {services: {auth}, session, req, res, internal: {requestId}}: IContext ) => {
+			// @todo Implement
+		},
+		deleteAllSessions: async (_: any, input: {userId: TId}, {services: {auth}, session, req, res, internal: {requestId}}: IContext) => {
+			// @todo Implement
+		
 		}
-		// @todo Implement additional session management mutations
 	}
 }

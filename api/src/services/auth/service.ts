@@ -114,6 +114,20 @@ export class AuthService extends EventEmitter {
 	}
 	
 	/**
+	 * Invalidates (removes) all Session entities for a specified userId from the database.
+	 *
+	 * @since   2.1.1
+	 * @async
+	 *
+	 * @param   userId  The ID of the user to filter for
+	 * @param   rId     Unique request ID
+	 * @return  Promise<number|boolean>    Deleted sessions count or false if failed
+	 */
+	async invalidateAllSessions (userId: TId, rId: TId): Promise<number|boolean> {
+		return await this.sessionManager.removeByUserId(userId, rId);
+	}
+	
+	/**
 	 * AuthCode segment
 	 */
 	
