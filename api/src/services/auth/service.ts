@@ -14,16 +14,9 @@ import {ERequestAuthCodeAction} from "@schema/@session/session.types";
 import {TSessionInstance} from "./session";
 import {TAuthCodeInstance} from "./authCode";
 
+// @todo Evaluate possibility of replacing with object ot managers.
+
 export class AuthService extends EventEmitter {
-	private default_config: TSettingsAuth = {
-		code: {
-			length: 8,
-			expiresIn: 60 * 5,
-		},
-		session: {
-			expiresIn: 60 * 30,
-		},
-	}
 	private authCodeManager: TAuthCodeManager;
 	private sessionManager: TSessionManager;
 	
@@ -31,12 +24,10 @@ export class AuthService extends EventEmitter {
 	
 	config: TSettingsAuth;
 
-	constructor (config?: TSettingsAuth) {
+	constructor () {
 		super();
 		
 		log.withDomain('log', AuthService.domain, 'Initializing AuthService')
-
-		this.config = {...this.default_config, ...config} // @todo Deep join
 		
 		this.authCodeManager = $AuthCodeManager;
 		this.sessionManager = $SessionManager;
@@ -176,4 +167,4 @@ export class AuthService extends EventEmitter {
 
 export type TAuthService = InstanceType<typeof AuthService>;
 
-export const $AuthService = new AuthService(config.settings.auth);
+export const $AuthService = new AuthService();

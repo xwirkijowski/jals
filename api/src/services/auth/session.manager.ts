@@ -19,6 +19,10 @@ import {TSettingsAuth} from "@service/auth/types";
  * @since 2.1.1
  */
 class SessionManager extends Manager {
+	private default_config: TSettingsAuth["session"] = {
+		expiresIn: 60 * 30,
+	}
+	
 	config: TSettingsAuth["session"];
 	
 	static domain: string = "AuthService->Session";
@@ -35,7 +39,7 @@ class SessionManager extends Manager {
 	constructor (config: TSettingsAuth["session"]) {
 		super();
 		
-		this.config = config;
+		this.config = {...this.default_config, ...config} // @todo Deep join
 		this.errors = new ErrorAggregator(SessionManager.domain);
 		
 		log.withDomain('log', SessionManager.domain, 'Session manager initialized')

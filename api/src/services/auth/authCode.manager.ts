@@ -19,6 +19,11 @@ import {TSettingsAuth} from "@service/auth/types";
  * @since 2.1.1
  */
 export class AuthCodeManager extends Manager {
+	private default_config: TSettingsAuth["code"] = {
+		length: 8,
+		expiresIn: 60 * 5,
+	}
+	
 	config: TSettingsAuth["code"];
 	
 	static domain: string = "AuthService->Code";
@@ -35,7 +40,8 @@ export class AuthCodeManager extends Manager {
 	constructor (config: TSettingsAuth["code"]) {
 		super();
 		
-		this.config = config;
+		this.config = {...this.default_config, ...config} // @todo Deep join
+		
 		this.errors = new ErrorAggregator(AuthCodeManager.domain);
 		
 		log.withDomain('log', AuthCodeManager.domain, 'AuthCode manager initialized')
@@ -52,11 +58,12 @@ export class AuthCodeManager extends Manager {
 	 * @since 2.1.1
 	 *
 	 * @throws  FatalError  Authentication code length configuration fault
-	 * @param   rId         Unique request ID
+	 * @param   length  Length of the code, defaults to config
+	 * @param   rId     Unique request ID
 	 * @return  string      Authentication code string
 	 */
-	generateCode (rId: TId): TCode {
-		return new CodeGenerator(this.config.length, rId);
+	generateCode (length: number = this?.config?.length, rId: TId): TCode {
+		return new CodeGenerator(length, rId);
 	}
 
 	/**
@@ -83,7 +90,7 @@ export class AuthCodeManager extends Manager {
 		}
 
 		try {
-			const node: TAuthCodeInstance = await new AuthCode({userId: userId.toString(), userEmail, action}, rId, this.generateCode).save(this.config.expiresIn, rId);
+			const node: TAuthCodeInstance = await new AuthCode({userId: userId.toString(), userEmail, action}, rId, this.generateCode(this.config.length, rId)).save(this.config.expiresIn, rId);
 			this.emit('created', {authCodeId: node.authCodeId, rId});
 			
 			return node;
