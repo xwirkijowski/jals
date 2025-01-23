@@ -1,14 +1,9 @@
 import {Entity} from "redis-om";
 
-import {TId} from "@type/id.types";
 import {ERequestAuthCodeAction} from "@schema/@session/session.types";
 import {TSettings} from "@type/config.types";
 
 export type TSettingsAuth = TSettings['auth'];
-
-export interface IAuthCodeGenerator {
-    (rId: TId): string;
-}
 
 export interface IAuthCode {
     authCodeId?: string

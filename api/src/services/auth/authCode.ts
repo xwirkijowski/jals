@@ -1,13 +1,13 @@
 import { EntityId } from "redis-om";
 
 import {CriticalError, InternalError} from '@util/error';
-import {globalLogger as log} from '@util/logging/log';
-import { repository as model } from "./authCode.model";
+import {repository as model} from "./authCode.model";
 
 // Types
-import {IAuthCodeGenerator, IAuthCode, IAuthCodeEntity, TAuthCode} from './types';
+import {IAuthCode, IAuthCodeEntity, TAuthCode} from './types';
 import {ERequestAuthCodeAction} from "@schema/@session/session.types";
 import {TId} from "@type/id.types";
+import {AuthCodeManager} from "@service/auth/authCode.manager";
 
 export default class AuthCode {
 	authCodeId?: IAuthCode["authCodeId"]
@@ -31,7 +31,7 @@ export default class AuthCode {
 	 * @param   generator   Authentication code generator function passed from manager
 	 * @return  TAuthCodeInstance
 	 */
-	constructor (props: TAuthCode, rId?: TId, generator?: IAuthCodeGenerator) {
+	constructor (props: TAuthCode, rId?: TId, generator?: AuthCodeManager['generateCode']) {
 		if (props?.[EntityId] && props?.code) {
 			// Create new instance from existing entity
 
@@ -53,7 +53,7 @@ export default class AuthCode {
 			this.action = props.action;
 			this.userId = props?.userId?.toString();
 			this.userEmail = props.userEmail.toString();
-			this.code = generator(rId);
+			this.code = generator(rId).getCode();
 		}
 
 		return this;
@@ -117,8 +117,6 @@ export default class AuthCode {
 			this.authCodeId = node[EntityId];
 
 			await model.expire(this.authCodeId, expiresIn);
-
-			log.withDomain('audit', AuthCode.domain, "Authentication code created", {requestId: rId});
 
 			return this;
 		} else {

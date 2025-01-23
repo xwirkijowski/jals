@@ -1,12 +1,15 @@
-import crypto from "node:crypto";
+import {config} from "@config";
+import {globalLogger as log} from "@util/logging/log";
 
-import {CriticalError, FatalError} from "@util/error";
-import AuthCode, {TAuthCodeInstance} from "./authCode"
+import {ErrorAggregator, CriticalError} from "@util/error";
+import AuthCode, {TAuthCodeInstance} from "@service/auth/authCode"
+import {CodeGenerator, TCode} from "@service/auth/codeGenerator";
+import {Manager} from "@service/auth/manager";
 
 // Types
-import {TSettingsAuth} from "@service/auth/types";
-import {TId} from "@type/id.types";
 import {ERequestAuthCodeAction} from "@schema/@session/session.types";
+import {TId} from "@type/id.types";
+import {TSettingsAuth} from "@service/auth/types";
 
 /**
  * Authentication code manager
@@ -15,11 +18,12 @@ import {ERequestAuthCodeAction} from "@schema/@session/session.types";
  *
  * @since 2.1.1
  */
-export class AuthCodeManager {
+export class AuthCodeManager extends Manager {
 	config: TSettingsAuth["code"];
 	
-	static domain: string = "AuthService->Code"
-
+	static domain: string = "AuthService->Code";
+	domain: string = AuthCodeManager.domain;
+	
 	/**
 	 * Construct a new manager instance
 	 *
@@ -29,7 +33,13 @@ export class AuthCodeManager {
 	 * @return  AuthCodeManager
 	 */
 	constructor (config: TSettingsAuth["code"]) {
+		super();
+		
 		this.config = config;
+		this.errors = new ErrorAggregator(AuthCodeManager.domain);
+		
+		log.withDomain('log', AuthCodeManager.domain, 'AuthCode manager initialized')
+		
 		return this;
 	}
 
@@ -45,19 +55,8 @@ export class AuthCodeManager {
 	 * @param   rId         Unique request ID
 	 * @return  string      Authentication code string
 	 */
-	generateCode (rId: TId): string {
-		const length: number = this.config.length;
-
-		if (length <= 0) throw new FatalError("Configuration error in `config.settings.auth.code.length`.", 'CODE_CONFIG_FAULT', AuthCode.domain, true, {requestId: rId});
-
-		let code: string = '';
-		while (code.length < length) {
-			const byte: number = crypto.randomBytes(1)[0];
-
-			if (byte < 250) code += (byte % 10).toString();
-		}
-
-		return code;
+	generateCode (rId: TId): TCode {
+		return new CodeGenerator(this.config.length, rId);
 	}
 
 	/**
@@ -76,16 +75,20 @@ export class AuthCodeManager {
 	 */
 	async createNew (userId: TId|undefined, userEmail: string, action: ERequestAuthCodeAction = ERequestAuthCodeAction.LOGIN, rId: TId): Promise<TAuthCodeInstance|undefined> {
 		if (ERequestAuthCodeAction.LOGIN && (!userId || !userEmail)) {
-			new CriticalError('Cannot request login code, missing props!', 'CODE_REQUEST_MISSING_ARGS', AuthCode.domain, true, {requestId: rId});
+			this.processError(new CriticalError('Cannot request login code, missing props!', 'CODE_REQUEST_MISSING_ARGS', AuthCode.domain, true, {requestId: rId}));
 			return undefined;
 		} else if (!userEmail) {
-			new CriticalError('Cannot request register code, missing props!', 'CODE_REQUEST_MISSING_ARGS', AuthCode.domain, true, {requestId: rId});
+			this.processError(new CriticalError('Cannot request register code, missing props!', 'CODE_REQUEST_MISSING_ARGS', AuthCode.domain, true, {requestId: rId}));
 			return undefined;
 		}
 
 		try {
-			return await new AuthCode({userId: userId.toString(), userEmail, action}, rId, this.generateCode).save(this.config.expiresIn, rId);
+			const node: TAuthCodeInstance = await new AuthCode({userId: userId.toString(), userEmail, action}, rId, this.generateCode).save(this.config.expiresIn, rId);
+			this.emit('created', {authCodeId: node.authCodeId, rId});
+			
+			return node;
 		} catch (e) {
+			this.processError(e);
 			return undefined;
 		}
 	}
@@ -104,13 +107,14 @@ export class AuthCodeManager {
 	 */
 	async retrieve (userId: TId|undefined, code: string, action: ERequestAuthCodeAction = ERequestAuthCodeAction.LOGIN, rId: TId): Promise<TAuthCodeInstance|undefined> {
 		if ((action === ERequestAuthCodeAction['LOGIN'] && !userId) || !code || !rId) {
-			new CriticalError('Missing arguments, cannot search for AuthCode!', 'CODE_RETRIEVE_MISSING_ARGS', AuthCode.domain, true, {requestId: rId});
+			this.processError(new CriticalError('Missing arguments, cannot search for AuthCode!', 'CODE_RETRIEVE_MISSING_ARGS', AuthCode.domain, true, {requestId: rId}));
 			return undefined;
 		}
 		
 		try {
 			return await AuthCode.find(userId.toString(), code, action, rId);
 		} catch (e) {
+			this.processError(e);
 			return undefined;
 		}
 	}
@@ -129,6 +133,7 @@ export class AuthCodeManager {
 		try {
 			return await node.remove(rId);
 		} catch (e) {
+			this.processError(e);
 			return false;
 		}
 	}
@@ -147,9 +152,14 @@ export class AuthCodeManager {
 		try {
 			return await AuthCode.remove(authCodeId.toString(), rId);
 		} catch (e) {
+			this.processError(e);
 			return false;
 		}
 	}
 }
 
 export type TAuthCodeManager = InstanceType<typeof AuthCodeManager>;
+
+export const $AuthCodeManager = new AuthCodeManager(config.settings.auth.code);
+
+$AuthCodeManager.on('created', ({authCodeId, rId: requestId}) => log.withDomain('audit', AuthCodeManager.domain, 'Authentication code created', {authCodeId, requestId}));

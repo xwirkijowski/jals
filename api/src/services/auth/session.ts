@@ -4,7 +4,6 @@ import {CriticalError, InternalError} from '@util/error';
 import {getIP, getUA} from "@util/helpers";
 
 import { repository as model } from "./session.model";
-import {globalLogger as log} from '@util/logging/log';
 
 import {ISession, ISessionEntity, TSession} from "./types";
 import {IContext} from "@type/context.types";
@@ -133,8 +132,6 @@ export default class Session {
 			this.sessionId = node[EntityId];
 
 			await model.expire(this.sessionId, expiresIn);
-
-			log.withDomain('audit', Session.domain, "Session created", {requestId: rId});
 
 			return this;
 		} else {

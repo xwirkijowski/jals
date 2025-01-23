@@ -1,10 +1,15 @@
-import CriticalError from "@util/errors/critical.error";
+
+import {config} from "@config";
+import {globalLogger as log} from "@util/logging/log";
+
+import {ErrorAggregator, CriticalError} from "@util/error";
 import Session, {TSessionInstance} from "@service/auth/session";
+import {Manager} from "@service/auth/manager";
 
 // Types
-import {TSettingsAuth} from "@service/auth/types";
 import {IContext, UContextSession} from "@type/context.types";
 import {TId} from "@type/id.types";
+import {TSettingsAuth} from "@service/auth/types";
 
 /**
  * Authentication code manager
@@ -13,10 +18,11 @@ import {TId} from "@type/id.types";
  *
  * @since 2.1.1
  */
-export class SessionManager {
+class SessionManager extends Manager {
 	config: TSettingsAuth["session"];
 	
 	static domain: string = "AuthService->Session";
+	domain: string = SessionManager.domain;
 	
 	/**
 	 * Construct a new manager instance
@@ -27,7 +33,13 @@ export class SessionManager {
 	 * @return  TSessionManager
 	 */
 	constructor (config: TSettingsAuth["session"]) {
+		super();
+		
 		this.config = config;
+		this.errors = new ErrorAggregator(SessionManager.domain);
+		
+		log.withDomain('log', SessionManager.domain, 'Session manager initialized')
+		
 		return this;
 	}
 	
@@ -76,13 +88,17 @@ export class SessionManager {
 	 */
 	async createNew (userId: TId, isAdmin: boolean = false, request: IContext['req'], rId: TId): Promise<TSessionInstance|undefined> {
 		if (!userId) {
-			new CriticalError('Cannot create session, missing props!', 'SESSION_CREATE_MISSING_ARGS', Session.domain, true, {requestId: rId});
+			this.processError(new CriticalError('Cannot create session, missing props!', 'SESSION_CREATE_MISSING_ARGS', Session.domain, true, {requestId: rId}));
 			return undefined;
 		}
 		
 		try {
-			return await new Session({userId: userId.toString(), isAdmin}, request, rId).save(this.config.expiresIn, rId);
+			const node: TSessionInstance = await new Session({userId: userId.toString(), isAdmin}, request, rId).save(this.config.expiresIn, rId);
+			this.emit('created', {sessionId: node.sessionId, rId});
+			
+			return node;
 		} catch (e) {
+			this.processError(e);
 			return undefined;
 		}
 	}
@@ -99,13 +115,14 @@ export class SessionManager {
 	 */
 	async retrieve (sessionId: TId, rId: TId): Promise<TSessionInstance|undefined> {
 		if (!sessionId) {
-			new CriticalError('Missing arguments, cannot search for Session!', 'SESSION_RETREIVE_MISSING_ARGS', Session.domain, true, {requestId: rId});
+			this.processError(new CriticalError('Missing arguments, cannot search for Session!', 'SESSION_RETREIVE_MISSING_ARGS', Session.domain, true, {requestId: rId}));
 			return undefined;
 		}
 		
 		try {
 			return await Session.find(sessionId.toString(), rId);
 		} catch (e) {
+			this.processError(e);
 			return undefined;
 		}
 	}
@@ -122,13 +139,14 @@ export class SessionManager {
 	 */
 	async retrieveByUserId (userId: TId, rId: TId): Promise<TSessionInstance[]|undefined> {
 		if (!userId) {
-			new CriticalError('Missing arguments, cannot search for Session!', 'SESSION_RETREIVEMANY_MISSING_ARGS', Session.domain, true, {requestId: rId});
+			this.processError(new CriticalError('Missing arguments, cannot search for Session!', 'SESSION_RETREIVEMANY_MISSING_ARGS', Session.domain, true, {requestId: rId}));
 			return undefined;
 		}
 		
 		try {
 			return await Session.findByUserId(userId.toString(), rId);
 		} catch (e) {
+			this.processError(e);
 			return undefined;
 		}
 	}
@@ -147,9 +165,14 @@ export class SessionManager {
 		try {
 			return await node.remove(rId);
 		} catch (e) {
+			this.processError(e);
 			return false;
 		}
 	}
 }
 
 export type TSessionManager = InstanceType<typeof SessionManager>;
+
+export const $SessionManager = new SessionManager(config.settings.auth.session);
+
+$SessionManager.on('created', ({sessionId, rId: requestId}) => log.withDomain('audit', SessionManager.domain, 'Session created', {sessionId, requestId}))

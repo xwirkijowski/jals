@@ -3,8 +3,8 @@ import EventEmitter from "events";
 import {config} from "@config";
 import {globalLogger as log} from '@util/logging/log';
 
-import {AuthCodeManager, TAuthCodeManager} from "@service/auth/authCode.manager";
-import {SessionManager, TSessionManager} from "@service/auth/session.manager";
+import {$AuthCodeManager, TAuthCodeManager} from "@service/auth/authCode.manager";
+import {$SessionManager, TSessionManager} from "@service/auth/session.manager";
 
 // Types
 import {IContext, UContextSession} from "@type/context.types";
@@ -26,23 +26,23 @@ export class AuthService extends EventEmitter {
 	}
 	private authCodeManager: TAuthCodeManager;
 	private sessionManager: TSessionManager;
-
+	
+	static domain: string = "AuthService";
+	
 	config: TSettingsAuth;
 
 	constructor (config?: TSettingsAuth) {
 		super();
-
-		log.withDomain('log', 'AuthService', 'Loading AuthService configuration...');
+		
+		log.withDomain('log', AuthService.domain, 'Initializing AuthService')
 
 		this.config = {...this.default_config, ...config} // @todo Deep join
 		
-		this.authCodeManager = new AuthCodeManager(this.config.code);
-		log.withDomain('log', 'AuthService', 'Loaded AuthCodeManager');
+		this.authCodeManager = $AuthCodeManager;
+		this.sessionManager = $SessionManager;
 		
-		this.sessionManager = new SessionManager(this.config.session);
-		log.withDomain('log', 'AuthService', 'Loaded SessionManager');
-
-		log.withDomain('success', 'AuthService', 'AuthService started!')
+		log.withDomain('success', AuthService.domain, 'AuthService started!')
+		
 		return this;
 	}
 	
