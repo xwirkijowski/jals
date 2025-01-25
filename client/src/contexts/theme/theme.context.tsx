@@ -1,57 +1,59 @@
 "use client";
 
-import React, {createContext, useEffect, useState} from "react";
+import React, {createContext, useCallback, useEffect, useMemo, useState} from "react";
+import {EThemes, TThemeContext} from "@ctx/theme/theme.types";
 
-export namespace SThemeContext {
-	export enum EThemes {
-		light = "light",
-		dark = "dark",
-	}
+const themes: EThemes[] = [EThemes.dark, EThemes.light],
+	  defaultTheme: EThemes = EThemes.dark,
+	  storageKey = "theme",
+	  defaultContext = { setTheme: () => {}, theme: defaultTheme };
 
-	export type TThemeContext = {
-		theme: EThemes;
-		handleTheme: Function;
-	}
+const getTheme = (): EThemes => {
+	let storageTheme: string|null = null;
+	try {
+		storageTheme = localStorage.getItem(storageKey);
+	} catch (e) {} // Unsupported
+	
+	return validateTheme(storageTheme);
+};
+
+const validateTheme = (theme?: string|EThemes|null): EThemes => {
+	if (theme && themes.includes(theme as EThemes)) return EThemes[theme];
+	return defaultTheme;
 }
 
-const defaultTheme = SThemeContext.EThemes["dark"];
-
-export const ThemeContext = createContext<SThemeContext.TThemeContext>({
-	theme: defaultTheme,
-	handleTheme: () => {}
-})
-
-// @todo Fix default value, loading after refresh
+export const ThemeContext = createContext<TThemeContext>(defaultContext)
 
 export const ThemeProvider = (
 	{children}: {children: React.ReactNode}
 ) => {
-	const [theme, setTheme] = useState<SThemeContext.EThemes>(defaultTheme);
-
-	let localTheme: SThemeContext.EThemes = defaultTheme;
-
+	const [theme, setThemeState] = useState<EThemes>(defaultTheme);
+	
+	// Load theme from storage on client
 	useEffect(() => {
-		if (typeof window !== "undefined") {
-			const lsValue: string | null = localStorage.getItem("theme");
-
-			if (lsValue && ['light', 'dark'].includes(lsValue)) {
-				localTheme = SThemeContext.EThemes[lsValue];
-				setTheme(localTheme);
-			}
+		setTheme(getTheme());
+	}, [])
+	
+	const setTheme = useCallback((newTheme: string) => {
+		if (newTheme && themes.includes(newTheme as EThemes)) {
+			setThemeState(EThemes[newTheme])
 		}
 	}, []);
-
-	const handleTheme = () => {
-		const nextTheme = (theme === SThemeContext.EThemes.dark) ? SThemeContext.EThemes.light : SThemeContext.EThemes.dark
-
-		localStorage.setItem("theme", nextTheme);
-		setTheme(nextTheme);
+	
+	// Save theme in localstorage on theme change.
+	useEffect(() => {
+		try {
+			localStorage.setItem(storageKey, theme);
+		} catch (e) {} // Unsupported
+	}, [theme])
+ 
+	const providerValue = {
+		theme,
+		setTheme
 	}
-
-	const value = {theme, handleTheme}
-
+	
 	return (
-		<ThemeContext.Provider value={value}>
+		<ThemeContext.Provider value={providerValue}>
 			{children}
 		</ThemeContext.Provider>
 	)
