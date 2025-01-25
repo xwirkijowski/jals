@@ -1,7 +1,8 @@
 export const inputStyles: string[] = [
 	'!py-2 !pr-7 !-mr-3',
-	'rounded-r-none !border-transparent border-r-0',
+	'rounded-r-none !border-transparent border border-r-0',
 	'group-focus-within:!border-orange-500',
+	'dark:!border-gray-700'
 ]
 
 export const buttonStyles: string[] = [
