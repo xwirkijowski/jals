@@ -12,10 +12,10 @@ export default async function middleware(req: NextRequest) {
 	 */
 
 	// Set up types and defaults
-	let cookie: TSessionCookie = null;
-	let currentSession: any = null;
-	let isAuthenticated: boolean = false;
-	let isAdmin: boolean = false
+	let cookie: TSessionCookie = null,
+		currentSession: any = null,
+		isAuthenticated: boolean = false,
+		isAdmin: boolean = false;
 
 	// Get session cookie
 	cookie = await getCookie();
@@ -40,9 +40,9 @@ export default async function middleware(req: NextRequest) {
 	 * Authorization and route protection
 	 */
 
-	const path = req.nextUrl.pathname
-	const isProtectedRoute = protectedRoutes.includes(path)
-	const isAuthRoute = authRoutes.includes(path)
+	const path = req.nextUrl.pathname,
+		  isProtectedRoute = protectedRoutes.includes(path),
+		  isAuthRoute = authRoutes.includes(path);
 
 	if (isProtectedRoute && !isAuthenticated) {
 		return NextResponse.redirect(new URL('/login', req.nextUrl))
