@@ -9,6 +9,7 @@ import {ThemeContext} from "@ctx/theme/theme.context";
 import {Button} from "@comp/Button/Button";
 import {SunIcon} from "@comp/Icon/Sun";
 import {MoonIcon} from "@comp/Icon/Moon";
+import {Wxme} from "@comp/Wxme/Wxme";
 
 type TProps = {
     version: string | undefined
@@ -26,8 +27,8 @@ export const Footer = ({version}: TProps): React.ReactNode => {
             'dark:bg-gray-900 dark:border-gray-700',
             'c-trans-4',
         )}>
-            <div className={cx('flex w-full')}>
-
+            <div className={cx('flex w-full gap-4 items-center')}>
+                <Wxme />
                 <p className="text-zinc-400 text-sm">
                     Made by Sebastian Wirkijowski. {version && (` Version ${version}.`)}
                 </p>
