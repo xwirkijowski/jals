@@ -1,15 +1,19 @@
 'use client'
 
+import React, {useRef} from "react";
 import cx from "classnames";
-
-import {useRef} from "react";
+import {motion} from "motion/react";
 import {redirect, RedirectType} from "next/navigation";
 
 import {Button} from "@comp/Button/Button";
 import {Input} from "@comp/form/Input/Input";
-import {buttonStyles, formStyles, inputStyles} from "@act/shared/link/shared.link.styles";
 
-export const InspectForm = () => {
+import {buttonStyles, formStyles, inputStyles} from "@act/shared/link/shared.link.styles";
+import {HTMLMotionProps} from "framer-motion";
+
+type TProps = {} & HTMLMotionProps<'div'>
+
+export const InspectForm = ({...props}: TProps): React.ReactNode => {
     const inputRef = useRef<HTMLInputElement>(null);
 
     const submit = (e) => {
@@ -20,13 +24,13 @@ export const InspectForm = () => {
     // @todo Add action to support resolving target to link
 
     return (
-        <div className={cx('flex w-full flex-col gap-8')}>
+        <motion.div className={cx('flex w-full flex-col gap-8')} {...props}>
             <form onSubmit={(e) => submit(e)} className={cx(formStyles)}>
                 <Input required type={"text"} ref={inputRef} className={inputStyles} placeholder="Input your URL code or paste the full link"/>
                 <Button btnType={"darkPrimary"} type="submit" className={buttonStyles}>
                     Inspect
                 </Button>
             </form>
-        </div>
+        </motion.div>
     )
 }

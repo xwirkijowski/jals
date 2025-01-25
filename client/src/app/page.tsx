@@ -1,4 +1,7 @@
 import Link from "next/link";
+import * as motion from "motion/react-client"
+
+import {container, item} from "@lib/motion/stagger";
 
 // Components
 import {ShortenForm} from "@act/shorten/Shorten.form";
@@ -6,36 +9,10 @@ import {Card} from "@comp/Card/Card";
 import {H1} from "@comp/Typography/H1";
 import {H2} from "@comp/Typography/H2";
 import {P} from "@comp/Typography/P";
-import * as motion from "motion/react-client"
-
-const container = {
-    hidden: {
-        opacity: 0,
-        transform: "translateY(-1rem)",
-    },
-    show: {
-        opacity: 1,
-        transform: "translateY(0)",
-        transition: {
-            staggerChildren: .1
-        }
-    }
-}
-
-const item = {
-    hidden: {
-        opacity: 0,
-        transform: "translateY(-1rem)",
-    },
-    show: {
-        opacity: 1,
-        transform: "translateY(0)",
-    }
-}
 
 const Page = () => {
     return (
-        <motion.div variants={container}  initial="hidden" animate="show" className="flex flex-col justify-center items-center flex-1 gap-8">
+        <motion.div variants={container} initial="hidden" animate="show" className="flex flex-col justify-center items-center flex-1 gap-8">
             <motion.div variants={item} className="text-center">
                 <H1>Make your links <span className={"text-orange-500"}>shorter</span><br/> and <span className={"text-orange-500"}>observable</span></H1>
             </motion.div>
