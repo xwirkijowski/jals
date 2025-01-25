@@ -1,7 +1,8 @@
 'use client';
 
 import cx from "classnames";
-import {Fragment, useActionState} from "react";
+import React, {Fragment, useActionState} from "react";
+import {motion} from "motion/react";
 
 // Components
 import Link from "next/link";
@@ -12,12 +13,15 @@ import {CopyToClipboard} from "@act/shorten/CopyLinkToClipboard";
 
 import {ShortenAction} from "./Shorten.action";
 import {buttonStyles, formStyles, inputStyles} from "@act/shared/link/shared.link.styles";
+import {HTMLMotionProps} from "framer-motion";
 
-export const ShortenForm = () => {
+type TProps = {} & HTMLMotionProps<'form'>
+
+export const ShortenForm = ({...props}: TProps): React.ReactNode => {
     const [state, action, pending] = useActionState(ShortenAction, null);
 
     return (
-        <form action={action} className={cx(formStyles)}>
+        <motion.form action={action} className={cx(formStyles)} {...props}>
             {state?.result?.success ? (
                 <Fragment>
                     <p className={cx(
@@ -46,6 +50,6 @@ export const ShortenForm = () => {
                     </Button>
                 </Fragment>
             )}
-        </form>
+        </motion.form>
     )
 }
