@@ -14,7 +14,7 @@ import {Card} from "@comp/Card/Card";
 import {CardHead} from "@comp/Card/CardHead";
 import {CardBody} from "@comp/Card/CardBody";
 import {CardFooter} from "@comp/Card/CardFooter";
-import {Textarea} from "@comp/Form/Textarea";
+import {Textarea} from "@comp/form/Textarea/Textarea";
 import {H2} from "@comp/Typography/H2";
 import {Badge} from "@comp/Badge/Badge";
 import {CloseButton} from "@act/shared/CloseButton";

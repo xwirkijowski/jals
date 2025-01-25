@@ -14,10 +14,10 @@ export const Card = (
 	return (
 		<div className={cx(
 			'w-full flex flex-col c-trans-4',
-			'flex flex-col text-left w-full max-w-xl shadow-xl rounded-xl',
+			'flex flex-col text-left w-full max-w-xl shadow-xl rounded-xl border border-transparent',
 			{'p-8 gap-4': !structured},
-			'text-md text-zinc-900 bg-white shadow-zinc-900/20',
-			'dark:bg-gray-800 dark:shadow-gray-900/20',
+			'text-md text-zinc-900 bg-white shadow-zinc-900/20 border-zinc-900/15',
+			'dark:bg-gray-800 dark:shadow-gray-900/20 dark:border-gray-700',
 			className,
 		)}>
 			{children}

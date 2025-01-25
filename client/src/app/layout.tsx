@@ -25,7 +25,7 @@ import {ThemeContextWrapper} from "@ctx/theme/theme.context";
 
 // Components
 import {Body} from "@comp/Layout/Body";
-import {Header} from '@comp/Layout/Header';
+import {Header} from '@comp/Layout/Header/Header';
 import {Footer} from '@comp/Layout/Footer';
 import {getCookie} from "@lib/auth/session.cookies";
 import {Spinner} from "@comp/Spinner/Spinner";

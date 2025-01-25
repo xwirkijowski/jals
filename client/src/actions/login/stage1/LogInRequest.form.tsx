@@ -7,7 +7,7 @@ import Link from "next/link";
 import {setupErrorCallouts} from "@act/shared/mutation.utilities";
 import {Spinner} from "@comp/Spinner/Spinner";
 import {Button} from "@comp/Button/Button";
-import {Input} from "@comp/Form/Input";
+import {Input} from "@comp/form/Input/Input";
 import {Callout} from "@comp/Callout/Callout";
 import {Card} from "@comp/Card/Card";
 import {CardHead} from "@comp/Card/CardHead";

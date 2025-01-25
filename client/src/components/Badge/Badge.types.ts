@@ -1,7 +1,7 @@
 import {SCompProps} from "@type/common";
 
 export type TBadgeProps = {
-	badgeType?: TBadgeType
+	badgeType?: keyof typeof EBadgeType
 	tooltip?: boolean
 	ping?: boolean
 } & SCompProps.THTMLButton<['type']> & SCompProps.TBase<true>
@@ -17,5 +17,3 @@ export enum EBadgeType {
 	theme = 'theme',
 	themeInverse = 'themeInverse',
 }
-
-export type TBadgeType = keyof typeof EBadgeType;

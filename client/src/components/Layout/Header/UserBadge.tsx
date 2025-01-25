@@ -1,6 +1,8 @@
+"use client";
+
 import cx from "classnames";
 import React from "react";
-import {TCurrentUser} from "../../contexts/auth/auth.types";
+import {TCurrentUser} from "@ctx/auth/auth.types";
 
 export const UserBadge = ({user}: {user: TCurrentUser}): React.ReactNode => {
 	if (!user) return null;

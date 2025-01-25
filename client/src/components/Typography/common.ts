@@ -7,6 +7,6 @@ export type TProps = {
 	align?: TextAlign;
 } & SCompProps.TBase<true>
 
-export const typographyStyles: string[] = [
+export const styles: string[] = [
 	'trans',
 ]

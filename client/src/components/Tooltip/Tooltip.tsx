@@ -1,12 +1,18 @@
 import React, {CSSProperties} from "react";
 import cx from "classnames";
 
-export const Tooltip = ({children, id, style}: { children: React.ReactNode, id: string, style: CSSProperties }) => {
+import {SCompProps} from "@type/common";
+
+type TProps = {
+    id: string,
+    style: CSSProperties
+} & SCompProps.TBase<true>
+
+export const Tooltip = ({children, id, style}: TProps): React.ReactNode => {
     return (
         <div
             id={id}
             popover={"auto"}
-            // @ts-ignore
             style={style}
             className={cx(
                 'text-left',

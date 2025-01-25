@@ -4,7 +4,7 @@
 import {getClient} from '@lib/apollo-client';
 import {LinkContextWrapper} from "@ctx/link/link.context";
 import {getHeaders} from "@lib/auth/session";
-import {LinkNotFound} from "@comp/Logic/NotFound";
+import {LinkNotFound} from "@comp/organisms/NotFound";
 import React from "react";
 
 // Metadata

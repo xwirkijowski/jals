@@ -2,7 +2,7 @@
 
 import cx from "classnames";
 import React from "react";
-import {TProps, typographyStyles} from "@comp/Typography/common";
+import {TProps, styles} from "@comp/Typography/common";
 
 export const H3 = (
 	{align, className, children}: TProps
@@ -11,7 +11,7 @@ export const H3 = (
 		<h3 className={cx(
 			'font-bold text-base/tight sm:text-base/tight',
 			(align && `text-${align}`),
-			typographyStyles,
+			styles,
 			className,
 			'text-zinc-900',
 			'dark:text-zinc-100',

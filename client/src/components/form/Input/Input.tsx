@@ -1,8 +1,8 @@
 import React, {Ref} from "react";
 import cx from "classnames";
 
-import {Label} from "@comp/Form/Label";
-import {inputStyles} from "@comp/Form/common.styles";
+import {Label} from "@comp/form/Label/Label";
+import {inputStyles} from "@comp/form/common.styles";
 import {SCompProps} from "@type/common";
 
 type THTMLInput = SCompProps.THTMLInput<['className']>;

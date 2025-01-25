@@ -1,6 +1,6 @@
-import {TBadgeType} from "@comp/Badge/Badge.types";
+import {EBadgeType} from "@comp/Badge/Badge.types";
 
-const typeStyles: Record<TBadgeType, Array<string>|string> = {
+const styles: Record<keyof typeof EBadgeType, Array<string>|string> = {
 	primary: [
 		'bg-orange-100 text-orange-500 border-orange-200',
 		'dark:bg-orange-950 dark:text-orange-500 dark:border-orange-500',
@@ -33,7 +33,7 @@ const typeStyles: Record<TBadgeType, Array<string>|string> = {
 	themeInverse: [],
 }
 
-typeStyles.theme = [typeStyles.light[0], typeStyles.dark[1]];
-typeStyles.themeInverse = [typeStyles.dark[0], typeStyles.light[1]];
+styles.theme = [styles.light[0], styles.dark[1]];
+styles.themeInverse = [styles.dark[0], styles.light[1]];
 
-export {typeStyles};
+export {styles};

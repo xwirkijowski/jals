@@ -6,7 +6,7 @@ import {useRef} from "react";
 import {redirect, RedirectType} from "next/navigation";
 
 import {Button} from "@comp/Button/Button";
-import {Input} from "@comp/Form/Input";
+import {Input} from "@comp/form/Input/Input";
 import {buttonStyles, formStyles, inputStyles} from "@act/shared/link/shared.link.styles";
 
 export const InspectForm = () => {

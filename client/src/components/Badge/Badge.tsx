@@ -3,10 +3,10 @@
 import cx from "classnames";
 import React from "react";
 
-import {typeStyles} from "@comp/Badge/Badge.styles";
+import {styles} from "@comp/Badge/Badge.styles";
 import {TBadgeProps} from "@comp/Badge/Badge.types";
 
-import {Ping} from "@comp/Badge/Ping";
+import {Ping} from "@comp/Badge/Ping/Ping";
 
 export const Badge = (
 	{tooltip = false, ping = false, badgeType = 'light', children, ...props}: TBadgeProps
@@ -17,7 +17,7 @@ export const Badge = (
 			'shadow-md shadow-transparent w-fit',
 			'dark:shadow-gray-900/20',
 			{'cursor-help': tooltip},
-			typeStyles[badgeType],
+			styles[badgeType],
         )}>
 			{ping && <Ping pingType={badgeType} />}
 			{children}
