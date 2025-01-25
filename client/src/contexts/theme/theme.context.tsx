@@ -23,7 +23,7 @@ export const ThemeContext = createContext<SThemeContext.TThemeContext>({
 
 // @todo Fix default value, loading after refresh
 
-export const ThemeContextWrapper = (
+export const ThemeProvider = (
 	{children}: {children: React.ReactNode}
 ) => {
 	const [theme, setTheme] = useState<SThemeContext.EThemes>(defaultTheme);

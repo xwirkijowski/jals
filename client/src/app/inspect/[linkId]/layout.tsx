@@ -1,7 +1,7 @@
 "use server";
 
 // Imports
-import {getClient} from '@lib/apollo-client';
+import {getClient} from '@lib/apolloClient';
 import {LinkContextWrapper} from "@ctx/link/link.context";
 import {getHeaders} from "@lib/auth/session";
 import {LinkNotFound} from "@comp/organisms/NotFound";

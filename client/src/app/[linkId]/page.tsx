@@ -19,7 +19,7 @@ export const generateMetadata = async (
 }
 
 import { GET_LINK, CLICK_ADD } from "./queries";
-import { getClient } from "@lib/apollo-client";
+import { getClient } from "@lib/apolloClient";
 import { getHeaders } from "@lib/auth/session";
 
 // Components

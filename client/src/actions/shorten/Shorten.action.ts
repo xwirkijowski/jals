@@ -1,7 +1,7 @@
 "use server";
 
 import {CREATE_LINK} from "./Shorten.query";
-import {getClient} from "@lib/apollo-client";
+import {getClient} from "@lib/apolloClient";
 import {getHeaders} from "@lib/auth/session";
 
 export const ShortenAction = async (

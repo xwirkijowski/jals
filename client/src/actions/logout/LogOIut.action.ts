@@ -1,7 +1,7 @@
 "use server";
 
 import {LOG_OUT} from "./LogOut.query";
-import {getClient} from "@lib/apollo-client";
+import {getClient} from "@lib/apolloClient";
 import {getHeaders} from "@lib/auth/session";
 import {deleteCookie} from "@lib/auth/session.cookies";
 import {revalidatePath} from "next/cache";

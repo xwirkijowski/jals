@@ -9,7 +9,7 @@ export const AuthContext = createContext<TAuthContext>({
     user: null
 });
 
-export const AuthContextWrapper = (
+export const AuthProvider = (
     {session, user, children}:
     {session: TAuthContextUnion, user: TCurrentUser, children: ReactNode}) => {
     return (

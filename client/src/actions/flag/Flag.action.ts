@@ -4,7 +4,7 @@ import {TResult} from "@type/data/response";
 import {TLink} from "@type/data/link";
 
 import {FLAG_LINK} from "./Flag.queries";
-import {getClient} from "@lib/apollo-client";
+import {getClient} from "@lib/apolloClient";
 import {getHeaders} from "@lib/auth/session";
 import {revalidatePath} from "next/cache";
 

@@ -20,8 +20,8 @@ import '../css/globals.css';
 
 // Contexts
 import {getUser} from "@ctx/auth/auth.utils.server";
-import {AuthContextWrapper} from "@ctx/auth/auth.context";
-import {ThemeContextWrapper} from "@ctx/theme/theme.context";
+import {AuthProvider} from "@ctx/auth/auth.context";
+import {ThemeProvider} from "@ctx/theme/theme.context";
 
 // Components
 import {Body} from "@comp/Layout/Body";
@@ -38,8 +38,8 @@ const RootLayout = async (
 
     return (
         <html lang="en" className="bg-white">
-                <AuthContextWrapper session={session} user={user}>
-                    <ThemeContextWrapper>
+                <AuthProvider session={session} user={user}>
+                    <ThemeProvider>
                         <Body>
                             <Header/>
                             <main className="w-full flex-1 px-8 flex">
@@ -48,8 +48,8 @@ const RootLayout = async (
                             </main>
                             <Footer version={process?.env?.npm_package_version} />
                         </Body>
-                    </ThemeContextWrapper>
-                </AuthContextWrapper>
+                    </ThemeProvider>
+                </AuthProvider>
         </html>
     )
 }
