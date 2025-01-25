@@ -8,6 +8,7 @@ import Link from "next/link";
 import {Spinner} from "@comp/Spinner/Spinner";
 import {Button} from "@comp/Button/Button";
 import {Input} from "@comp/Form/Input";
+import {CopyToClipboard} from "@act/shorten/CopyLinkToClipboard";
 
 import {ShortenAction} from "./Shorten.action";
 import {buttonStyles, formStyles, inputStyles} from "@act/shared/link/shared.link.styles";
@@ -31,9 +32,7 @@ export const ShortenForm = () => {
                         'placeholder:text-zinc-600/50',
                         'border-green-500')}>
                         {state.link.id}
-                        <a className={cx('float-end border-b border-b-current cursor-pointer text-orange-500 hover:text-orange-400 trans text-sm font-bold')} onClick={() => {
-                            navigator.clipboard.writeText(window.location.href + state.link.id)
-                        }}>Copy link</a>
+                        <CopyToClipboard value={state.link.id} />
                     </p>
                     <Link href={'/' + state.link.id + '/+'} passHref>
                         <Button btnType={"success"} className={cx("flex-0")}>Inspect link</Button>
