@@ -1,6 +1,10 @@
 "use server";
 
-import React, {Suspense} from "react";
+import React from "react";
+
+// Fonts
+import {Montserrat} from "next/font/google";
+const montserrat = Montserrat({subsets: ['latin-ext']});
 
 // Metadata
 import type {Metadata, Viewport} from 'next';
@@ -40,7 +44,7 @@ const RootLayout = async (
         <html lang="en" className="bg-white">
                 <AuthProvider session={session} user={user}>
                     <ThemeProvider>
-                        <Body>
+                        <Body className={`${montserrat.className} antialiased`}>
                             <Header/>
                             <main className="w-full flex-1 px-8 flex">
                                 {modal}
