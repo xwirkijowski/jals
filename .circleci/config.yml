@@ -82,7 +82,7 @@ jobs:
             - ${KEY_FINGERPRINT}
       - run:
           name: Compose on remote
-          command: ssh ${DEPLOY_USER}@${DEPLOY_HOST} "docker compose -f ${PROJECT_PATH}/docker-compose.prod-contained.yml --env-file ${PROJECT_PATH}/.env.prod up -d"
+          command: ssh ${DEPLOY_USER}@${DEPLOY_HOST} "docker compose rm -fs jals_client jals_api && docker pull xwirkijowski/jals-client:latest && docker pull xwirkijowski/jals-api:latest && docker compose -f ${PROJECT_PATH}/docker-compose.prod-contained.yml --env-file ${PROJECT_PATH}/.env.prod up -d"
 
 
 workflows:
