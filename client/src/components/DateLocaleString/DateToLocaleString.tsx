@@ -8,7 +8,7 @@ export const DateToLocaleString = ({value}: {value: string}): React.ReactNode =>
 
 	useEffect(() => {
 		setDate(new Date(value).toLocaleString())
-	}, [])
+	}, [value])
 
 	return (
 		<>
