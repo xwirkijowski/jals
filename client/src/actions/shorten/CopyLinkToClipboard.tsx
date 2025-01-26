@@ -18,7 +18,7 @@ export const CopyToClipboard = (
 
 	const copyLink = useCallback(() => {
 		if (mounted && supportsClipboard) window.navigator.clipboard.writeText(window.location.href + value)
-	}, [])
+	}, [mounted, supportsClipboard, value])
 
 	if (!mounted || !supportsClipboard) return null;
 
