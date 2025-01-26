@@ -32,7 +32,7 @@ export const ThemeProvider = (
 	// Load theme from storage on client
 	useEffect(() => {
 		setTheme(getTheme());
-	})
+	}, [])
 	
 	const setTheme = useCallback((newTheme: string) => {
 		if (newTheme && themes.includes(newTheme as EThemes)) {
