@@ -4,7 +4,7 @@ import { Result } from "@schema/result";
 // Types
 import {IContext} from "@type/context.types";
 import {THydratedLink, ILink} from "@model/link.types";
-import {TSession} from "@service/auth/session";
+import {TSessionInstance} from "@service/auth/session";
 import {InternalError} from "@util/error";
 
 export default {
@@ -108,7 +108,7 @@ export default {
 				$push: {
 					flags: {
 						note: input.note,
-						createdBy: (session as TSession)?.userId||null,
+						createdBy: (session as TSessionInstance)?.userId||null,
 						createdAt: new Date().toISOString(),
 					}
 				},
