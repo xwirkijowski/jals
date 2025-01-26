@@ -22,7 +22,7 @@ jobs:
       - run: cd api && npm ci --include=dev && npm run api-compile
       - setup_remote_docker
       - run: |
-          TAG=0.1.$CIRCLE_BUILD_NUM
+          TAG=0.1.CIRCLE_SHA1
           docker build -t xwirkijowski/jals-api:$TAG -t xwirkijowski/jals-api:latest -f ./api/docker/Dockerfile ./api
           echo ${DOCKER_TOKEN} | docker login -u xwirkijowski --password-stdin
           docker push xwirkijowski/jals-api --all-tags
@@ -34,7 +34,7 @@ jobs:
       - run: cd client && ls -all
       - setup_remote_docker
       - run: |
-          TAG=0.1.$CIRCLE_BUILD_NUM
+          TAG=0.1.CIRCLE_SHA1
           docker build -t xwirkijowski/jals-client:$TAG -t xwirkijowski/jals-client:latest -f ./client/docker/prod.Dockerfile ./client
           echo ${DOCKER_TOKEN} | docker login -u xwirkijowski --password-stdin
           docker push xwirkijowski/jals-client --all-tags
@@ -46,8 +46,8 @@ jobs:
       - run: cd client
       - setup_remote_docker
       - run: |
-          TAG=0.1.${CIRCLE_BUILD_NUM}-dev
-          docker build -t xwirkijowski/jals-client:$TAG -t xwirkijowski/jals-client:latest-dev -f ./client/docker/prod.Dockerfile ./client
+          TAG=0.1.${CIRCLE_SHA1}-dev
+          docker build -t xwirkijowski/jals-client:$TAG -t xwirkijowski/jals-client:dev -f ./client/docker/dev.Dockerfile ./client
           echo ${DOCKER_TOKEN} | docker login -u xwirkijowski --password-stdin
           docker push xwirkijowski/jals-client --all-tags
 
@@ -64,7 +64,7 @@ jobs:
           command: scp -v ./docker-compose.* ${DEPLOY_USER}@${DEPLOY_HOST}:${PROJECT_PATH}
       - run:
           name: Create environment files
-          command: ssh ${DEPLOY_USER}@${DEPLOY_HOST} "echo SECRET_AXIOM=\"${SECRET_AXIOM_PROD}\" > ${PROJECT_PATH}/.env.prod && echo SECRET_SENTRY=\"${SECRET_SENTRY_PROD}\" >> ${PROJECT_PATH}/.env.prod && echo SECRET_RESEND=\"${SECRET_RESEND_PROD}\" >> ${PROJECT_PATH}/.env.prod && echo SECRET_AXIOM=\"${SECRET_AXIOM_DEV}\" > ${PROJECT_PATH}/.env.dev && echo SECRET_SENTRY=\"${SECRET_SENTRY_DEV}\" >> ${PROJECT_PATH}/.env.dev && echo SECRET_RESEND=\"${SECRET_RESEND_DEV}\" >> ${PROJECT_PATH}/.env.dev"
+          command: ssh ${DEPLOY_USER}@${DEPLOY_HOST} "echo SECRET_AXIOM=\"${SECRET_AXIOM_PROD}\" > ${PROJECT_PATH}/.env.prod && echo SECRET_SENTRY=\"${SECRET_SENTRY}\" >> ${PROJECT_PATH}/.env.prod && echo SECRET_RESEND=\"${SECRET_RESEND_PROD}\" >> ${PROJECT_PATH}/.env.prod && echo SECRET_AXIOM=\"${SECRET_AXIOM_DEV}\" > ${PROJECT_PATH}/.env.dev && echo SECRET_SENTRY=\"${SECRET_SENTRY}\" >> ${PROJECT_PATH}/.env.dev && echo SECRET_RESEND=\"${SECRET_RESEND_DEV}\" >> ${PROJECT_PATH}/.env.dev"
 
   #  compose-dev:
   #    executor: exec_docker
@@ -81,8 +81,17 @@ jobs:
           fingerprints:
             - ${KEY_FINGERPRINT}
       - run:
+          name: Pull new images on remote
+          command: ssh ${DEPLOY_USER}@${DEPLOY_HOST} "docker compose -f ${PROJECT_PATH}/docker-compose.prod-contained.yml pull"
+      - run:
+          name: Take down stale containers
+          command: ssh ${DEPLOY_USER}@${DEPLOY_HOST} "docker compose -f ${PROJECT_PATH}/docker-compose.prod-contained.yml down"
+      - run:
           name: Compose on remote
-          command: ssh ${DEPLOY_USER}@${DEPLOY_HOST} "docker compose rm -fs jals_client jals_api && docker pull xwirkijowski/jals-client:latest && docker pull xwirkijowski/jals-api:latest && docker compose -f ${PROJECT_PATH}/docker-compose.prod-contained.yml --env-file ${PROJECT_PATH}/.env.prod up -d"
+          command: ssh ${DEPLOY_USER}@${DEPLOY_HOST} "docker compose -f ${PROJECT_PATH}/docker-compose.prod-contained.yml --env-file ${PROJECT_PATH}/.env.prod up -d"
+      - run:
+          name: Cleanup old images
+          command: ssh ${DEPLOY_USER}@${DEPLOY_HOST} "docker image prune -f"
 
 
 workflows:
