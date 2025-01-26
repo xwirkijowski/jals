@@ -8,6 +8,8 @@ I began work on a refactor in december 2024. Primary goal was to gain practical 
 
 > **Now live!** Development stage preview available at [jals2.wirkijowski.dev](https://jals2.wirkijowski.dev/)
 
+[![CircleCI](https://dl.circleci.com/status-badge/img/circleci/8Np7CK78S4uw4ebGLepWmK/MzQiBDF67dqMd44rGhkv6K/tree/deploy-prod.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/circleci/8Np7CK78S4uw4ebGLepWmK/MzQiBDF67dqMd44rGhkv6K/tree/deploy-prod)
+
 ## Technology stack
 
 ###  Client
