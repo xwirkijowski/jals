@@ -1,0 +1,132 @@
+# Use the latest 2.1 version of CircleCI pipeline process engine.
+# See: https://circleci.com/docs/configuration-reference
+version: 2.1
+
+executors:
+  exec_docker:
+    docker:
+      - image: cimg/base:2025.01
+        auth:
+          username: $DOCKER_USERNAME
+          password: $DOCKER_TOKEN
+
+jobs:
+  api-image:
+    executor: exec_docker
+    steps:
+      - checkout
+      - run: cd api
+      - run: docker build -t $DOCKER_USERNAME/jals-api -f docker/Dockerfile .
+      - run: TAG=0.1.$CIRCLE_BUILD_NUM docker image tag $DOCKER_USERNAME/jals-api:$TAG
+      - run: docker image tag $DOCKER_USERNAME/jals-api:latest
+      - run: echo $DOCKER_TOKEN | docker login -u $DOCKER_USERNAME --password-stdin
+      - run: docker push $DOCKER_USERNAME/jals-api --all-tags
+
+  client-image-prod:
+    executor: exec_docker
+    steps:
+      - checkout
+      - run: cd client
+      - run: docker build -t $DOCKER_USERNAME/jals-client -f docker/prod.Dockerfile .
+      - run: TAG=0.1.$CIRCLE_BUILD_NUM docker image tag $DOCKER_USERNAME/jals-client:$TAG
+      - run: docker image tag $DOCKER_USERNAME/jals-client:latest
+      - run: echo $DOCKER_TOKEN | docker login -u $DOCKER_USERNAME --password-stdin
+      - run: docker push $DOCKER_USERNAME/jals-client --all-tags
+
+  client-image-dev:
+    executor: exec_docker
+    steps:
+      - checkout
+      - run: cd client
+      - run: docker build -t $DOCKER_USERNAME/jals-client -f docker/dev.Dockerfile .
+      - run: TAG=0.1.$CIRCLE_BUILD_NUM docker image tag $DOCKER_USERNAME/jals-client:$TAG
+      - run: docker image tag $DOCKER_USERNAME/jals-client:latest
+      - run: echo $DOCKER_TOKEN | docker login -u $DOCKER_USERNAME --password-stdin
+      - run: docker push $DOCKER_USERNAME/jals-client --all-tags
+
+  compose-upload:
+    executor: exec_docker
+    steps:
+      - run:
+          name: Deploy docker-compose files
+          command: scp -v './docker-compose.*' ${DEPLOY_USER}@${DEPLOY_HOST}:/srv/wxme/docker-files/jals2
+      - run:
+          name: Create environment files
+          command: ssh ${DEPLOY_USER}@${DEPLOY_HOST} "\
+            echo SECRET_AXIOM=\"$SECRET_AXIOM_PROD\" > /srv/wxme/docker-files/jals2/.env.prod \
+            echo SECRET_SENTRY=\"$SECRET_SENTRY_PROD\" >> /srv/wxme/docker-files/jals2/.env.prod \
+            echo SECRET_RESEND=\"$SECRET_RESEND_PROD\" >> /srv/wxme/docker-files/jals2/.env.prod \
+            echo SECRET_AXIOM=\"$SECRET_AXIOM_DEV\" > /srv/wxme/docker-files/jals2/.env.dev \
+            echo SECRET_SENTRY=\"$SECRET_SENTRY_DEV\" >> /srv/wxme/docker-files/jals2/.env.dev \
+            echo SECRET_RESEND=\"$SECRET_RESEND_DEV\" >> /srv/wxme/docker-files/jals2/.env.dev"
+
+#  compose-dev:
+#    executor: exec_docker
+#    steps:
+#      - run:
+#          name: Compose on remote
+#          command: ssh ${DEPLOY_USER}@${DEPLOY_HOST} "docker compose -f docker-compose.dev-contained.yml --env-file .env.dev -d up"
+
+
+  compose-prod:
+    executor: exec_docker
+    steps:
+      - run:
+          name: Compose on remote
+          command: ssh ${DEPLOY_USER}@${DEPLOY_HOST} "docker compose -f docker-compose.prod-contained.yml --env-file .env.prod -d up"
+
+
+workflows:
+  deploy-to-prod:
+    jobs:
+      - api-image:
+          context: WXME-Context
+          filters:
+            branches:
+              only:
+                - deploy-prod
+      - client-image-prod:
+          context: WXME-Context
+          filters:
+            branches:
+              only:
+                - deploy-prod
+      - compose-upload:
+          context: WXME-Context
+          filters:
+            branches:
+              only:
+                - deploy-prod
+      - compose-prod:
+          context: WXME-Context
+          requires:
+            - api-image
+            - client-image-prod
+            - compose-upload
+
+#  deploy-to-dev:
+#    jobs:
+#      - api-image:
+#          context: WXME-Context
+#          filters:
+#            branches:
+#              only:
+#                - deploy-dev
+#      - client-image-dev:
+#          context: WXME-Context
+#          filters:
+#            branches:
+#              only:
+#                - deploy-dev
+#      - compose-upload:
+#          context: WXME-Context
+#          filters:
+#            branches:
+#              only:
+#                - deploy-dev
+#      - compose-dev:
+#          context: WXME-Context
+#          requires:
+#            - api-image
+#            - client-image-dev
+#            - compose-upload
