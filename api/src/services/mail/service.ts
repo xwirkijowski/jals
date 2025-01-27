@@ -44,8 +44,8 @@ export class MailService extends EventEmitter {
         log.withDomain('success', 'MailService', 'MailService started!')
         return this;
     }
-
-    create = (to: string, subject: string, data: Omit<IEmailData, 'requestId'>, rId: string): TEmail => {
+    
+    create (to: string, subject: string, data: Omit<IEmailData, 'requestId'>, rId: string): TEmail {
         return new Email(to, this.fromString, subject, {...data, requestId: rId});
     }
 }
