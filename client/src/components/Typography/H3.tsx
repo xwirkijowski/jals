@@ -3,11 +3,11 @@
 import cx from "classnames";
 import React from "react";
 import {motion} from "motion/react";
+
 import {TProps, styles} from "@comp/Typography/common";
-import {HTMLMotionProps} from "framer-motion";
 
 export const H3 = (
-	{align, className, children, ...props}: TProps & HTMLMotionProps<'h3'>
+	{align, className, children, ...props}: TProps
 ): React.ReactNode => {
 	return (
 		<motion.h3 className={cx(
