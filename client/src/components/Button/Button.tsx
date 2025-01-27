@@ -1,5 +1,8 @@
+"use client";
+
 import cx from 'classnames';
 import React from 'react';
+import {motion} from "motion/react";
 
 import {TButtonProps} from "@comp/Button/Button.types";
 import {typeStyles} from "@comp/Button/Button.styles";
@@ -13,7 +16,8 @@ export const Button = ({
     ...props
 }: TButtonProps): React.ReactNode => {
     return (
-        <button
+        // @ts-ignore: Motion issue with duplicate declaration
+        <motion.button
             type={type}
             className={cx(
                 "trans px-5 py-3 text-base text-nowrap rounded-xl font-bold",
@@ -24,6 +28,6 @@ export const Button = ({
             {...props}
         >
             {children}
-        </button>
+        </motion.button>
     )
 }

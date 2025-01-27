@@ -4,11 +4,11 @@ import cx from "classnames";
 import React from "react";
 import {motion} from "motion/react";
 import {SCompProps} from "@type/common";
-import {HTMLMotionProps} from "framer-motion";
+import {MotionProps} from "framer-motion";
 
 type TProps = {
 	structured?: boolean
-} & SCompProps.TBase<true> & SCompProps.THTMLDiv<["className"]> & HTMLMotionProps<'div'>
+} & SCompProps.TBase<true> & SCompProps.THTMLDiv<["className"]> & MotionProps
 
 export const Card = (
 	{structured = false, className, children, ...props}: TProps

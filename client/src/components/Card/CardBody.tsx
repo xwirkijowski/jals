@@ -3,11 +3,11 @@
 import cx from "classnames";
 import React from "react";
 import {SCompProps} from "@type/common";
-import {HTMLMotionProps} from "framer-motion";
+import {MotionProps} from "framer-motion";
 
 type TProps = {
 	grid?: boolean
-} & SCompProps.TBase<true> & SCompProps.THTMLDiv<["className"]> & HTMLMotionProps<'div'>
+} & SCompProps.TBase<true> & SCompProps.THTMLDiv<["className"]> & MotionProps
 
 export const CardBody = (
 	{grid, className, children, ...props}: TProps

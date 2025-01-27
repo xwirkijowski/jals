@@ -3,9 +3,9 @@
 import cx from "classnames";
 import React from "react";
 import {SCompProps} from "@type/common";
-import {HTMLMotionProps} from "framer-motion";
+import {MotionProps} from "framer-motion";
 
-type TProps = {} & SCompProps.TBase<true> & SCompProps.THTMLDiv<["className"]> & HTMLMotionProps<'div'>
+type TProps = {} & SCompProps.TBase<true> & SCompProps.THTMLDiv<["className"]> & MotionProps
 
 export const CardFooter = (
 	{className, children, ...props}: TProps
