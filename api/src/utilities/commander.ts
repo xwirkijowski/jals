@@ -12,6 +12,9 @@ import {ApolloServer} from "@apollo/server";
 import {RedisClientType} from "redis";
 import mongoose from "mongoose";
 
+// @todo: Add docs
+// @todo: Support edge cases where commander or some module is not ready to shutdown.
+
 class Commander extends EventEmitter {
 	status: string = 'not-initialized';
 	DB: TDatabaseStatus;
@@ -29,7 +32,7 @@ class Commander extends EventEmitter {
 		return this;
 	}
 
-	#isReady = (): void => {
+	#isReady (): void {
 		if (this.mongo && this.redis && this.server) {
 			this.emit('ready');
 			this.status = 'ready';
@@ -57,7 +60,7 @@ class Commander extends EventEmitter {
 		return this;
 	};
 
-	#closeServer = async (): Promise<boolean> => {
+	async #closeServer (): Promise<boolean> {
 		if (!this.server) throw new FatalError('Cannot close GraphQL server, no server on commander instance!', 'CMDR_CLOSE_SERVER_FAILED', 'Commander', true);
 
 		new Warning('Attempting to gracefully shutdown GraphQL server...', 'APOLLO_STOP', 'Apollo', false);
@@ -73,8 +76,8 @@ class Commander extends EventEmitter {
 			return false;
 		}
 	}
-
-	#closeRedis = async (): Promise<boolean> => {
+	
+	async #closeRedis (): Promise<boolean> {
 		if (!this.redis) throw new FatalError('Cannot close Redis client, no client on commander instance!', 'CMDR_CLOSE_REDIS_FAILED', 'Commander', true);
 
 		new Warning(`Attempting to gracefully close client...`, 'REDIS_STOP', 'Redis', false, {redisStatus: this.DB.redis})
@@ -103,7 +106,7 @@ class Commander extends EventEmitter {
 		return (disconnect === true && quit === true);
 	}
 
-	#closeMongo = async (): Promise<boolean> => {
+	async #closeMongo (): Promise<boolean> {
 		if (!this.mongo) throw new FatalError('Cannot close MongoDB client, no client on commander instance!', 'CMDR_CLOSE_MONGO_FAILED', 'Commander', true);
 
 		new Warning(`Attempting to gracefully close client...`, 'MONGO_STOP', 'Mongo', false, {mongoStatus: this.DB.mongo})
