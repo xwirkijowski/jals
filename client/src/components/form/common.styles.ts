@@ -15,3 +15,5 @@ export const inputStyles: string[] = [
 	'dark:bg-gray-800 dark:placeholder:text-gray-400 dark:text-gray-200 dark:border-gray-700',
 	'[-webkit-text-fill-color:#52525b] dark:[-webkit-text-fill-color:#e5e7eb]'
 ]
+
+// @todo: Fix autofill outline or shadow (?) appearing on border-radius corners.
