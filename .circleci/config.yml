@@ -1,6 +1,8 @@
-# Use the latest 2.1 version of CircleCI pipeline process engine.
-# See: https://circleci.com/docs/configuration-reference
 version: 2.1
+
+# todo: Separate API build job
+# todo: Use workspace
+# todo: Development deploy pipeline
 
 executors:
   main:
@@ -22,7 +24,7 @@ jobs:
       - run: cd api && npm ci --include=dev && npm run api-compile
       - setup_remote_docker
       - run: |
-          TAG=0.1.${CIRCLE_SHA1}
+          TAG=${CIRCLE_SHA1:0:8}
           docker build -t xwirkijowski/jals-api:$TAG -t xwirkijowski/jals-api:latest -f ./api/docker/Dockerfile ./api
           echo ${DOCKER_TOKEN} | docker login -u xwirkijowski --password-stdin
           docker push xwirkijowski/jals-api --all-tags
@@ -34,7 +36,7 @@ jobs:
       - run: cd client && ls -all
       - setup_remote_docker
       - run: |
-          TAG=0.1.${CIRCLE_SHA1}
+          TAG=${CIRCLE_SHA1:0:8}
           docker build -t xwirkijowski/jals-client:$TAG -t xwirkijowski/jals-client:latest -f ./client/docker/prod.Dockerfile ./client
           echo ${DOCKER_TOKEN} | docker login -u xwirkijowski --password-stdin
           docker push xwirkijowski/jals-client --all-tags
@@ -46,7 +48,7 @@ jobs:
       - run: cd client
       - setup_remote_docker
       - run: |
-          TAG=0.1.${CIRCLE_SHA1}
+          TAG=${CIRCLE_SHA1:0:8}
           docker build -t xwirkijowski/jals-client:$TAG -t xwirkijowski/jals-client:dev -f ./client/docker/dev.Dockerfile ./client
           echo ${DOCKER_TOKEN} | docker login -u xwirkijowski --password-stdin
           docker push xwirkijowski/jals-client --all-tags
