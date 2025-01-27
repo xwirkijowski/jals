@@ -4,6 +4,7 @@
 
 import cx from "classnames";
 import React from "react";
+import * as motion from "motion/react-client";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 
@@ -36,6 +37,8 @@ import {CardBody} from "@comp/Card/CardBody";
 import {CardFooter} from "@comp/Card/CardFooter";
 import {Container} from "@comp/Container/Container"
 
+import {container, item} from "@lib/motion/stagger";
+
 const Page = async (
 	{params}
 ) => {
@@ -65,10 +68,10 @@ const Page = async (
 			{link ? (
 				<>
 					{loading ? (<Spinner />) : (
-						<Card structured>
-							<CardHead className={'items-center'}>
+						<Card variants={container} structured>
+							<CardHead variants={container} className={'items-center'}>
 								{/* @ts-ignore workaround for `anchorName` CSS property */}
-								<Badge badgeType={link.caution ? 'danger' : 'success'} tooltip ping style={{anchorName: "--active-popover"}} popoverTarget={'active-popover'} popoverTargetAction={'toggle'}>
+								<Badge variants={item} badgeType={link.caution ? 'danger' : 'success'} tooltip ping style={{anchorName: "--active-popover"}} popoverTarget={'active-popover'} popoverTargetAction={'toggle'}>
 									{link.id}
 								</Badge>
 								{/* @ts-ignore workaround for `positionAnchor` CSS property */}
@@ -83,32 +86,32 @@ const Page = async (
 										flags.</p>
 								</Tooltip>
 
-								<H2 align={'center'}>
+								<H2 variants={item} align={'center'}>
 									{loading && ("Resolving link...")}
 									{!link.caution && (`You will be redirected soon`)}
 									{link.caution && ("Confirm your destination")}
 								</H2>
 							</CardHead>
-							<CardBody>
+							<CardBody variants={container}>
 									{link.caution &&
 										<>
-											<P className={'font-bold'}>This link has been flagged or is not active.</P>
-											<P>Check if this is the destination you expected and click the button below to continue.</P>
+											<P variants={item} className={'font-bold'}>This link has been flagged or is not active.</P>
+											<P variants={item}>Check if this is the destination you expected and click the button below to continue.</P>
 										</>
 									}
 
-									<div className={"w-full gap-2 flex flex-col text-left"}>
+									<motion.div variants={item} className={"w-full gap-2 flex flex-col text-left"}>
 										<p className={"w-full px-4 py-2 bg-zinc-200 text-zinc-600 rounded-xl border border-transparent font-mono text-wrap break-words overflow-hidden"}>{link.target}</p>
-									</div>
+									</motion.div>
 							</CardBody>
-							<CardFooter>
+							<CardFooter variants={container}>
 								{link.caution &&
 									<>
 										<Link href={`/inspect/${link.id}`} passHref>
-											<Button btnType={'dark'}>Inspect link</Button>
+											<Button variants={item} btnType={'dark'}>Inspect link</Button>
 										</Link>
 										<Link href={link.target} passHref>
-											<Button effects={true}>Proceed to destination</Button>
+											<Button variants={item} effects={true}>Proceed to destination</Button>
 										</Link>
 									</>
 								}
