@@ -1,5 +1,12 @@
 # JALSv2 Client
 
+## Todos
+
+- [ ] User dashboard
+- [ ] Implement proper error handling on GraphQL queries and mutations
+- [ ] Implement transitions between pages
+- [ ] Explore better animations
+
 ## Summary
 
 ### Functionality
@@ -27,7 +34,7 @@ Separation of sensitive information, business logic and interactivity layer.
 Implemented on all forms that result in mutations. Occasionally leveraging built-in `.bind()` method for additional data.
 
 #### `useContext` (React)
-Link context implementation on `/inspect` route;
+Link context implementation on `/inspect` route, theme context, auth context;
 
 ## Walkthrough
 
@@ -37,3 +44,5 @@ In JALSv2, users can both register and log in without ever using passwords. My a
 
 ![client-auth-flow-1.png](../repository/client-auth-flow-1.png)
 ![client-auth-flow-2.png](../repository/client-auth-flow-2.png)
+
+[...in progress]

@@ -20,7 +20,7 @@ export const generateMetadata = async (
 }
 
 import { GET_LINK, CLICK_ADD } from "./queries";
-import { getClient } from "@lib/apolloClient";
+import { getClient, query } from "@lib/apolloClient";
 import { getHeaders } from "@lib/auth/session";
 
 // Components
@@ -45,7 +45,10 @@ const Page = async (
 	const linkId: string = (await params).linkId;
 	const requestContext = await getHeaders();
 
-	const {data: {link}, loading} = await getClient().query({query: GET_LINK, variables: {linkId: linkId}, context: requestContext});
+	// @todo: Param validation
+	// @todo: Test query and mutation edge cases, error handling
+	
+	const {data: {link}, loading} = await query({query: GET_LINK, variables: {linkId: linkId}, context: requestContext});
 
 	const registerClick = async () => {
 		const {data: {createClick: {click}}} = await getClient().mutate({mutation: CLICK_ADD, variables: {input: {linkId: linkId}}, context: requestContext, errorPolicy: 'all'});

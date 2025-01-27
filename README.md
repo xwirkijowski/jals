@@ -4,7 +4,7 @@
 
 A simple solution for shortening links built with React, Next.js and GraphQL with basic safety features. Initially designed and developed in 2021 as a personal challenge and to get some new experience.
 
-I began work on a refactor in december 2024. Primary goal was to gain practical knowledge of current React (v19) and Next.js (v15) features, including the new App router. As a secondary goal, client application was to fully leverage TailwindCSS and PostCSS features.
+I began work on a refactor in december 2024. Primary goal was to gain practical knowledge of current React (v19) and Next.js (v15) features, including the new App router. As a secondary goal, client application was to fully leverage TailwindCSS features and implement some subtle animations.
 
 > **Now live!** Development stage preview available at [jals2.wirkijowski.dev](https://jals2.wirkijowski.dev/)
 
@@ -22,6 +22,7 @@ I began work on a refactor in december 2024. Primary goal was to gain practical 
   - Tailwind-CSS
   - Autoprefixer
 - `classnames`
+- Motion (Framer Motion)
 - **Eslint**
 
 ### API server
@@ -41,8 +42,13 @@ I began work on a refactor in december 2024. Primary goal was to gain practical 
 
 - Redis-Stack
 - MongoDB Community
-- Docker with compose
+- Docker
+- CircleCI — deployment pipeline
+- Nginx — reverse proxy on remote
 
+#### Observability
+- Sentry.io — error monitoring
+- Axiom — collection of telemetry data, errors and warnings
 
 ## Functionality
 
