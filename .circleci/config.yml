@@ -3,6 +3,7 @@ version: 2.1
 # todo: Separate API build job
 # todo: Use workspace
 # todo: Development deploy pipeline
+# todo: Use tags on master to deploy prod, `deploy-dev` branch for dev deployments
 
 executors:
   main:
