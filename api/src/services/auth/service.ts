@@ -51,7 +51,7 @@ export class AuthService extends EventEmitter {
 	 * @param   rId     Unique request ID
 	 * @return  Promise<UContextSession>
 	 */
-	async handleSession  (request: IContext['req'], rId: TId): Promise<UContextSession> {
+	async handleSession (request: IContext['req'], rId: TId): Promise<UContextSession> {
 		return this.sessionManager.handle(request, rId);
 	}
 	
