@@ -14,7 +14,7 @@ export namespace SCompProps {
 	type Button = React.ButtonHTMLAttributes<HTMLButtonElement>
 	type Input = React.InputHTMLAttributes<HTMLInputElement>
 	type Textarea = React.TextareaHTMLAttributes<HTMLTextAreaElement>
-	type Div = React.HTMLAttributes<HTMLDivElement>
+	type Div = React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>
 
 	/**
 	 * Specific HTML elements with optional inline omits
