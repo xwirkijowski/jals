@@ -15,17 +15,15 @@ body.dark {
 }
 
 .wxme {
-	overflow: visible;
+	@apply fill-orange-500/10 stroke-orange-500 overflow-visible;
 	height: 1em;
-	fill: rgba(249, 115, 22, 0.10);
-	stroke: #f97316;
 	stroke-width: 5px;
 	stroke-dasharray: 500;
 	animation: wxme-dash 60s infinite linear;
 }
 
 .wxme:hover {
-	fill: currentColor;
+	@apply fill-current;
 	stroke-width: 0;
 }
 
