@@ -8,7 +8,7 @@ import {HTMLMotionProps} from "framer-motion";
 
 type TProps = {
 	structured?: boolean
-} & SCompProps.TBase<true> & HTMLMotionProps<'div'>
+} & SCompProps.TBase<true> & SCompProps.THTMLDiv<["className"]> & HTMLMotionProps<'div'>
 
 export const Card = (
 	{structured = false, className, children, ...props}: TProps

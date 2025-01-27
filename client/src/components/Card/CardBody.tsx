@@ -3,13 +3,14 @@
 import cx from "classnames";
 import React from "react";
 import {SCompProps} from "@type/common";
+import {HTMLMotionProps} from "framer-motion";
 
 type TProps = {
 	grid?: boolean
-} & SCompProps.TBase<true>
+} & SCompProps.TBase<true> & SCompProps.THTMLDiv<["className"]> & HTMLMotionProps<'div'>
 
 export const CardBody = (
-	{grid, className, children}: TProps
+	{grid, className, children, ...props}: TProps
 ): React.ReactNode => {
 	return (
 		<div className={cx(
@@ -17,7 +18,7 @@ export const CardBody = (
 			(grid ? 'grid grid-cols-2' : 'flex flex-col'),
 			'dark:border-gray-700',
 			className,
-		)}>
+		)} {...props}>
 			{children}
 		</div>
 	)
