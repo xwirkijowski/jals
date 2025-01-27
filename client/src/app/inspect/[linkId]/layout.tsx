@@ -1,11 +1,13 @@
 "use server";
 
-// Imports
+import React from "react";
+
 import {getClient} from '@lib/apolloClient';
 import {LinkContextWrapper} from "@ctx/link/link.context";
 import {getHeaders} from "@lib/auth/session";
+
+import {Container} from "@comp/Container/Container";
 import {LinkNotFound} from "@comp/organisms/NotFound";
-import React from "react";
 
 // Metadata
 import {Metadata} from "next";
@@ -61,7 +63,9 @@ const Layout = async ({
                     {children}
                 </LinkContextWrapper>
             ) : (
-                <LinkNotFound linkId={linkId} context={'inspect'} />
+                <Container>
+                    <LinkNotFound linkId={linkId} context={'inspect'} />
+                </Container>
             )}
         </>
     )
