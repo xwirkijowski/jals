@@ -9,10 +9,11 @@ import {Card} from "@comp/Card/Card";
 import {H1} from "@comp/Typography/H1";
 import {H2} from "@comp/Typography/H2";
 import {P} from "@comp/Typography/P";
+import {Container} from "@comp/Container/Container";
 
 const Page = () => {
     return (
-        <motion.div variants={container} initial="hidden" animate="show" className="flex flex-col justify-center items-center flex-1 gap-8">
+        <Container>
             <motion.div variants={item} className="text-center">
                 <H1>Make your links <span className={"text-orange-500"}>shorter</span><br/> and <span className={"text-orange-500"}>observable</span></H1>
             </motion.div>
@@ -30,7 +31,7 @@ const Page = () => {
                     <P variants={item}>You can gain access to all visits (&quot;clicks&quot;) on your short links by creating a free account!</P>
                 </Card>
             </div>
-        </motion.div>
+        </Container>
     )
 }
 

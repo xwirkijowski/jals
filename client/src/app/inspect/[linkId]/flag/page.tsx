@@ -5,6 +5,7 @@ import {LinkContext} from "@ctx/link/link.context";
 
 // Components
 import {FlagForm} from "@act/flag/Flag.form";
+import {Container} from "@comp/Container/Container";
 
 const Page = () => {
     const {data} = useContext(LinkContext);
@@ -16,9 +17,9 @@ const Page = () => {
     }
 
     return (
-        <div className="flex flex-col justify-center items-center flex-1 gap-8">
+        <Container>
             <FlagForm link={data.link} mode="page"/>
-        </div>
+        </Container>
     )
 }
 

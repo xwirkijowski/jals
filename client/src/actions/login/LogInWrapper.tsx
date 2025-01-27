@@ -2,6 +2,7 @@
 
 import React, {useActionState} from "react";
 
+import {Container} from "@comp/Container/Container";
 import {LogInRequestForm} from "@act/login/stage1/LogInRequest.form";
 import {LogInRequestAction} from "@act/login/stage1/LogInRequest.action";
 import {LogInForm} from "@act/login/stage2/LogIn.form";
@@ -18,13 +19,13 @@ export const LogInWrapper = ({mode}: TActionPropsMode): React.ReactNode => {
 	return (
 		<>
 			{(!state1?.result?.success) ? (
-				<div className="flex flex-col justify-center items-center flex-1 gap-8">
+				<Container>
 					<LogInRequestForm mode={mode} action={action1} state={state1} pending={pending1} />
-				</div>
+				</Container>
 			) : (
-				<div className="flex flex-col justify-center items-center flex-1 gap-8">
+				<Container>
 					<LogInForm mode={mode} action={action2} state={state2} pending={pending2}/>
-				</div>
+				</Container>
 			)}
 		</>
 	)

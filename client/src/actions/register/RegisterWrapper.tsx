@@ -2,6 +2,7 @@
 
 import React, {useActionState} from "react";
 
+import {Container} from "@comp/Container/Container";
 import {RegisterRequestForm} from "@act/register/stage1/RegisterRequest.form";
 import {RegisterRequestAction} from "@act/register/stage1/RegisterRequest.action";
 import {RegisterForm} from "@act/register/stage2/Register.form";
@@ -18,13 +19,13 @@ export const RegisterWrapper = ({mode}: TActionPropsMode): React.ReactNode => {
 	return (
 		<>
 			{(!state1?.result?.success) ? (
-				<div className="flex flex-col justify-center items-center flex-1 gap-8">
+				<Container>
 					<RegisterRequestForm mode={mode} action={action1} state={state1} pending={pending1} />
-				</div>
+				</Container>
 			) : (
-				<div className="flex flex-col justify-center items-center flex-1 gap-8">
+				<Container>
 					<RegisterForm mode={mode} action={action2} state={state2} pending={pending2}/>
-				</div>
+				</Container>
 			)}
 		</>
 	)

@@ -34,6 +34,7 @@ import {Card} from "@comp/Card/Card";
 import {CardHead} from "@comp/Card/CardHead";
 import {CardBody} from "@comp/Card/CardBody";
 import {CardFooter} from "@comp/Card/CardFooter";
+import {Container} from "@comp/Container/Container"
 
 const Page = async (
 	{params}
@@ -60,7 +61,7 @@ const Page = async (
 	}
 
 	return (
-		<div className="flex flex-col justify-center items-center flex-1">
+		<Container>
 			{link ? (
 				<>
 					{loading ? (<Spinner />) : (
@@ -119,7 +120,7 @@ const Page = async (
 			) : (
 				<LinkNotFound linkId={linkId} context={'redirect'}/>
 			)}
-		</div>
+		</Container>
 	)
 }
 

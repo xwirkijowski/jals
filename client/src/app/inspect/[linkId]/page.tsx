@@ -3,6 +3,7 @@
 import cx from 'classnames';
 import React, {useContext} from "react";
 import Link from "next/link";
+import {motion} from "motion/react";
 
 // Components
 import {Tooltip} from "@comp/Tooltip/Tooltip";
@@ -17,19 +18,21 @@ import {H3} from "@comp/Typography/H3";
 import {P} from "@comp/Typography/P";
 import {Badge} from "@comp/Badge/Badge";
 import {DateToLocaleString} from "@comp/DateLocaleString/DateToLocaleString";
+import {Container} from "@comp/Container/Container";
 
 // Context
 import {LinkContext} from "@ctx/link/link.context";
+
+import {container, item} from "@lib/motion/stagger";
 
 const Page = (): React.ReactNode => {
     const {data} = useContext(LinkContext);
 
     // @todo Handle broken context edge case
-
     if (!data?.link) {return null}
 
     return (
-        <div className="flex flex-col justify-center items-center text-left flex-1 gap-8">
+        <Container>
             {data.link.flagCount > 0 && data.link.flagCount < 5 && (
                     <Callout title={"Warning"} type={"warning"}>
                         <p>This link has been
@@ -42,15 +45,14 @@ const Page = (): React.ReactNode => {
                     <p>This link has been
                         flagged <span className={'font-bold'}>{data.link.flagCount} times</span>!</p>
                 </Callout>
-            )
-            }
-            <Card structured>
-                <CardHead flex={false}>
-                    <H2 className="float-start">
+            )}
+            <Card variants={container} structured>
+                <CardHead variants={container} flex={false}>
+                    <H2 variants={item} className="float-start">
                         Inspecting link<br/><span className={"text-orange-500"}>{data.link.id}</span>
                     </H2>
                     {/* @ts-ignore workaround for `anchorName` CSS property */}
-                    <Badge badgeType={data.link.active?'success':'danger'} tooltip ping style={{anchorName: "--active-popover"}} popoverTarget={'active-popover'} popoverTargetAction={'toggle'}>
+                    <Badge variants={item} badgeType={data.link.active?'success':'danger'} tooltip ping style={{anchorName: "--active-popover"}} popoverTarget={'active-popover'} popoverTargetAction={'toggle'}>
                         {data.link.active ? "Active" : "Not active"}
                     </Badge>
                     {/* @ts-ignore workaround for `positionAnchor` CSS property */}
@@ -62,34 +64,34 @@ const Page = (): React.ReactNode => {
                             flags.</p>
                     </Tooltip>
                 </CardHead>
-                <CardBody grid>
-                    <div className={"w-full gap-2 flex flex-col col-span-full"}>
+                <CardBody variants={container} grid>
+                    <motion.div variants={item} className={"w-full gap-2 flex flex-col col-span-full"}>
                         <H3 className={"!text-base"}>Target URL</H3>
                         <p className={"w-full px-4 py-2 bg-zinc-200 text-zinc-600 rounded-xl border border-transparent font-mono text-wrap break-words overflow-hidden"}>{data.link.target}</p>
-                    </div>
-                    <div className={"gap-2 flex flex-col"}>
+                    </motion.div>
+                    <motion.div variants={item} className={"gap-2 flex flex-col"}>
                         <H3 className={"!text-base"}>Creation time</H3>
                         <P><DateToLocaleString value={data.link.createdAt} /></P>
-                    </div>
-                    <div className={"gap-2 flex flex-col"}>
+                    </motion.div>
+                    <motion.div variants={item} className={"gap-2 flex flex-col"}>
                         <H3 className={"!text-base"}>Click count</H3>
                         <P>{data.link.clickCount > 0 ? data.link.clickCount : "No clicks yet"}</P>
-                    </div>
-                    <div className={"gap-2 flex flex-col"}>
+                    </motion.div>
+                    <motion.div variants={item} className={"gap-2 flex flex-col"}>
                         <H3 className={"!text-base"}>Last modified</H3>
                         <P>{data.link.version > 0 && data.link.updatedAt ? <DateToLocaleString value={data.link.updatedAt} /> : "Not modified yet"}</P>
-                    </div>
-                    <div className={"gap-2 flex flex-col"}>
+                    </motion.div>
+                    <motion.div variants={item} className={"gap-2 flex flex-col"}>
                         <H3 className={"!text-base"}>Version</H3>
                         <P>{data.link.version}</P>
-                    </div>
+                    </motion.div>
                 </CardBody>
-                <CardFooter>
-                    <H3>Is this link malicious or inappropriate?</H3>
-                    <Link href={`/inspect/${data.link.id}/flag`} passHref><Button btnType={"danger"} effects={true}>Flag for moderation</Button></Link>
+                <CardFooter variants={container}>
+                    <H3 variants={item}>Is this link malicious or inappropriate?</H3>
+                    <Link href={`/inspect/${data.link.id}/flag`} passHref><Button variants={item} btnType={"danger"} effects={true}>Flag for moderation</Button></Link>
                 </CardFooter>
             </Card>
-        </div>
+        </Container>
     )
 }
 

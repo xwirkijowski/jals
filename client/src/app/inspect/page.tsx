@@ -1,5 +1,5 @@
 import React from "react";
-import * as motion from "motion/react-client"
+import * as motion from "motion/react-client";
 import Link from "next/link";
 
 // Components
@@ -8,12 +8,13 @@ import {Card} from "@comp/Card/Card";
 import {H1} from "@comp/Typography/H1";
 import {H2} from "@comp/Typography/H2";
 import {P} from "@comp/Typography/P";
+import {Container} from "@comp/Container/Container";
 
 import {container, item} from "@lib/motion/stagger";
 
 const Page = (): React.ReactNode => {
     return (
-        <motion.div variants={container} initial="hidden" animate="show" className="flex flex-col justify-center items-center flex-1 gap-8">
+        <Container>
             <motion.div variants={item} className="text-center">
                 <H1>
                     Inspect your <span className={"text-orange-500"}>JALS</span> link
@@ -31,7 +32,7 @@ const Page = (): React.ReactNode => {
                         className={'bg-zinc-100 dark:bg-gray-900 rounded px-1 py-0.5'}>/+</code> at the end.</P>
                 </Card>
             </div>
-        </motion.div>
+        </Container>
     )
 }
 
