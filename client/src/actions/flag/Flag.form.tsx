@@ -7,16 +7,13 @@ import Link from "next/link";
 import {FlagAction} from './Flag.action';
 
 // Components
-import {Spinner} from "@comp/Spinner/Spinner";
-import {Button} from "@comp/Button/Button";
-import {Callout} from "@comp/Callout/Callout";
-import {Card} from "@comp/Card/Card";
-import {CardHead} from "@comp/Card/CardHead";
-import {CardBody} from "@comp/Card/CardBody";
-import {CardFooter} from "@comp/Card/CardFooter";
-import {Textarea} from "@comp/form/Textarea/Textarea";
-import {H2} from "@comp/Typography/H2";
-import {Badge} from "@comp/Badge/Badge";
+import {Spinner} from "@comp/Spinner";
+import {Button} from "@comp/Button";
+import {Callout} from "@comp/Callout";
+import {Card, CardHead, CardFooter, CardBody} from "@comp/Card";
+import {H2} from "@comp/Typography";
+import {Textarea} from "@comp/form/Textarea";
+import {Badge} from "@comp/Badge";
 import {CloseButton} from "@act/shared/CloseButton";
 
 // Types

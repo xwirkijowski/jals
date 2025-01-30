@@ -24,18 +24,14 @@ import { getClient, query } from "@lib/apolloClient";
 import { getHeaders } from "@lib/auth/session";
 
 // Components
-import {Spinner} from "@comp/Spinner/Spinner";
-import {Tooltip} from "@comp/Tooltip/Tooltip";
-import {Button} from "@comp/Button/Button";
+import {Spinner} from "@comp/Spinner";
+import {Tooltip} from "@comp/Tooltip";
+import {Button} from "@comp/Button";
 import {LinkNotFound} from "@comp/organisms/NotFound";
-import {Badge} from "@comp/Badge/Badge";
-import {H2} from "@comp/Typography/H2";
-import {P} from "@comp/Typography/P";
-import {Card} from "@comp/Card/Card";
-import {CardHead} from "@comp/Card/CardHead";
-import {CardBody} from "@comp/Card/CardBody";
-import {CardFooter} from "@comp/Card/CardFooter";
-import {Container} from "@comp/Container/Container"
+import {Badge} from "@comp/Badge";
+import {H2, P} from "@comp/Typography";
+import {Card, CardHead, CardFooter, CardBody} from "@comp/Card";
+import {Container} from "@comp/Container"
 
 import {container, item} from "@lib/motion/stagger";
 

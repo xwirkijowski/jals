@@ -1,4 +1,4 @@
-import {Button} from "@comp/Button/Button";
+import {Button} from "@comp/Button";
 import {useRouter} from "next/navigation";
 import {TActionPropsMode} from "@act/shared/common.types";
 import React from "react";

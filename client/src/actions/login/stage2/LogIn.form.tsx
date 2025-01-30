@@ -4,16 +4,12 @@ import {TActionProps} from "@act/shared/common.types";
 
 // Components
 import {setupErrorCallouts} from "@act/shared/mutation.utilities";
-import {Spinner} from "@comp/Spinner/Spinner";
-import {Button} from "@comp/Button/Button";
-import {Callout} from "@comp/Callout/Callout";
-import {Input} from "@comp/form/Input/Input";
-import {Card} from "@comp/Card/Card";
-import {CardHead} from "@comp/Card/CardHead";
-import {CardBody} from "@comp/Card/CardBody";
-import {CardFooter} from "@comp/Card/CardFooter";
-import {H2} from "@comp/Typography/H2";
-import {P} from "@comp/Typography/P";
+import {Spinner} from "@comp/Spinner";
+import {Button} from "@comp/Button";
+import {Callout} from "@comp/Callout";
+import {Input} from "@comp/form/Input";
+import {Card, CardHead, CardFooter, CardBody} from "@comp/Card";
+import {H2, P} from "@comp/Typography";
 import {CloseButton} from "@act/shared/CloseButton";
 
 // @todo refactor to single deduplicated component with register stage 2

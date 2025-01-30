@@ -5,11 +5,9 @@ import {container, item} from "@lib/motion/stagger";
 
 // Components
 import {ShortenForm} from "@act/shorten/Shorten.form";
-import {Card} from "@comp/Card/Card";
-import {H1} from "@comp/Typography/H1";
-import {H2} from "@comp/Typography/H2";
-import {P} from "@comp/Typography/P";
-import {Container} from "@comp/Container/Container";
+import {Card} from "@comp/Card";
+import {H1, H2, P} from "@comp/Typography";
+import {Container} from "@comp/Container";
 
 const Page = () => {
     return (

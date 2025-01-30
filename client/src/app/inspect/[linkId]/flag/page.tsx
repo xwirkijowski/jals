@@ -5,7 +5,7 @@ import {LinkContext} from "@ctx/link/link.context";
 
 // Components
 import {FlagForm} from "@act/flag/Flag.form";
-import {Container} from "@comp/Container/Container";
+import {Container} from "@comp/Container";
 
 const Page = () => {
     const {data} = useContext(LinkContext);

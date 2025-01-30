@@ -6,19 +6,14 @@ import Link from "next/link";
 import {motion} from "motion/react";
 
 // Components
-import {Tooltip} from "@comp/Tooltip/Tooltip";
-import {Callout} from "@comp/Callout/Callout";
-import {Button} from "@comp/Button/Button";
-import {Card} from "@comp/Card/Card";
-import {CardHead} from "@comp/Card/CardHead";
-import {CardBody} from "@comp/Card/CardBody";
-import {CardFooter} from "@comp/Card/CardFooter";
-import {H2} from "@comp/Typography/H2";
-import {H3} from "@comp/Typography/H3";
-import {P} from "@comp/Typography/P";
-import {Badge} from "@comp/Badge/Badge";
-import {DateToLocaleString} from "@comp/DateLocaleString/DateToLocaleString";
-import {Container} from "@comp/Container/Container";
+import {Tooltip} from "@comp/Tooltip";
+import {Callout} from "@comp/Callout";
+import {Button} from "@comp/Button";
+import {Card, CardHead, CardBody, CardFooter} from "@comp/Card";
+import {H2, H3, P} from "@comp/Typography";
+import {Badge} from "@comp/Badge";
+import {DateToLocaleString} from "@comp/DateLocaleString";
+import {Container} from "@comp/Container";
 
 // Context
 import {LinkContext} from "@ctx/link/link.context";

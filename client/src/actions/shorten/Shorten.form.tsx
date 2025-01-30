@@ -6,11 +6,11 @@ import {motion} from "motion/react";
 
 // Components
 import Link from "next/link";
-import {Spinner} from "@comp/Spinner/Spinner";
-import {Button} from "@comp/Button/Button";
-import {Input} from "@comp/form/Input/Input";
-import {CopyToClipboard} from "@act/shorten/CopyLinkToClipboard";
+import {Spinner} from "@comp/Spinner";
+import {Button} from "@comp/Button";
+import {Input} from "@comp/form/Input";
 
+import {CopyToClipboard} from "@act/shorten/CopyLinkToClipboard";
 import {ShortenAction} from "./Shorten.action";
 import {buttonStyles, formStyles, inputStyles} from "@act/shared/link/shared.link.styles";
 import {HTMLMotionProps} from "framer-motion";

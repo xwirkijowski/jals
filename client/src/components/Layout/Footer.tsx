@@ -7,11 +7,10 @@ import Link from "next/link";
 
 import {ThemeContext} from "@ctx/theme/theme.context";
 
-import {Button} from "@comp/Button/Button";
-import {SunIcon} from "@comp/Icon/Sun";
-import {MoonIcon} from "@comp/Icon/Moon";
+import {Button} from "@comp/Button";
+
+import {SunIcon, MoonIcon, GithubIcon} from "@comp/Icon";
 import {Wxme} from "@comp/Wxme/Wxme";
-import {GithubIcon} from "@comp/Icon/GitHub";
 
 type TProps = {
     version: string | undefined

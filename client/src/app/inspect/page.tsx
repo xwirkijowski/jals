@@ -4,11 +4,9 @@ import Link from "next/link";
 
 // Components
 import {InspectForm} from "@act/inspect/Inspect.form";
-import {Card} from "@comp/Card/Card";
-import {H1} from "@comp/Typography/H1";
-import {H2} from "@comp/Typography/H2";
-import {P} from "@comp/Typography/P";
-import {Container} from "@comp/Container/Container";
+import {Card} from "@comp/Card";
+import {H1, H2, P} from "@comp/Typography";
+import {Container} from "@comp/Container";
 
 import {container, item} from "@lib/motion/stagger";
 

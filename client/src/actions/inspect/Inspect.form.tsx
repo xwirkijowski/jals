@@ -5,8 +5,8 @@ import cx from "classnames";
 import {motion} from "motion/react";
 import {redirect, RedirectType} from "next/navigation";
 
-import {Button} from "@comp/Button/Button";
-import {Input} from "@comp/form/Input/Input";
+import {Button} from "@comp/Button";
+import {Input} from "@comp/form/Input";
 
 import {buttonStyles, formStyles, inputStyles} from "@act/shared/link/shared.link.styles";
 import {HTMLMotionProps} from "framer-motion";

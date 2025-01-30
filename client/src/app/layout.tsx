@@ -28,11 +28,9 @@ import {AuthProvider} from "@ctx/auth/auth.context";
 import {ThemeProvider} from "@ctx/theme/theme.context";
 
 // Components
-import {Body} from "@comp/Layout/Body";
-import {Header} from '@comp/Layout/Header/Header';
-import {Footer} from '@comp/Layout/Footer';
+import {Header, Body, Footer} from '@comp/Layout';
 import {getCookie} from "@lib/auth/session.cookies";
-import {Spinner} from "@comp/Spinner/Spinner";
+import {Spinner} from "@comp/Spinner";
 
 const RootLayout = async (
     {children, modal}: { children: React.ReactNode, modal: React.ReactNode }

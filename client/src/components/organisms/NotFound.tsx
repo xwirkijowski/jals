@@ -5,9 +5,8 @@ import React from "react";
 import Link from "next/link";
 import {motion} from "motion/react";
 
-import {Button} from "@comp/Button/Button";
-import {H1} from "@comp/Typography/H1";
-import {H2} from "@comp/Typography/H2";
+import {Button} from "@comp/Button";
+import {H1, H2} from "@comp/Typography";
 
 import {container, item} from "@lib/motion/stagger";
 
