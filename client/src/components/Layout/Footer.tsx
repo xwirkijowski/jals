@@ -3,6 +3,7 @@
 import React, {useContext} from "react";
 import {useAnimation} from "motion/react";
 import cx from "classnames";
+import Link from "next/link";
 
 import {ThemeContext} from "@ctx/theme/theme.context";
 
@@ -10,6 +11,7 @@ import {Button} from "@comp/Button/Button";
 import {SunIcon} from "@comp/Icon/Sun";
 import {MoonIcon} from "@comp/Icon/Moon";
 import {Wxme} from "@comp/Wxme/Wxme";
+import {GithubIcon} from "@comp/Icon/GitHub";
 
 type TProps = {
     version: string | undefined
@@ -18,7 +20,9 @@ type TProps = {
 export const Footer = ({version}: TProps): React.ReactNode => {
     const {setTheme} = useContext(ThemeContext);
     const sunControls= useAnimation(),
-          moonControls = useAnimation();
+          moonControls = useAnimation(),
+          githubControlsBody = useAnimation(),
+          githubControlsTail = useAnimation();
     
     return (
         <footer className={cx(
@@ -32,15 +36,28 @@ export const Footer = ({version}: TProps): React.ReactNode => {
                 <p className="text-zinc-400 text-sm">
                     Made by Sebastian Wirkijowski. {version && (` Version ${version}.`)}
                 </p>
-
             </div>
             <div className={cx('flex items-end gap-4')}>
-                <Button btnType={'light'} onClick={() => setTheme('light')}
+                <Link passHref href={"https://github.com/xwirkijowski/jals"}>
+                    <Button btnType={'theme'} role={"link"} aria-label={"GitHub Repository"}
+                            onMouseEnter={async () => {
+                                githubControlsBody.start('animate');
+                                await githubControlsTail.start('draw');
+                                githubControlsTail.start('wag');
+                            }}
+                            onMouseLeave={() => {
+                                githubControlsBody.start('normal');
+                                githubControlsTail.start('normal');
+                            }}>
+                        <GithubIcon controlsBody={githubControlsBody} controlsTail={githubControlsTail} />
+                    </Button>
+                </Link>
+                <Button btnType={'light'} role={"link"} aria-label={"Light Theme"} onClick={() => setTheme('light')}
                         onMouseEnter={() => sunControls.start('animate')}
                         onMouseLeave={() => sunControls.start('normal')}>
                     <SunIcon controls={sunControls} />
                 </Button>
-                <Button btnType={'dark'} onClick={() => setTheme('dark')}
+                <Button btnType={'dark'} role={"link"} aria-label={"Dark Theme"} onClick={() => setTheme('dark')}
                         onMouseEnter={() => moonControls.start('animate')}
                         onMouseLeave={() => moonControls.start('normal')}>
                     <MoonIcon controls={moonControls} />
