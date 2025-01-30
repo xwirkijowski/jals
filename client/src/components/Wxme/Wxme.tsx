@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export const Wxme = () => {
 	return (
-		<Link href={"https://wirkijowski.me/?utm_source=jals2"}>
+		<Link href={"https://wirkijowski.me/?utm_source=jals2"} aria-label={"Link to author's website"}>
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
 				className={"wxme trans"}
