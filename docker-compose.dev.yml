@@ -22,7 +22,7 @@ services:
       SECRET_SENTRY: ${SECRET_SENTRY}
   client:
     container_name: "jals_client"
-    image: "xwirkijowski/jals-client-dev"
+    image: "xwirkijowski/jals-client:dev"
     build:
       - context: /client
       - dockerfile: ./docker/dev.Dockerfile
@@ -31,3 +31,4 @@ services:
     environment:
       NODE_ENV: "development"
       SERVER_API_STRING: "http://api:4000/"
+      NEXT_PUBLIC_CLIENT_API_STRING: ${CLIENT_API_STRING_DEV}

@@ -28,3 +28,4 @@ services:
     environment:
       NODE_ENV: "production"
       SERVER_API_STRING: "http://api:4000/"
+      NEXT_PUBLIC_CLIENT_API_STRING: ${CLIENT_API_STRING_PROD}
