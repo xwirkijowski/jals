@@ -68,20 +68,20 @@ export default {
 			});
 			if (result.hasErrors()) return result.response();
 
-			const action = handleAction(readyInput);
+			const action: ERequestAuthCodeAction = handleAction(readyInput);
 
 			// Get user by email
 			const userNode: THydratedUser = await user.findOne({email: readyInput.email})
 
-			if (!userNode && action === 'LOGIN') { // If no user found on `LOGIN` return error
+			if (!userNode && action === ERequestAuthCodeAction.LOGIN) { // If no user found on `LOGIN` return error
 				return result.addError('INVALID_CREDENTIALS').response();
-			} else if (action === 'REGISTER' && userNode) { // If user found on `REGISTER` return error
+			} else if (action === ERequestAuthCodeAction.REGISTER && userNode) { // If user found on `REGISTER` return error
 				return result.addError('ALREADY_EXISTS').response();
 			}
 
 			const codeNode: TAuthCodeInstance|undefined = await services.auth.requestCode(
-				(action === 'LOGIN')?userNode._id:undefined,
-				(action === 'LOGIN')?userNode.email:readyInput.email,
+				(action === ERequestAuthCodeAction.LOGIN)?userNode._id:undefined,
+				(action === ERequestAuthCodeAction.LOGIN)?userNode.email:readyInput.email,
 				action, requestId
 			)
 			if (!codeNode) return result.addError('INTERNAL_ERROR').response();

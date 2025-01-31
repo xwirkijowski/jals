@@ -144,7 +144,7 @@ export class AuthService extends EventEmitter {
 	 * @return  Promise<TAuthCodeInstance|undefined>
 	 */
 	async requestCode (userId: TId|undefined, userEmail: string, action: ERequestAuthCodeAction, rId: TId): Promise<TAuthCodeInstance|undefined> {
-		return await this.authCodeManager.createNew(userId.toString(), userEmail, action, rId);
+		return await this.authCodeManager.createNew(userId, userEmail, action, rId);
 	}
 
 	/**
@@ -161,7 +161,7 @@ export class AuthService extends EventEmitter {
 	 * @return  Promise<TAuthCodeInstance|undefined>
 	 */
 	async checkCode (userId: TId|undefined, code: string, action: ERequestAuthCodeAction, rId: TId): Promise<TAuthCodeInstance|undefined> {
-		return await this.authCodeManager.retrieve(userId.toString(), code, action, rId);
+		return await this.authCodeManager.retrieve(userId, code, action, rId);
 	}
 	
 	/**

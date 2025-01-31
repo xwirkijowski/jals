@@ -81,7 +81,7 @@ export class AuthCodeManager extends Manager {
 	 * @return  Promise<TAuthCodeInstance|undefined>
 	 */
 	async createNew (userId: TId|undefined, userEmail: string, action: ERequestAuthCodeAction = ERequestAuthCodeAction.LOGIN, rId: TId): Promise<TAuthCodeInstance|undefined> {
-		if (ERequestAuthCodeAction.LOGIN && (!userId || !userEmail)) {
+		if (action === ERequestAuthCodeAction.LOGIN && (!userId || !userEmail)) {
 			this.processError(new CriticalError('Cannot request login code, missing props!', 'CODE_REQUEST_MISSING_ARGS', AuthCode.domain, true, {requestId: rId}));
 			return undefined;
 		} else if (!userEmail) {
@@ -90,7 +90,7 @@ export class AuthCodeManager extends Manager {
 		}
 
 		try {
-			const node: TAuthCodeInstance = await new AuthCode({userId: userId.toString(), userEmail, action}, rId, this.generateCode(this.config.length, rId)).save(this.config.expiresIn, rId);
+			const node: TAuthCodeInstance = await new AuthCode({userId: userId?.toString(), userEmail, action}, rId, this.generateCode(this.config.length, rId)).save(this.config.expiresIn, rId);
 			this.emit('created', {authCodeId: node.authCodeId, rId});
 			
 			return node;
@@ -119,7 +119,7 @@ export class AuthCodeManager extends Manager {
 		}
 		
 		try {
-			return await AuthCode.find(userId.toString(), code, action, rId);
+			return await AuthCode.find(userId?.toString(), code, action, rId);
 		} catch (e) {
 			this.processError(e);
 			return undefined;
