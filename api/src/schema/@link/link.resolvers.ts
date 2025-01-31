@@ -15,8 +15,9 @@ export default {
 		updatedBy: async ({updatedBy}: THydratedLink, _:any, {models: {user}}: IContext) => (updatedBy) ? await user.findOne({_id: updatedBy}) : null,
 	},
 	LinkConnection: {
-		edges: (obj) => { return obj.edges; },
-		pageInfo: (obj) => { return obj.pageInfo; }
+		edges: ({nodes}: {nodes: THydratedLink[]}) => nodes,
+		nodes: ({nodes}: {nodes: THydratedLink[]}) => nodes,
+		pageInfo: ({pageInfo}) => pageInfo,
 	},
 	LinkEdge: {
 		cursor: (obj) => { return obj._id; },
@@ -29,18 +30,50 @@ export default {
 
 			return await link.findOne({_id: args.linkId});
 		},
-		links: async (_, args, { session, models: {link}}: IContext) => {
+		links: async (_, args, {session, pagination, models: {link}}: IContext) => {
 			check.needs('mongo');
+			
+			const readyArgs = check.validator.prepareArgs(args, {
+				page: {type: "number", optional: true},
+				perPage: {type: "number", optional: true},
+				target: {type: "string", optional: true},
+				hasFlags: {type: "boolean", optional: true},
+				createdBy: {type: "ObjectId", optional: true},
+			})
 
-			// @todo Implement
+			const filter = {
+				...((readyArgs?.createdBy) && {createdBy: readyArgs.createdBy}),
+			};
 
-			const filter = {};
-			const page = {};
-
+			const perPage = (readyArgs?.perPage && readyArgs.perPage <= pagination.perPageMax) ? readyArgs?.perPage : pagination.perPageDefault;
+			const skip = (readyArgs?.page && readyArgs.page > 1) ? (readyArgs.page - 1) * perPage : 0;
+			
+			const nodes: THydratedLink[] = await link.find(filter, null)
+				.skip(skip)
+				.limit(perPage);
+			
+			if (!nodes || nodes.length === 0) return;
+			
+			check.isOwner(session, nodes[0]?.createdBy);
+			
+			const total = await link.countDocuments(filter);
+			
+			const pageInfo = {
+				total: total,
+				perPage: perPage,
+				pageCount: undefined,
+				currentPage: readyArgs?.page || 1,
+			}
+			
+			
+			pageInfo.pageCount = Math.ceil(pageInfo.total / pageInfo.perPage);
+			
+			console.log(pageInfo, skip, perPage)
 			// Set up search
-			const nodes = await link.find(filter, null)
-
-
+			return {
+				nodes,
+				pageInfo
+			};
 		}
 	},
 }

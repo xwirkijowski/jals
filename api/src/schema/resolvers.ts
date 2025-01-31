@@ -4,18 +4,19 @@ import {
 	IPResolver,
 } from 'graphql-scalars';
 import { DateTime } from "luxon";
+import {IContext} from "@type/context.types";
 
 export default {
 	DateTime: DateTimeResolver,
 	EmailAddress: EmailAddressResolver,
 	IPAddress: IPResolver,
 	PageInfo: {
-		total: ({total}) => total,
-		perPage: ({paginationData}) => paginationData.perPage,
-		pageCount: ({pageCount}) => pageCount,
-		currentPage: ({paginationData}) => paginationData.page,
-		hasNextPage: ({paginationData, pageCount}) => (paginationData.page < pageCount),
-		hasPreviousPage: ({paginationData, pageCount}) => (paginationData.page <= pageCount + 1 && paginationData.page > 1),
+		total: (pageInfo) => pageInfo.total,
+		perPage: (pageInfo) => pageInfo.perPage,
+		pageCount: (pageInfo) => pageInfo.pageCount,
+		currentPage: (pageInfo) => pageInfo.currentPage,
+		hasNextPage: (pageInfo, _, __, {pagination}: IContext) => (pageInfo.currentPage < pageInfo.pageCount),
+		hasPreviousPage: (pageInfo, _, __, {pagination}: IContext) => (pageInfo.currentPage <= pageInfo.pageCount + 1 && pageInfo.currentPage > 1),
 	},
 	Result: {
 		success: (obj) => ((typeof obj === 'boolean' && obj === true) || obj?.success === true),
