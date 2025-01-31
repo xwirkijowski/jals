@@ -17,6 +17,8 @@ RUN npm ci
 
 # Set build environment variables
 ENV NEXT_TELEMETRY_DISABLED=1
+ARG NEXT_PUBLIC_CLIENT_API_STRING
+ENV NEXT_PUBLIC_CLIENT_API_STRING=${NEXT_PUBLIC_CLIENT_API_STRING}
 
 # Build
 RUN npm run client-build
@@ -36,6 +38,8 @@ COPY --from=builder --chown=service:service /client ./
 
 # Set run time environment variables
 ENV NEXT_TELEMETRY_DISABLED=1
+ARG NEXT_PUBLIC_CLIENT_API_STRING
+ENV NEXT_PUBLIC_CLIENT_API_STRING=${NEXT_PUBLIC_CLIENT_API_STRING}
 
 # Expose default port
 EXPOSE 3000
