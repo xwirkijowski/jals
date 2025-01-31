@@ -19,7 +19,7 @@ export const generateViewport = async (): Promise<Viewport> => ({
 });
 
 // Import global styles
-import '../css/globals.css';
+import 'style/globals.css';
 
 
 // Contexts
@@ -30,7 +30,6 @@ import {ThemeProvider} from "@ctx/theme/theme.context";
 // Components
 import {Header, Body, Footer} from '@comp/Layout';
 import {getCookie} from "@lib/auth/session.cookies";
-import {Spinner} from "@comp/Spinner";
 
 const RootLayout = async (
     {children, modal}: { children: React.ReactNode, modal: React.ReactNode }
