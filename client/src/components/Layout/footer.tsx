@@ -26,7 +26,7 @@ export const Footer = ({version}: TProps): React.ReactNode => {
     return (
         <footer className={cx(
             'flex flex-row w-full mt-8 px-8 py-4 gap-8 items-center',
-            'bg-white border-t border-zinc-900/15',
+            'bg-white border-t border-zinc-200',
             'dark:bg-gray-900 dark:border-gray-700',
             'c-trans-4',
         )}>

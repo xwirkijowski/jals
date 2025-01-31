@@ -1,0 +1,1 @@
+export const textColor = 'text-zinc-900 dark:text-zinc-100';
