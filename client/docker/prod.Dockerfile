@@ -15,7 +15,6 @@ COPY ../src ./src
 # Run clean install
 RUN npm ci
 
-
 # Set build environment variables
 ENV NEXT_TELEMETRY_DISABLED=1
 ARG NEXT_PUBLIC_CLIENT_API_STRING
