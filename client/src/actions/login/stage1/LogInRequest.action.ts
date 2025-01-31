@@ -10,7 +10,7 @@ export const LogInRequestAction = async (
 ) => {
     const email = formData.get('email');
 
-    const res = await getClient().mutate({
+    const {data, errors} = await getClient().mutate({
         mutation: REQUEST_AUTH_CODE,
         variables: {
             input: {
@@ -22,10 +22,9 @@ export const LogInRequestAction = async (
         errorPolicy: 'all',
     })
 
-    const data = res.data.requestAuthCode;
-
     return {
-        ...data,
+        ...data.requestAuthCode,
+        errors,
         email
     };
 }

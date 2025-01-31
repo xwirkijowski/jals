@@ -4,7 +4,7 @@ import {Callout} from "@comp/callout/callout";
 
 export const setupErrorCallouts = (state: any) => {
     const errorCallouts: React.JSX.Element[] = [];
-
+    
     if (state && state?.result?.success === false) {
         state.result.errors.map(item => {
             let content;
@@ -29,6 +29,12 @@ export const setupErrorCallouts = (state: any) => {
                 </Callout>
             )
         })
+    } else if (state?.errors) {
+        errorCallouts.push(
+            <Callout type="danger" title={'Error'}>
+                <p>Unknown API error occurred!</p>
+            </Callout>
+        )
     }
 
     return errorCallouts;

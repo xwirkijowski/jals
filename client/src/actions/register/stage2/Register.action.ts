@@ -24,7 +24,7 @@ export const RegisterAction = async (
         context: await getHeaders(),
         errorPolicy: 'all',
     })
-
+    
     // Create session cookie
     if (data && data?.result?.success === true && data?.sessionId) {
         await createCookie(data)
