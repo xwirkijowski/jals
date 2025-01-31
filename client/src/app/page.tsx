@@ -21,7 +21,7 @@ const Page = () => {
                 <motion.div variants={item}>
                     <ShortenForm variants={item} />
                 </motion.div>
-                <P variants={item}>or get information about an <Link href="/inspect" className="border-b border-b-current text-orange-500 hover:text-orange-400 trans font-bold">existing link</Link></P>
+                <P variants={item}>or get information about an <Anchor href="/inspect" bold>existing link</Anchor></P>
                 <Card variants={container} className={'mt-8'}>
                     <H2 variants={item}>So what does this do?</H2>
                     <P variants={item}>You input your long URL into <span className={"font-bold"}>JALS</span>, and in return, you receive a unique short identifier. This is especially convenient for UTM tagging!</P>
