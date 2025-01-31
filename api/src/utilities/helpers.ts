@@ -80,12 +80,11 @@ class Validator {
 			empty: `Input field ${path} is empty`,
 		}
 		
-		return new GraphQLError(message[key], {path: [path], extensions: {code: this.errorCode[key]}})
+		return new GraphQLError(message[key], {path: [path], extensions: {code: 'BAD_USER_INPUT'}})
 	}
 	
 	prepareArgs (input: unknown, struct: TValidateData): any {
 		let readyArgs = {};
-		const errors: GraphQLError[] = [];
 	
 		if (typeof input !== 'object' || Object.keys(input).length === 0) throw new GraphQLError('Input empty or wrong type', {extensions: {code: 'BAD_USER_INPUT'}})
 		
@@ -96,48 +95,39 @@ class Validator {
 			let inputValue = input[key];
 			
 			if (!optional && (!inputValue || (inputValue && !check.nonNull(inputValue)))) {
-				errors.push(this.buildGraphQLError(key, 'empty'))
-				continue;
+				throw this.buildGraphQLError(key, 'empty')
 			} else if (optional && !inputValue) continue;
 			
 			if (data.type === 'string') {
 				if (typeof inputValue !== data.type) {
-					errors.push(this.buildGraphQLError(key, 'type'))
-					continue;
+					throw this.buildGraphQLError(key, 'type')
 				} else if (inputValue.length === 0) {
-					errors.push(this.buildGraphQLError(key, 'empty'))
-					continue;
+					throw this.buildGraphQLError(key, 'empty')
 				} else if (data.length && inputValue.length !== data.length) {
-					errors.push(this.buildGraphQLError(key, 'length', data.length))
-					continue;
+					throw this.buildGraphQLError(key, 'length', data.length)
 				}
 				
 				readyArgs[key] = (normalize) ? String(inputValue).normalize('NFKD') : String(inputValue);
 			} else if (data.type === 'boolean') {
 				if (typeof inputValue !== data.type) {
-					errors.push(this.buildGraphQLError(key, 'type'))
-					continue;
+					throw this.buildGraphQLError(key, 'type')
 				}
 				
 				readyArgs[key] = Boolean(inputValue);
 			} else if (data.type === 'number') {
 				if (typeof inputValue !== data.type) {
-					errors.push(this.buildGraphQLError(key, 'type'))
-					continue;
+					throw this.buildGraphQLError(key, 'type')
 				}
 				
 				readyArgs[key] = Number(inputValue);
 			} else if (data.type === 'ObjectId') {
 				if (!mongoose.isValidObjectId(inputValue)) {
-					errors.push(this.buildGraphQLError(key, 'type'))
-					continue;
+					throw this.buildGraphQLError(key, 'type')
 				}
 				
 				readyArgs[key] = inputValue;
 			}
 		}
-		
-		if (errors.length > 0) throw AggregateError(errors);
 		
 		return readyArgs
 	}
@@ -262,8 +252,8 @@ export const check = {
 
 		let authorized: boolean = false; // Default to false
 
-		if ((session as TSessionInstance)?.userId === createdBy || (session as TSessionInstance)?.isAdmin === true) authorized = true;
-
+		if ((session as TSessionInstance)?.userId.toString() === createdBy.toString() || (session as TSessionInstance)?.isAdmin === true) authorized = true;
+		
 		// Handle user not authorized
 		if (!authorized) {
 			throw new GraphQLError('Unauthorized. You do not have access to this resource.', {
