@@ -18,7 +18,7 @@ import {Container} from "@comp/container";
 // Context
 import {LinkContext} from "@ctx/link/link.context";
 
-import {container, item} from "@lib/motion/stagger";
+import {container, item} from "@lib/motion/stagger.fly";
 
 const Page = (): React.ReactNode => {
     const {data} = useContext(LinkContext);

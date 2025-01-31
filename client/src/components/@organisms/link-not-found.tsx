@@ -8,7 +8,7 @@ import {motion} from "motion/react";
 import {Button} from "@comp/button";
 import {H1, H2} from "@comp/typography";
 
-import {container, item} from "@lib/motion/stagger";
+import {container, item} from "@lib/motion/stagger.fly";
 
 export const LinkNotFound = ({linkId, context}): React.ReactNode => {
 	return (
