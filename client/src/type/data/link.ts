@@ -9,6 +9,7 @@ export type TLink = {
     id: string,
     target: string,
     active: boolean,
+    caution: boolean,
     clickCount: number,
     flagCount: number,
     flags: Array<TLinkFlag>,
