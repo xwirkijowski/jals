@@ -2,19 +2,18 @@
 
 import {gql, useSuspenseQuery} from "@apollo/client";
 import {AuthContext} from "@ctx/auth/auth.context";
-import {useContext, useEffect, useState, useTransition} from "react";
+import {useCallback, useContext, useMemo, useState, useTransition} from "react";
 import {getHeaders} from "@lib/auth/session-client";
 
 import {Card, CardBody, CardFooter, CardHead} from "@comp/card";
 import {Button, ButtonGroup} from "@comp/button";
-import {H2, H3, P} from "@comp/typography";
-import {Table, TD, TableRow, TableHead, TH} from "@comp/table";
+import {H2, P} from "@comp/typography";
+import {Table, TableRow, TableHead, TH} from "@comp/table";
 import {LinksTableItem} from "@comp/@dashboard/links-table-item";
 
 import {staggerFly} from "@lib/motion/stagger.fly";
 import {staggerFade} from "@lib/motion/stagger.fade";
 import {Spinner} from "@comp/spinner";
-import {Anchor} from "@comp/anchor";
 import Link from "next/link";
 
 const query = gql`
@@ -44,45 +43,44 @@ const query = gql`
 
 export default function LinksTable () {
 	const {session, user} = useContext(AuthContext);
-	if (!user) return (<>Unauthenticated user</>) // @todo: Replace
-	
 	const [isPending, startTransition] = useTransition();
 	const [page, setPage] = useState(1);
 	
-	const variables = {
-		page: page,
-		perPage: 5,
-		createdBy: user.id
-	}
-	
 	// @todo: Better handling
 	// @todo: Types, interface
+	
+	const variables = useMemo(()=> ({
+		page: page,
+		perPage: 5,
+		createdBy: user!.id
+	}), [page, user]);
+	
 	const {data: {links}, error, fetchMore} = useSuspenseQuery<any>(
 		query,
 		{
 			variables,
 			context: getHeaders(session),
-			errorPolicy: 'all',
+			errorPolicy: "all",
 		}
 	);
 	
-	const handleNextPage = () => {
+	const handleNextPage = useCallback(() => {
 		if (links?.pageInfo?.hasNextPage) {
 			startTransition(() => {
 				setPage(page + 1);
 				fetchMore({variables});
 			})
 		}
-	};
-	
-	const handlePrevPage = () => {
+	}, [links?.pageInfo?.hasNextPage, fetchMore, variables, page]);
+
+	const handlePrevPage = useCallback(() => {
 		if (links?.pageInfo?.hasPreviousPage) {
 			startTransition(() => {
 				setPage(page - 1);
 				fetchMore({variables});
 			})
 		}
-	};
+	}, [links?.pageInfo?.hasPreviousPage, fetchMore, variables, page]);
 	
 	return (
 		<Card structured className={"overflow-hidden !max-w-none col-span-full"} variants={staggerFly.container}>
@@ -96,7 +94,7 @@ export default function LinksTable () {
 			}
 			{!links?.nodes &&
 				<CardBody className={'items-center'}>
-					<H2 align={"center"} variants={staggerFly.item}>Looks like you don't have any links yet!</H2>
+					<H2 align={"center"} variants={staggerFly.item}>Looks like you don&apos;t have any links yet!</H2>
 					<Link passHref href={'/'}>
 						<Button btnType={'primary'} effects>
 							Create link
