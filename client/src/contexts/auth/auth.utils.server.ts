@@ -1,7 +1,7 @@
 "use server";
 
-import {getClient} from "@lib/apolloClient";
-import {getHeaders} from "@lib/auth/session";
+import {getClient} from "@lib/apollo-client";
+import {getHeaders} from "@lib/auth/session-server";
 import {CURRENT_SESSION, CURRENT_USER} from "./auth.queries";
 import {getCookie} from "@lib/auth/session.cookies";
 import {TSessionCookie} from "@lib/auth/session.types";

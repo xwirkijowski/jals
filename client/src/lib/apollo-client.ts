@@ -6,7 +6,7 @@ import {
 } from "@apollo/experimental-nextjs-app-support";
 
 const httpLink = new HttpLink({
-    uri: process.env.API_STRING,
+    uri: process.env.NEXT_PUBLIC_API_STRING,
 });
 
 const cache = new InMemoryCache({ addTypename: false });

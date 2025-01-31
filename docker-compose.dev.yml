@@ -30,4 +30,4 @@ services:
       - "10020:3000"
     environment:
       NODE_ENV: "development"
-      API_STRING: "http://api:4000/"
+      NEXT_PUBLIC_API_STRING: "http://api:4000/"
