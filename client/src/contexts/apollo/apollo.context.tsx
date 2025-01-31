@@ -8,11 +8,9 @@ import {
 	InMemoryCache,
 } from "@apollo/experimental-nextjs-app-support";
 
-const api_string: string|undefined = process.env.NEXT_PUBLIC_CLIENT_API_STRING;
-
 function makeClient () {
 	const httpLink = new HttpLink({
-		uri: api_string,
+		uri: process.env.NEXT_PUBLIC_CLIENT_API_STRING,
 	});
 	
 	const cache = new InMemoryCache({ addTypename: false });

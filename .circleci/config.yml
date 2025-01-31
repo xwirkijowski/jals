@@ -38,7 +38,7 @@ jobs:
       - setup_remote_docker
       - run: |
           TAG=${CIRCLE_SHA1:0:8}
-          docker build -t xwirkijowski/jals-client:$TAG -t xwirkijowski/jals-client:latest -f ./client/docker/prod.Dockerfile ./client
+          docker build -t xwirkijowski/jals-client:$TAG -t xwirkijowski/jals-client:latest -f ./client/docker/prod.Dockerfile --build-arg ${CLIENT_API_STRING_PROD} ./client
           echo ${DOCKER_TOKEN} | docker login -u xwirkijowski --password-stdin
           docker push xwirkijowski/jals-client --all-tags
 
@@ -50,7 +50,7 @@ jobs:
       - setup_remote_docker
       - run: |
           TAG=${CIRCLE_SHA1:0:8}
-          docker build -t xwirkijowski/jals-client:$TAG -t xwirkijowski/jals-client:dev -f ./client/docker/dev.Dockerfile ./client
+          docker build -t xwirkijowski/jals-client:$TAG -t xwirkijowski/jals-client:dev -f ./client/docker/dev.Dockerfile --build-arg ${CLIENT_API_STRING_DEV} ./client
           echo ${DOCKER_TOKEN} | docker login -u xwirkijowski --password-stdin
           docker push xwirkijowski/jals-client --all-tags
 
