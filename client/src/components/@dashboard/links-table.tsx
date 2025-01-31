@@ -84,19 +84,19 @@ export default function LinksTable () {
 	
 	return (
 		<Card structured className={"overflow-hidden !max-w-none col-span-full"} variants={staggerFly.container}>
-			<CardHead>
+			<CardHead variants={staggerFly.container}>
 				<H2 variants={staggerFly.item}>Your links</H2>
 			</CardHead>
 			{isPending &&
-				<CardBody className={'items-center'}>
+				<CardBody variants={staggerFly.container} className={'items-center'}>
 					<Spinner />
 				</CardBody>
 			}
 			{!links?.nodes &&
-				<CardBody className={'items-center'}>
+				<CardBody variants={staggerFly.container} className={'items-center'}>
 					<H2 align={"center"} variants={staggerFly.item}>Looks like you don&apos;t have any links yet!</H2>
 					<Link passHref href={'/'}>
-						<Button btnType={'primary'} effects>
+						<Button variants={staggerFly.item} btnType={'primary'} effects>
 							Create link
 						</Button>
 					</Link>
