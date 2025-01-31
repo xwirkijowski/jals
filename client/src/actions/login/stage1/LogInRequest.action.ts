@@ -1,8 +1,8 @@
 "use server";
 
 import {REQUEST_AUTH_CODE} from "@act/shared/auth/shared.auth.query";
-import {getClient} from "@lib/apolloClient";
-import {getHeaders} from "@lib/auth/session";
+import {getClient} from "@lib/apollo-client";
+import {getHeaders} from "@lib/auth/session-server";
 
 export const LogInRequestAction = async (
     state: ResponseType,

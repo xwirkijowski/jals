@@ -1,8 +1,8 @@
 "use server";
 
 import {LOG_IN} from "./LogIn.query";
-import {getClient} from "@lib/apolloClient";
-import {getHeaders} from "@lib/auth/session";
+import {getClient} from "@lib/apollo-client";
+import {getHeaders} from "@lib/auth/session-server";
 import {createCookie} from "@lib/auth/session.cookies";
 import {revalidatePath} from "next/cache";
 
