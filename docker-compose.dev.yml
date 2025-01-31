@@ -30,5 +30,4 @@ services:
       - "10020:3000"
     environment:
       NODE_ENV: "development"
-      NEXT_PUBLIC_SERVER_API_STRING: "http://api:4000/"
-      NEXT_PUBLIC_CLIENT_API_STRING: "https://jals2-dev.wirkijowski.dev/api"
+      SERVER_API_STRING: "http://api:4000/"

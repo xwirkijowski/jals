@@ -1,3 +1,4 @@
+import "server-only";
 import {HttpLink} from "@apollo/client";
 import {
     registerApolloClient,
@@ -6,7 +7,7 @@ import {
 } from "@apollo/experimental-nextjs-app-support";
 
 const httpLink = new HttpLink({
-    uri: process.env.NEXT_PUBLIC_SERVER_API_STRING,
+    uri: process.env.SERVER_API_STRING,
 });
 
 const cache = new InMemoryCache({ addTypename: false });

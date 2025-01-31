@@ -41,8 +41,7 @@ services:
       - "10010:3000"
     environment:
       NODE_ENV: "production"
-      NEXT_PUBLIC_SERVER_API_STRING: "http://api:4000/"
-      NEXT_PUBLIC_CLIENT_API_STRING: "https://jals2.wirkijowski.dev/api"
+      SERVER_API_STRING: "http://api:4000/"
     depends_on:
       - redis
       - mongo
