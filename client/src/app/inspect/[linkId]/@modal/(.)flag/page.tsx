@@ -6,7 +6,7 @@ import {LinkContext} from "@ctx/link/link.context";
 
 // Components
 import {FlagForm} from "@act/flag/Flag.form";
-import {ModalWrapper} from '@comp/Modal';
+import {ModalWrapper} from '@comp/modal';
 
 const Page = () => {
     const {data} = useContext(LinkContext);

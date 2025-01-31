@@ -5,8 +5,8 @@ import {useActionState} from "react";
 import {LogOutAction} from "./LogOIut.action";
 
 // Components
-import {Button} from "@comp/Button";
-import {Spinner} from "@comp/Spinner";
+import {Button} from "@comp/button";
+import {Spinner} from "@comp/spinner";
 
 
 export const LogOutButton = () => {

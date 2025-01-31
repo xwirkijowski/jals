@@ -20,20 +20,20 @@ export const generateMetadata = async (
 }
 
 import { GET_LINK, CLICK_ADD } from "./queries";
-import { getClient, query } from "@lib/apolloClient";
-import { getHeaders } from "@lib/auth/session";
+import { getClient, query } from "@lib/apollo-client";
+import { getHeaders } from "@lib/auth/session-server";
 
 // Components
-import {Spinner} from "@comp/Spinner";
-import {Tooltip} from "@comp/Tooltip";
-import {Button} from "@comp/Button";
-import {LinkNotFound} from "@comp/organisms/NotFound";
-import {Badge} from "@comp/Badge";
-import {H2, P} from "@comp/Typography";
-import {Card, CardHead, CardFooter, CardBody} from "@comp/Card";
-import {Container} from "@comp/Container"
+import {Spinner} from "@comp/spinner";
+import {Tooltip} from "@comp/tooltip";
+import {Button} from "@comp/button";
+import {LinkNotFound} from "@comp/@organisms/link-not-found";
+import {Badge} from "@comp/badge";
+import {H2, P} from "@comp/typography";
+import {Card, CardHead, CardFooter, CardBody} from "@comp/card";
+import {Container} from "@comp/container"
 
-import {container, item} from "@lib/motion/stagger";
+import {container, item} from "@lib/motion/stagger.fly";
 
 const Page = async (
 	{params}
@@ -70,7 +70,7 @@ const Page = async (
 						<Card variants={container} structured>
 							<CardHead variants={container} className={'items-center'}>
 								{/* @ts-ignore workaround for `anchorName` CSS property */}
-								<Badge variants={item} badgeType={link.caution ? 'danger' : 'success'} tooltip ping style={{anchorName: "--active-popover"}} popoverTarget={'active-popover'} popoverTargetAction={'toggle'}>
+								<Badge variants={item} className={"float-end"} badgeType={link.caution ? 'danger' : 'success'} tooltip ping style={{anchorName: "--active-popover"}} popoverTarget={'active-popover'} popoverTargetAction={'toggle'}>
 									{link.id}
 								</Badge>
 								{/* @ts-ignore workaround for `positionAnchor` CSS property */}

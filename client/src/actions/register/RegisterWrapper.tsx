@@ -2,7 +2,7 @@
 
 import React, {useActionState} from "react";
 
-import {Container} from "@comp/Container/Container";
+import {Container} from "@comp/container/container";
 import {RegisterRequestForm} from "@act/register/stage1/RegisterRequest.form";
 import {RegisterRequestAction} from "@act/register/stage1/RegisterRequest.action";
 import {RegisterForm} from "@act/register/stage2/Register.form";

@@ -4,7 +4,7 @@ export const inputStyles: string[] = [
 	'trans',
 	'bg-white text-zinc-600 text-md caret-orange-500',
 	'rounded-xl',
-	'border border-zinc-900/15 px-4 py-3',
+	'border border-zinc-200 px-4 py-3',
 	'placeholder:text-zinc-600/50',
 	'group-focus-within:border-orange-500',
 	'disabled:border-orange-500',

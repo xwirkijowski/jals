@@ -2,12 +2,12 @@
 
 import React from "react";
 
-import {getClient} from '@lib/apolloClient';
+import {getClient} from '@lib/apollo-client';
 import {LinkContextWrapper} from "@ctx/link/link.context";
-import {getHeaders} from "@lib/auth/session";
+import {getHeaders} from "@lib/auth/session-server";
 
-import {Container} from "@comp/Container/Container";
-import {LinkNotFound} from "@comp/organisms/NotFound";
+import {Container} from "@comp/container/container";
+import {LinkNotFound} from "@comp/@organisms/link-not-found";
 
 // Metadata
 import {Metadata} from "next";

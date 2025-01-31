@@ -4,16 +4,16 @@ import {TActionProps} from "@act/shared/common.types";
 
 // Components
 import {setupErrorCallouts} from "@act/shared/mutation.utilities";
-import {Spinner} from "@comp/Spinner/Spinner";
-import {Button} from "@comp/Button";
-import {Input} from "@comp/form/Input/Input";
-import {Callout} from "@comp/Callout/Callout";
-import {Card} from "@comp/Card/Card";
-import {CardHead} from "@comp/Card/CardHead";
-import {CardBody} from "@comp/Card/CardBody";
-import {CardFooter} from "@comp/Card/CardFooter";
-import {H2} from "@comp/Typography/H2";
-import {P} from "@comp/Typography/P";
+import {Spinner} from "@comp/spinner/spinner";
+import {Button} from "@comp/button";
+import {Input} from "@comp/form/input/Input";
+import {Callout} from "@comp/callout/callout";
+import {Card} from "@comp/card/card";
+import {CardHead} from "@comp/card/card-head";
+import {CardBody} from "@comp/card/card-body";
+import {CardFooter} from "@comp/card/card-footer";
+import {H2} from "@comp/typography/h2";
+import {P} from "@comp/typography/p";
 import {CloseButton} from "@act/shared/CloseButton";
 
 // @todo refactor to single deduplicated component with login stage 2

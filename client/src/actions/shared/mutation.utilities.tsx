@@ -1,6 +1,6 @@
 import React from "react";
 
-import {Callout} from "@comp/Callout/Callout";
+import {Callout} from "@comp/callout/callout";
 
 export const setupErrorCallouts = (state: any) => {
     const errorCallouts: React.JSX.Element[] = [];

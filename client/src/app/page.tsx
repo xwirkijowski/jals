@@ -1,13 +1,14 @@
 import Link from "next/link";
 import * as motion from "motion/react-client"
 
-import {container, item} from "@lib/motion/stagger";
+import {container, item} from "@lib/motion/stagger.fly";
 
 // Components
 import {ShortenForm} from "@act/shorten/Shorten.form";
-import {Card} from "@comp/Card";
-import {H1, H2, P} from "@comp/Typography";
-import {Container} from "@comp/Container";
+import {Card} from "@comp/card";
+import {H1, H2, P} from "@comp/typography";
+import {Container} from "@comp/container";
+import {Anchor} from "@comp/anchor";
 
 const Page = () => {
     return (

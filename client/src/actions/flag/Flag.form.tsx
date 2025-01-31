@@ -7,13 +7,13 @@ import Link from "next/link";
 import {FlagAction} from './Flag.action';
 
 // Components
-import {Spinner} from "@comp/Spinner";
-import {Button} from "@comp/Button";
-import {Callout} from "@comp/Callout";
-import {Card, CardHead, CardFooter, CardBody} from "@comp/Card";
-import {H2} from "@comp/Typography";
-import {Textarea} from "@comp/form/Textarea";
-import {Badge} from "@comp/Badge";
+import {Spinner} from "@comp/spinner";
+import {Button} from "@comp/button";
+import {Callout} from "@comp/callout";
+import {Card, CardHead, CardFooter, CardBody} from "@comp/card";
+import {H2} from "@comp/typography";
+import {Textarea} from "components/form/textarea";
+import {Badge} from "@comp/badge";
 import {CloseButton} from "@act/shared/CloseButton";
 
 // Types
@@ -31,7 +31,7 @@ export const FlagForm = (
             <Card structured>
                 <CardHead flex={false}>
                     <H2 className="float-start">Flag for moderation</H2>
-                    <Badge badgeType={'theme'}>
+                    <Badge badgeType={'theme'} className={"float-end"}>
                         {link.id}
                     </Badge>
                 </CardHead>

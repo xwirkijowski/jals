@@ -6,9 +6,9 @@ import {motion} from "motion/react";
 
 // Components
 import Link from "next/link";
-import {Spinner} from "@comp/Spinner";
-import {Button} from "@comp/Button";
-import {Input} from "@comp/form/Input";
+import {Spinner} from "@comp/spinner";
+import {Button} from "@comp/button";
+import {Input} from "components/form/input";
 
 import {CopyToClipboard} from "@act/shorten/CopyLinkToClipboard";
 import {ShortenAction} from "./Shorten.action";

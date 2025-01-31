@@ -6,14 +6,14 @@ import Link from "next/link";
 import {motion} from "motion/react";
 
 // Components
-import {Tooltip} from "@comp/Tooltip";
-import {Callout} from "@comp/Callout";
-import {Button} from "@comp/Button";
-import {Card, CardHead, CardBody, CardFooter} from "@comp/Card";
-import {H2, H3, P} from "@comp/Typography";
-import {Badge} from "@comp/Badge";
-import {DateToLocaleString} from "@comp/DateLocaleString";
-import {Container} from "@comp/Container";
+import {Tooltip} from "@comp/tooltip";
+import {Callout} from "@comp/callout";
+import {Button} from "@comp/button";
+import {Card, CardHead, CardBody, CardFooter} from "@comp/card";
+import {H2, H3, P} from "@comp/typography";
+import {Badge} from "@comp/badge";
+import {DateToLocaleString} from "@comp/date-to-locale-string";
+import {Container} from "@comp/container";
 
 // Context
 import {LinkContext} from "@ctx/link/link.context";
@@ -47,7 +47,7 @@ const Page = (): React.ReactNode => {
                         Inspecting link<br/><span className={"text-orange-500"}>{data.link.id}</span>
                     </H2>
                     {/* @ts-ignore workaround for `anchorName` CSS property */}
-                    <Badge variants={item} badgeType={data.link.active?'success':'danger'} tooltip ping style={{anchorName: "--active-popover"}} popoverTarget={'active-popover'} popoverTargetAction={'toggle'}>
+                    <Badge variants={item} className={"float-end"} badgeType={data.link.active?'success':'danger'} tooltip ping style={{anchorName: "--active-popover"}} popoverTarget={'active-popover'} popoverTargetAction={'toggle'}>
                         {data.link.active ? "Active" : "Not active"}
                     </Badge>
                     {/* @ts-ignore workaround for `positionAnchor` CSS property */}

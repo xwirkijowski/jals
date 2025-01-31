@@ -5,12 +5,12 @@ import {TActionProps} from "@act/shared/common.types";
 // Components
 import Link from "next/link";
 import {setupErrorCallouts} from "@act/shared/mutation.utilities";
-import {Spinner} from "@comp/Spinner";
-import {Button} from "@comp/Button";
-import {Input} from "@comp/form/Input";
-import {Callout} from "@comp/Callout";
-import {Card, CardHead, CardFooter, CardBody} from "@comp/Card";
-import {H2, P} from "@comp/Typography";
+import {Spinner} from "@comp/spinner";
+import {Button} from "@comp/button";
+import {Input} from "components/form/input";
+import {Callout} from "@comp/callout";
+import {Card, CardHead, CardFooter, CardBody} from "@comp/card";
+import {H2, P} from "@comp/typography";
 import {CloseButton} from "@act/shared/CloseButton";
 
 export const LogInRequestForm = (
