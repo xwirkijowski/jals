@@ -10,7 +10,7 @@ import {
 
 function makeClient () {
 	const httpLink = new HttpLink({
-		uri: process.env.NEXT_PUBLIC_API_STRING,
+		uri: process.env.NEXT_PUBLIC_CLIENT_API_STRING,
 	});
 	
 	const cache = new InMemoryCache({ addTypename: false });
