@@ -56,7 +56,8 @@ export default function LinksTable () {
 	}
 	
 	// @todo: Better handling
-	const {data: {links}, error, fetchMore} = useSuspenseQuery(
+	// @todo: Types, interface
+	const {data: {links}, error, fetchMore} = useSuspenseQuery<any>(
 		query,
 		{
 			variables,
