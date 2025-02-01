@@ -4,6 +4,7 @@ import EventEmitter from 'events';
 import {$DB, TDatabaseStatus} from "@/database/status";
 import {globalLogger as log} from "./logging/log";
 
+import {seedDatabase} from "@util/seedDatabase";
 import {Warning, FatalError} from "./error";
 
 // Types
@@ -150,5 +151,8 @@ export type TCommander = InstanceType<typeof Commander>;
 
 export const $CMDR = new Commander();
 
-$CMDR.on('ready', () => log.withDomain('success', 'Commander', 'Commander ready!'));
 $CMDR.on('applied', (arg) => log.withDomain('log', 'Commander', `Applied ${arg} to commander instance`))
+$CMDR.on('ready', () => log.withDomain('success', 'Commander', 'Commander ready!'));
+
+// Seed database with hardcoded admin user
+$CMDR.once('ready', async () => await seedDatabase());

@@ -30,7 +30,7 @@ const defaults: TConfigDefaults = {
 
 // Load configuration from environment variables
 log.withDomain('log', 'Config', 'Loading configuration...');
-let timer: number = performance.now();
+export const startTimer: number = performance.now();
 
 // Stage 1 - Check variables
 log.withDomain('log', 'Config', 'Checking environment variables...')
@@ -133,8 +133,7 @@ const config: TConfig = {
     settings: settings
 };
 
-log.withDomain('success', 'Config', `Configuration loaded in ${(performance.now()-timer).toFixed(2)}ms!`);
-timer = undefined;
+log.withDomain('success', 'Config', `Configuration loaded in ${(performance.now()-startTimer).toFixed(2)}ms!`);
 
 // Logging integrations setup
 import {setupAxiom} from '@util/logging/axiom';

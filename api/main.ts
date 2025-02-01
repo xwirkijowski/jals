@@ -2,7 +2,7 @@
 import { globalLogger as log } from '@util/logging/log';
 
 // Load configuration
-import { config } from "@config";
+import {config, startTimer} from "@config";
 
 // Load process commander
 import { $CMDR } from '@util/commander';
@@ -112,4 +112,4 @@ const { url } = await startStandaloneServer(server, {
 	*/
 });
 
-log.success(`Ready at ${url}, running in ${config.server.env.toLowerCase()} environment...`);
+log.success(`Ready at ${url} in ${(performance.now()-startTimer).toFixed(2)}ms, running in ${config.server.env.toLowerCase()} environment...`);
