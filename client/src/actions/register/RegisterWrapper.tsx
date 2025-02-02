@@ -1,6 +1,8 @@
 "use client";
 
-import React, {useActionState} from "react";
+import {ReactNode, useActionState, useContext, useEffect} from "react";
+
+import {NotificationContext} from "@ctx/notification/notification.context";
 
 import {Container} from "@comp/container/container";
 import {RegisterRequestForm} from "@act/register/stage1/RegisterRequest.form";
@@ -9,13 +11,24 @@ import {RegisterForm} from "@act/register/stage2/Register.form";
 import {RegisterAction} from "@act/register/stage2/Register.action";
 
 import {TActionPropsMode} from "@act/shared/common.types";
+import {TResponse} from "@type/data/response";
 
-export const RegisterWrapper = ({mode}: TActionPropsMode): React.ReactNode => {
-	// Request auth code action
+export const RegisterWrapper = ({mode}: TActionPropsMode): ReactNode => {
+	const {add} = useContext(NotificationContext);
 	const [state1, action1, pending1] = useActionState(RegisterRequestAction, undefined);
-	// Actual register action
 	const [state2, action2, pending2] = useActionState(RegisterAction.bind(null, {email: state1?.email}), undefined);
-
+	
+	useEffect(() => {
+		if (!pending2 && (state2 as unknown as TResponse['data'])?.result?.success) {
+			add({
+				type: 'success',
+				title: ("Registered successfully!"),
+				content: ("You are now logged in to your new account."),
+				dismissible: false,
+			})
+		}
+	}, [pending2, state2]);
+	
 	return (
 		<>
 			{(!state1?.result?.success) ? (

@@ -23,7 +23,6 @@ const Page = (): React.ReactNode => {
                 <P variants={item}>
                     or create a <Link href="/" className="border-b border-b-current text-orange-500 hover:text-orange-400 trans font-bold">new link</Link>
                 </P>
-
                 <Card variants={container} className={'mt-8'}>
                     <H2 variants={item} className={'text-base'}>Did you know?</H2>
                     <P variants={item}>You can easily inspect any URL by adding <code

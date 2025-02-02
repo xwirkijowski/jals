@@ -1,8 +1,10 @@
 'use client';
 
 import cx from "classnames";
-import React, {Fragment, useActionState} from "react";
+import {ReactNode, Fragment, useActionState, useContext, useEffect} from "react";
 import {motion} from "motion/react";
+
+import {NotificationContext} from "@ctx/notification/notification.context";
 
 // Components
 import Link from "next/link";
@@ -13,13 +15,22 @@ import {Input} from "components/form/input";
 import {CopyToClipboard} from "@act/shorten/CopyLinkToClipboard";
 import {ShortenAction} from "./Shorten.action";
 import {buttonStyles, formStyles, inputStyles} from "@act/shared/link/shared.link.styles";
-import {HTMLMotionProps} from "framer-motion";
+import {HTMLMotionProps} from "motion/react";
 
 type TProps = {} & HTMLMotionProps<'form'>
 
-export const ShortenForm = ({...props}: TProps): React.ReactNode => {
+export const ShortenForm = ({...props}: TProps): ReactNode => {
     const [state, action, pending] = useActionState(ShortenAction, null);
-
+    const {add} = useContext(NotificationContext);
+    
+    useEffect(() => {
+        if (state?.result?.success) add({
+            type: 'success',
+            title: ("Shortened link created!"),
+            dismissible: false,
+        })
+    }, [state?.result?.success])
+    
     return (
         <motion.form action={action} className={cx(formStyles)} {...props}>
             {state?.result?.success ? (

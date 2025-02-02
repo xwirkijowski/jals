@@ -26,9 +26,11 @@ import 'style/globals.css';
 import {getUser} from "@ctx/auth/auth.utils.server";
 import {AuthProvider} from "@ctx/auth/auth.context";
 import {ThemeProvider} from "@ctx/theme/theme.context";
+import {NotificationProvider} from "@ctx/notification/notification.context";
 
 // Components
 import {Header, Body, Footer} from '@comp/Layout';
+import {Notifications} from "@comp/notifications";
 import {getCookie} from "@lib/auth/session.cookies";
 
 const RootLayout = async (
@@ -39,7 +41,8 @@ const RootLayout = async (
 
     return (
         <html lang="en" className="bg-white">
-                <AuthProvider session={session} user={user}>
+            <AuthProvider session={session} user={user}>
+                <NotificationProvider>
                     <ThemeProvider>
                         <Body className={`${montserrat.className} antialiased`}>
                             <Header/>
@@ -47,10 +50,12 @@ const RootLayout = async (
                                 {modal}
                                 {children}
                             </main>
+                            <Notifications />
                             <Footer version={process?.env?.npm_package_version} />
                         </Body>
                     </ThemeProvider>
-                </AuthProvider>
+                </NotificationProvider>
+            </AuthProvider>
         </html>
     )
 }

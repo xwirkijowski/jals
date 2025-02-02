@@ -1,10 +1,12 @@
 'use client';
 
-import {useActionState} from "react";
+import {ReactNode, useActionState, useContext, useEffect} from "react";
 import Link from "next/link";
 
 // Actions
 import {FlagAction} from './Flag.action';
+
+import {NotificationContext} from "@ctx/notification/notification.context";
 
 // Components
 import {Spinner} from "@comp/spinner";
@@ -23,9 +25,20 @@ import {TResult} from "@type/data/response";
 
 export const FlagForm = (
     {link, mode = 'page'}: {link: TLink} & TActionPropsMode
-) => {
+): ReactNode => {
+    const {add} = useContext(NotificationContext);
     const [state, action, pending] = useActionState<TResult|null>(FlagAction.bind(null, {link}), null);
-
+    
+    useEffect(() => {
+        if (!pending && state?.success) {
+            add({
+                type: 'success',
+                title: ("Flagged successfully!"),
+                dismissible: false,
+            })
+        }
+    }, [pending, state]);
+    
     return (
         <form action={action} className={"w-full max-w-xl"}>
             <Card structured>

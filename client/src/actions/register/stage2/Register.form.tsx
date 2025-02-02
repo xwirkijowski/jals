@@ -22,7 +22,7 @@ export const RegisterForm = (
     {mode = 'page', action, state, pending}: TActionProps
 ) => {
     const errorCallouts = setupErrorCallouts(state);
-
+    
     return (
         <form action={action} className={"w-full max-w-xl"}>
             <Card structured>
