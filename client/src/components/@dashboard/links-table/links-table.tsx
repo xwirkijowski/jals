@@ -9,7 +9,7 @@ import {Card, CardBody, CardFooter, CardHead} from "@comp/card";
 import {Button, ButtonGroup} from "@comp/button";
 import {H2, P} from "@comp/typography";
 import {Table, TableRow, TableHead, TH} from "@comp/table";
-import {LinksTableItem} from "@comp/@dashboard/links-table-item";
+import {LinksTableItem} from "@comp/@dashboard/links-table/links-table-item";
 
 import {staggerFly} from "@lib/motion/stagger.fly";
 import {staggerFade} from "@lib/motion/stagger.fade";
@@ -41,7 +41,7 @@ const query = gql`
     }
 `;
 
-export default function LinksTable () {
+export function LinksTable () {
 	const {session, user} = useContext(AuthContext);
 	const [isPending, startTransition] = useTransition();
 	const [page, setPage] = useState(1);

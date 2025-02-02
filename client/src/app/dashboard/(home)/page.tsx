@@ -9,7 +9,7 @@ import {container, item} from "@lib/motion/stagger.fly";
 import {getUser} from "@ctx/auth/auth.utils.server";
 
 import {Spinner} from "@comp/spinner";
-import LinksTable from "@comp/@dashboard/links-table";
+import {LinksTable} from "@comp/@dashboard/links-table";
 import {H1} from "@comp/typography";
 
 export default async function Page () {
