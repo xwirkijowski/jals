@@ -51,7 +51,7 @@ export function LinksTable () {
 	
 	const variables = useMemo(()=> ({
 		page: page,
-		perPage: 5,
+		perPage: 10,
 		createdBy: user!.id
 	}), [page, user]);
 	
@@ -106,14 +106,14 @@ export function LinksTable () {
 				<Table variants={staggerFly.container}>
 					<TableHead variants={staggerFly.container}>
 						<TableRow variants={staggerFly.container}>
-							<TH variants={staggerFade.item}>Link ID</TH>
-							<TH variants={staggerFade.item}>Target URL</TH>
-							<TH variants={staggerFade.item} align={'center'}>Status</TH>
-							<TH variants={staggerFade.item} align={'center'}>Clicks</TH>
-							<TH variants={staggerFade.item} align={'center'}>Flags</TH>
-							<TH variants={staggerFade.item} align={'right'}>Last update</TH>
-							<TH variants={staggerFade.item} align={'right'}>Created At</TH>
-							<TH variants={staggerFade.item} align={'right'}>Actions</TH>
+							<TH className={'max-w-48'}>Link ID</TH>
+							<TH className={'max-w-48'}>Target URL</TH>
+							<TH className={'text-center w-0'}>Status</TH>
+							<TH className={'text-center w-0'}>Clicks</TH>
+							<TH className={'text-center w-0'}>Flags</TH>
+							<TH className={'text-right'}>Last update</TH>
+							<TH className={'text-right'}>Created At</TH>
+							<TH className={'text-right w-0'}>Actions</TH>
 						</TableRow>
 					</TableHead>
 					<tbody>
