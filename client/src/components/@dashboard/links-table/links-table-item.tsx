@@ -24,34 +24,18 @@ export function LinksTableItem ({node}: TProps): React.ReactNode {
 	
 	return (
 		<TableRow key={node.id} variants={staggerFly.container}>
-			<TD variants={staggerFade.item}>
-				{node.id}
-			</TD>
-			<TD variants={staggerFade.item}>
-				<Anchor href={node.target}>{node.target}</Anchor>
-			</TD>
-			<TD align={'center'} variants={staggerFade.item}>
-				<Badge size={'sm'} badgeType={statusBadge}>{status}</Badge>
-			</TD>
-			<TD width={'1%'} align={'center'} variants={staggerFade.item}>
-				{node.clickCount||'-'}
-			</TD>
-			<TD width={'1%'} align={'center'} variants={staggerFade.item}>
-				{node.flagCount||'-'}
-			</TD>
-			<TD align={'right'} variants={staggerFade.item}>
-				{node.updatedAt ? <DateToLocaleString value={node.updatedAt} /> : '-'}
-			</TD>
-			<TD align={'right'} variants={staggerFade.item}>
-				<DateToLocaleString value={node.createdAt} />
-			</TD>
-			<TD width={'1%'} align={'right'} variants={staggerFade.item}>
-				<ButtonGroup joined>
-					<Link passHref href={`/inspect/${node.id}`}>
-						<Button group={"start"} btnType={'theme'} size={'sm'}>Inspect</Button>
-					</Link>
-					<Button disabled group={"middle"} btnType={'theme'} size={'sm'}>Modify</Button>
-					<Button disabled group={"end"} btnType={'danger'} size={'sm'}>Delete</Button>
+			<TD className={'max-w-48'}>{node.id}</TD>
+			<TD className={'max-w-48'}><Anchor href={node.target}>{node.target}</Anchor></TD>
+			<TD className={'place-items-center'} ><Badge size={'sm'} badgeType={statusBadge}>{status}</Badge></TD>
+			<TD className={'text-center w-0'}>{node.clickCount||'-'}</TD>
+			<TD className={'text-center w-0'}>{node.flagCount||'-'}</TD>
+			<TD className={'text-right'}>{node.updatedAt ? <DateToLocaleString value={node.updatedAt} /> : '-'}</TD>
+			<TD className={'text-right'}><DateToLocaleString value={node.createdAt} /></TD>
+			<TD className={'w-0'}>
+				<ButtonGroup className={"justify-end"} joined>
+					<Link passHref href={`/inspect/${node.id}`}><Button group={"start"} btnType={'theme'} size={'sm'}>Inspect</Button></Link>
+					<Link passHref href={`/dashboard/${node.id}/modify`}><Button disabled group={"middle"} btnType={'theme'} size={'sm'}>Modify</Button></Link>
+					<Link passHref href={`/dashboard/${node.id}/delete`}><Button disabled group={"end"} btnType={'danger'} size={'sm'}>Delete</Button></Link>
 				</ButtonGroup>
 			</TD>
 		</TableRow>
