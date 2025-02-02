@@ -5,7 +5,7 @@
 import cx from "classnames";
 import React from "react";
 import * as motion from "motion/react-client";
-import { redirect } from "next/navigation";
+import {redirect, RedirectType} from "next/navigation";
 import Link from "next/link";
 
 // Metadata
@@ -54,9 +54,9 @@ const Page = async (
 	if (!loading && link && link.target) {
 		if (!link.caution && link.active) {
 			await registerClick();
-			redirect(link.target);
+			redirect(link.target, RedirectType.replace);
 		} else if (!link.active) {
-			redirect('/');
+			redirect('/', RedirectType.replace);
 		} else if (link.caution) {
 			await registerClick();
 		}

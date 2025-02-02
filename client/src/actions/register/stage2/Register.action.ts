@@ -3,8 +3,8 @@
 import {REGISTER} from "./Register.query";
 import {getClient} from "@lib/apollo-client";
 import {getHeaders} from "@lib/auth/session-server";
-import {revalidatePath} from "next/cache";
 import {createCookie} from "@lib/auth/session.cookies";
+import {revalidatePath} from "next/cache";
 
 export const RegisterAction = async (
     {email}: {email?: string},

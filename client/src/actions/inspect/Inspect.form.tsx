@@ -18,7 +18,7 @@ export const InspectForm = ({...props}: TProps): React.ReactNode => {
 
     const submit = (e) => {
         e.preventDefault();
-        redirect('inspect/'+inputRef?.current?.value, ('push' as RedirectType))
+        redirect('inspect/'+inputRef?.current?.value, RedirectType.push)
     }
 
     // @todo Add action to support resolving target to link
