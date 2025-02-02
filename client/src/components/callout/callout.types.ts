@@ -1,5 +1,6 @@
 import React from "react";
 import {SCompProps} from "@type/common";
+import {MotionProps} from "motion/react";
 
 export enum ECalloutType {
 	primary = 'primary',
@@ -14,4 +15,4 @@ export enum ECalloutType {
 export type TCalloutProps = {
 	title?: string,
 	type?: keyof typeof ECalloutType,
-} & React.HTMLAttributes<HTMLDivElement> & SCompProps.TBase<true>
+} & React.HTMLAttributes<HTMLDivElement> & SCompProps.TBase<true> & MotionProps
