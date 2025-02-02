@@ -10,10 +10,13 @@ import {container} from "@lib/motion/stagger.fly";
 import {SCompProps} from "@type/common";
 import {MotionProps} from "framer-motion";
 
-type TProps = SCompProps.TBase<true> & SCompProps.THTMLDiv<["className"]> & MotionProps
+type TProps = {
+	gap?: number
+	direction?: 'row' | 'col'
+} & SCompProps.TBase<true> & SCompProps.THTMLDiv<["className"]> & MotionProps
 
 export const Container = (
-	{className, children, ...props}: TProps
+	{className, gap = 8, direction = "col", children, ...props}: TProps
 ): React.ReactNode => {
 	return (
 		// @ts-ignore: Motion issue with duplicate declaration
@@ -22,7 +25,8 @@ export const Container = (
 			initial="hidden"
 			animate="show"
 			className={cx([
-				"flex flex-col justify-center items-center text-left flex-1 gap-8",
+				"flex justify-center items-center text-left flex-1",
+				`gap-${gap} flex-${direction}`,
 				className,
 			])}
 			{...props}
