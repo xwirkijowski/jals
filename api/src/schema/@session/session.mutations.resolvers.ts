@@ -179,7 +179,7 @@ export default {
 			log.withDomain('audit', 'Resolvers', "New user registered", {userId: createdUser._id, requestId: requestId});
 			
 			// Create a session
-			const sessionNode: TSessionInstance|undefined = await services.auth.createSession(userNode._id, false, req, requestId);
+			const sessionNode: TSessionInstance|undefined = await services.auth.createSession(createdUser._id, false, req, requestId);
 			if (!sessionNode) return result.addError('INTERNAL_ERROR').response();
 			
 			// Invalidate used code
