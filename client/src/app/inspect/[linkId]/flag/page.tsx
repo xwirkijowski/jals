@@ -8,17 +8,17 @@ import {FlagForm} from "@act/flag/Flag.form";
 import {Container} from "@comp/container";
 
 const Page = () => {
-    const {data} = useContext(LinkContext);
+    const {link} = useContext(LinkContext);
 
     // @todo Handle broken context edge case
 
-    if (!data?.link) {
+    if (!link) {
         return null
     }
 
     return (
         <Container>
-            <FlagForm link={data.link} mode="page"/>
+            <FlagForm link={link} mode="page"/>
         </Container>
     )
 }

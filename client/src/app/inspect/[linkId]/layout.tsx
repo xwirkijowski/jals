@@ -54,11 +54,11 @@ const Layout = async ({
 
     // @todo Add types for this query
     const {data} = await getClient().query({query: LINK, variables: {linkId: linkId}, context: await getHeaders()});
-
+    
     return (
         <>
             {data?.link ? (
-                <LinkContextWrapper value={{data}}>
+                <LinkContextWrapper data={data.link}>
                     {modal}
                     {children}
                 </LinkContextWrapper>

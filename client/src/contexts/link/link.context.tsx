@@ -1,14 +1,38 @@
 "use client";
 
-import {createContext, ReactNode} from "react";
+import React, {createContext, useEffect, useState} from "react";
 
-import {TResponse} from '@type/data/response';
+import {SCompProps} from "@type/common";
+import {TLink} from "@type/data/link";
 
-export const LinkContext = createContext<TResponse>({});
+interface ILinkContext {
+    link: TLink | null
+    setLink: (link: TLink) => void
+}
 
-export const LinkContextWrapper = ({value, children}: {value: TResponse, children: ReactNode}) => {
+export const LinkContext = createContext<ILinkContext>({
+    link: null,
+    setLink: () => {},
+});
+
+type TProps = {
+    data?: TLink
+} & SCompProps.TBase<true>
+
+export const LinkContextWrapper = ({data, children}: TProps): React.ReactNode => {
+    const [link, setLink] = useState<TLink|null>(null);
+    
+    useEffect(() => {
+        if (data) setLink(data);
+    }, [data])
+    
+    const providerValue = {
+        link,
+        setLink
+    }
+    
     return (
-        <LinkContext.Provider value={value}>
+        <LinkContext.Provider value={providerValue}>
             {children}
         </LinkContext.Provider>
     )
