@@ -30,8 +30,8 @@ export const DeleteLinkAction = async (
 	const data: TResult = res.data.deleteLink.result;
 	
 	// Revalidate data
-	revalidatePath('/dashboard', 'layout')
-	revalidatePath('/dashboard', 'page')
+	revalidatePath('/dashboard/(home)')
+	revalidatePath('/dashboard/[linkId]', 'layout')
 	
 	return data;
 }
