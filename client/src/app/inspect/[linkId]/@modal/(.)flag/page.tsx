@@ -5,7 +5,7 @@ import {useContext} from "react";
 import {LinkContext} from "@ctx/link/link.context";
 
 // Components
-import {FlagForm} from "@act/flag/Flag.form";
+import {FlagForm} from "@act/@link/flag/Flag.form";
 import {ModalWrapper} from '@comp/modal';
 
 const Page = () => {

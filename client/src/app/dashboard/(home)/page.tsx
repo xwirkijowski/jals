@@ -16,10 +16,7 @@ export default async function Page () {
 		  userName = user.email.split('@')[0];
 	
 	return (
-		<motion.div variants={container}
-		            initial="hidden"
-		            animate="show"
-		            className={"w-full flex-col flex gap-8"}>
+		<>
 			<H1 variants={item}>Hello, <span className={'text-orange-500'}>{userName}</span>!</H1>
 			<motion.div variants={container}
 			            className={cx("grid grid-cols-4 gap-8 flex-1 auto-rows-min")}>
@@ -27,6 +24,6 @@ export default async function Page () {
 					<LinksTable />
 				</Suspense>
 			</motion.div>
-		</motion.div>
+		</>
 	)
 }

@@ -3,7 +3,7 @@ import * as motion from "motion/react-client";
 import Link from "next/link";
 
 // Components
-import {InspectForm} from "@act/inspect/Inspect.form";
+import {InspectForm} from "@act/@link/inspect/Inspect.form";
 import {Card} from "@comp/card";
 import {H1, H2, P} from "@comp/typography";
 import {Container} from "@comp/container";

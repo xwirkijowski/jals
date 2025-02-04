@@ -7,7 +7,7 @@ import {useContext} from "react";
 import {AuthContext} from "@ctx/auth/auth.context";
 
 import {Button} from "@comp/button";
-import {LogOutButton} from "@act/logout/LogOut.button";
+import {LogOutButton} from "@act/@auth/logout/LogOut.button";
 import {UserBadge} from "@comp/Layout/header/user-badge";
 import {Tagline} from "@comp/Layout/header/tagline";
 
