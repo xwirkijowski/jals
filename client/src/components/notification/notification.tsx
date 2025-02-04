@@ -44,7 +44,7 @@ export const Notification = (
 	
 	return (
 		<motion.div className={cx(
-			"max-w-xl py-3 px-4 shadow-xl rounded-xl text-base w-full flex flex-row gap-4 overflow-hidden relative",
+			"max-w-xl py-3 px-4 shadow-xl rounded-xl text-base w-full flex flex-row gap-4 overflow-hidden relative **:!text-current dark:**:!text-current",
 			styles[type],
 			className,
 		)} role="alert" {...props}>
