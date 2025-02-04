@@ -20,11 +20,7 @@ type TProps = {
 } & SCompProps.TBase<true>
 
 export const LinkContextWrapper = ({data, children}: TProps): React.ReactNode => {
-    const [link, setLink] = useState<ILinkContext['link']>(undefined);
-    
-    useEffect(() => {
-        if (data) setLink(data);
-    }, [data])
+    const [link, setLink] = useState<ILinkContext['link']>(data);
     
     const providerValue = {
         link,
