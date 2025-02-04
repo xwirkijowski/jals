@@ -33,7 +33,7 @@ export function LinksTableItem ({node}: TProps): React.ReactNode {
 			<TD className={'w-0'}>
 				<ButtonGroup className={"justify-end"} joined>
 					<Link passHref href={`/dashboard/${node.id}`}><Button group={"start"} btnType={'theme'} size={'sm'}>Inspect</Button></Link>
-					<Link passHref href={`/dashboard/${node.id}/modify`}><Button disabled group={"middle"} btnType={'theme'} size={'sm'}>Modify</Button></Link>
+					<Link passHref href={`/dashboard/${node.id}/modify`}><Button group={"middle"} btnType={'info'} size={'sm'}>Modify</Button></Link>
 					<Link passHref href={`/dashboard/${node.id}/delete`}><Button group={"end"} btnType={'danger'} size={'sm'}>Delete</Button></Link>
 				</ButtonGroup>
 			</TD>
