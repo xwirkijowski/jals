@@ -34,6 +34,11 @@ export const FlagForm = (
             add({
                 type: state?.success ? 'success' : 'danger',
                 title: (state?.success ? "Flagged successfully!" : "Couldn't flag that link!"),
+                ...(state?.success
+                    && {content: (<p>We will review your report soon.</p>)}),
+                ...(state?.success === false
+                    && state?.errorCodes.includes('LINK_NOT_FOUND')
+                    && {content: (<p>This link does not exists anymore.</p>)}),
                 dismissible: false,
             })
         }
@@ -69,8 +74,7 @@ export const FlagForm = (
                             {pending ? (<Spinner/>) : ("Send flag")}
                         </Button>
                     </CardFooter>
-                    )
-                }
+                )}
             </Card>
         </form>
     )
