@@ -4,7 +4,6 @@ import React from "react";
 import Link from "next/link";
 
 import {staggerFly} from "@lib/motion/stagger.fly";
-import {staggerFade} from "@lib/motion/stagger.fade";
 
 import {TableRow, TD} from "@comp/table";
 import {Anchor} from "@comp/anchor";
@@ -33,9 +32,9 @@ export function LinksTableItem ({node}: TProps): React.ReactNode {
 			<TD className={'text-right'}><DateToLocaleString value={node.createdAt} /></TD>
 			<TD className={'w-0'}>
 				<ButtonGroup className={"justify-end"} joined>
-					<Link passHref href={`/inspect/${node.id}`}><Button group={"start"} btnType={'theme'} size={'sm'}>Inspect</Button></Link>
+					<Link passHref href={`/dashboard/${node.id}`}><Button group={"start"} btnType={'theme'} size={'sm'}>Inspect</Button></Link>
 					<Link passHref href={`/dashboard/${node.id}/modify`}><Button disabled group={"middle"} btnType={'theme'} size={'sm'}>Modify</Button></Link>
-					<Link passHref href={`/dashboard/${node.id}/delete`}><Button disabled group={"end"} btnType={'danger'} size={'sm'}>Delete</Button></Link>
+					<Link passHref href={`/dashboard/${node.id}/delete`}><Button group={"end"} btnType={'danger'} size={'sm'}>Delete</Button></Link>
 				</ButtonGroup>
 			</TD>
 		</TableRow>
