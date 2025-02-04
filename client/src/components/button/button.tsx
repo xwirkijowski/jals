@@ -35,15 +35,15 @@ export const Button = ({
             }
             className={cx(
                 "trans text-nowrap font-bold",
-                "disabled:cursor-not-allowed disabled:opacity-50",
                 {['rounded-'+roundedMap[size]]: (group !== 'middle')},
                 {'rounded-e-none': (group === 'start')},
                 {'rounded-s-none': (group === 'end')},
                 {'px-2 text-sm leading-loose': size === 'sm'},
                 {'px-5 py-3 text-base': size === 'md'},
                 {'': size === 'lg'},
-                {"shadow-xl hover:shadow-md hover:scale-[0.975]": effects},
+                {"shadow-xl hover:shadow-md hover:!scale-[0.975]": effects},
                 typeStyles[btnType],
+                "disabled:cursor-not-allowed disabled:opacity-50",
                 className
             )}
             {...props}
