@@ -21,7 +21,6 @@ export const generateViewport = async (): Promise<Viewport> => ({
 // Import global styles
 import 'style/globals.css';
 
-
 // Contexts
 import {getUser} from "@ctx/auth/auth.utils.server";
 import {AuthProvider} from "@ctx/auth/auth.context";
@@ -35,7 +34,7 @@ import {getCookie} from "@lib/auth/session.cookies";
 
 const RootLayout = async (
     {children, modal}: { children: React.ReactNode, modal: React.ReactNode }
-) => {
+):Promise<React.ReactNode> => {
     const session = await getCookie();
     const user = await getUser(session);
 
