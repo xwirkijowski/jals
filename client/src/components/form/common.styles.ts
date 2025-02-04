@@ -6,7 +6,7 @@ export const inputStyles: string[] = [
 	'rounded-xl',
 	'border border-zinc-200 px-4 py-3',
 	'placeholder:text-zinc-600/50',
-	'group-focus-within:border-orange-500',
+	'group-focus-within:border-orange-500 focus:border-orange-500',
 	'disabled:border-orange-500',
 	'[&:invalid:not(:placeholder-shown)]:!border-red-500 [&:invalid:not(:placeholder-shown)]:!caret-red-500',
 	'valid:!border-green-500 valid:!caret-green-500',
