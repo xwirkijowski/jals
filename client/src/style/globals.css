@@ -49,7 +49,7 @@ body.dark {
 	.animate-placeholder {
 		background-image: linear-gradient(90deg,transparent 0%, rgba(244, 244, 245, 1) 25%,transparent 100%);
 		background-size: 200% 100%;
-		animation: placeholder-loading 1s infinite cubic-bezier(0.4, 0, 0.6, 1);
+		animation: placeholder-loading 1s infinite cubic-bezier(0.4, 0, 0.2, 1);
 	}
 
 	.dark .animate-placeholder {
@@ -58,19 +58,19 @@ body.dark {
 
 	.c-trans-4 {
 		transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
-		transition-timing-function: cubic-bezier(0.4, 0, 0.6, 1);
+		transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 		transition-duration: 600ms;
 	}
 
 	.c-trans {
 		transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
-		transition-timing-function: cubic-bezier(0.4, 0, 0.6, 1);
+		transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 		transition-duration: 150ms;
 	}
 
 	.trans {
 		transition-property: all;
-		transition-timing-function: cubic-bezier(0.4, 0, 0.6, 1);
+		transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 		transition-duration: 150ms;
 	}
 }
