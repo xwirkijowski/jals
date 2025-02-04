@@ -1,16 +1,32 @@
-import {Button} from "@comp/button";
-import {useRouter} from "next/navigation";
-import {TActionPropsMode} from "@act/shared/common.types";
+"use client";
+
 import React from "react";
+import {useRouter} from "next/navigation";
+
+import Link from "next/link";
+import {Button} from "@comp/button";
+import {SCompProps} from "@type/common";
+import {MotionProps} from "motion/react";
+
+type TProps = {
+	mode: 'page' | 'modal'
+	href?: string;
+	route?: string;
+	label?: string;
+} & SCompProps.THTMLButton<['className']> & SCompProps.TBase<true> & MotionProps
 
 export const CloseButton = (
-	{mode}: {mode: TActionPropsMode['mode']}
+	{mode, href, route, label, ...props}: TProps
 ): React.ReactNode => {
-	const router = useRouter()
+	const router = useRouter();
 
-	if (mode === 'modal') {
-		return(<Button btnType={'theme'} onClick={()=>router.back()}>Close</Button>)
-	} else if (mode === 'page') {
-		return (<Button btnType={'theme'} onClick={()=>router.push('/')}>Close</Button>);
+	if (mode === 'page') {
+		if (href) {
+			return(<Link passHref href={href}><Button btnType={'theme'} {...props}>{label ? label : 'Close'}</Button></Link>)
+		} else {
+			return(<Button btnType={'theme'} onClick={() => router.push(route ? route : '/')} {...props}>{label ? label : 'Close'}</Button>)
+		}
+	} else {
+		return (<Button btnType={'theme'} onClick={()=>router.back()} {...props}>Close</Button>);
 	}
 }
