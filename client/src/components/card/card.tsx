@@ -2,10 +2,12 @@
 
 import cx from "classnames";
 import React from "react";
-import {motion} from "motion/react";
+import {twMerge} from 'tailwind-merge';
+
+import {motion, MotionProps} from "motion/react";
+
 import {SCompProps} from "@type/common";
-import {MotionProps} from "framer-motion";
-import {textColor} from "../../style/common-classes";
+import {textColor} from "style/common-classes";
 
 type TProps = {
 	structured?: boolean
@@ -15,7 +17,7 @@ export const Card = (
 	{structured = false, className, children, ...props}: TProps
 ): React.ReactNode => {
 	return (
-		<motion.div className={cx(
+		<motion.div className={twMerge(cx(
 			'w-full flex flex-col c-trans-4',
 			'text-left max-w-xl shadow-sm rounded-xl border border-transparent',
 			{'p-8 gap-4': !structured},
@@ -23,7 +25,7 @@ export const Card = (
 			'dark:bg-gray-800 dark:shadow-gray-900/20 dark:border-gray-700',
 			textColor,
 			className,
-		)} {...props}>
+		))} {...props}>
 			{children}
 		</motion.div>
 	)
