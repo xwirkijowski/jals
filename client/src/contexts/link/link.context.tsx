@@ -6,12 +6,12 @@ import {SCompProps} from "@type/common";
 import {TLink} from "@type/data/link";
 
 interface ILinkContext {
-    link: TLink | null
+    link: TLink | null | undefined
     setLink: (link: TLink) => void
 }
 
 export const LinkContext = createContext<ILinkContext>({
-    link: null,
+    link: undefined,
     setLink: () => {},
 });
 
@@ -20,7 +20,7 @@ type TProps = {
 } & SCompProps.TBase<true>
 
 export const LinkContextWrapper = ({data, children}: TProps): React.ReactNode => {
-    const [link, setLink] = useState<TLink|null>(null);
+    const [link, setLink] = useState<ILinkContext['link']>(undefined);
     
     useEffect(() => {
         if (data) setLink(data);
