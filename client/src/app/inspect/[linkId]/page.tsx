@@ -78,7 +78,7 @@ const Page = (): React.ReactNode => {
                     </motion.div>
                     <motion.div variants={item} className={"gap-2 flex flex-col"}>
                         <H3 className={"!text-base"}>Version</H3>
-                        <P>{link.version}</P>
+                        <P>{link.version + 1}</P>
                     </motion.div>
                 </CardBody>
                 <CardFooter variants={container}>

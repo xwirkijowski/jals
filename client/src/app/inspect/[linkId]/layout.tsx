@@ -6,7 +6,7 @@ import {getClient} from '@lib/apollo-client';
 import {LinkContextWrapper} from "@ctx/link/link.context";
 import {getHeaders} from "@lib/auth/session-server";
 
-import {Container} from "@comp/container/container";
+import {Container} from "@comp/container";
 import {LinkNotFound} from "@comp/@organisms/link-not-found";
 
 // Metadata
@@ -41,34 +41,21 @@ const LINK = gql`
     }
 `;
 
-const Layout = async ({
-    modal,
-    children,
-    params,
-}: {
-    modal: React.ReactNode,
-    children: React.ReactNode,
-    params: any
-}) => {
+
+export default async function Layout (
+    {modal, children, params}: { modal: React.ReactNode, children: React.ReactNode, params: any }
+): Promise<React.ReactNode> {
     const linkId: string = (await params).linkId;
 
     // @todo Add types for this query
     const {data} = await getClient().query({query: LINK, variables: {linkId: linkId}, context: await getHeaders()});
     
+    if (!data) return <Container><LinkNotFound linkId={linkId} context={'inspect'} /></Container>
+    
     return (
-        <>
-            {data?.link ? (
-                <LinkContextWrapper data={data.link}>
-                    {modal}
-                    {children}
-                </LinkContextWrapper>
-            ) : (
-                <Container>
-                    <LinkNotFound linkId={linkId} context={'inspect'} />
-                </Container>
-            )}
-        </>
+        <LinkContextWrapper data={data.link}>
+            {modal}
+            {children}
+        </LinkContextWrapper>
     )
 }
-
-export default Layout;

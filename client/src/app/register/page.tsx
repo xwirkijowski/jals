@@ -2,12 +2,8 @@
 
 import React from "react";
 
-import {RegisterWrapper} from "@act/register/RegisterWrapper";
+import {RegisterWrapper} from "@act/@auth/register/RegisterWrapper";
 
-const Page = () => {
-    return (
-        <RegisterWrapper mode={'page'}/>
-    )
-}
+const Page = () => <RegisterWrapper mode={'page'}/>
 
 export default Page;
