@@ -55,7 +55,7 @@ export default {
 
 			setupMeta(session, input, node)
 
-			const node_update = await models.link.updateOne((node as ILink));
+			const node_update = await models.link.updateOne({_id: node._id}, (node as ILink));
 
 			if (node_update.acknowledged === true && node_update.modifiedCount === 1) {
 				return result.response(true, { link: node });
