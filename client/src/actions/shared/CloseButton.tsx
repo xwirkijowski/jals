@@ -22,11 +22,11 @@ export const CloseButton = (
 
 	if (mode === 'page') {
 		if (href) {
-			return(<Link passHref href={href}><Button btnType={'theme'} {...props}>{label ? label : 'Close'}</Button></Link>)
+			return(<Link passHref href={href}><Button btnType={'theme'}>{label ? label : 'Close'}</Button></Link>)
 		} else {
-			return(<Button btnType={'theme'} onClick={() => router.push(route ? route : '/')} {...props}>{label ? label : 'Close'}</Button>)
+			return(<Button btnType={'theme'} onClick={() => router.push(route ? route : '/')}>{label ? label : 'Close'}</Button>)
 		}
 	} else {
-		return (<Button btnType={'theme'} onClick={()=>router.back()} {...props}>Close</Button>);
+		return (<Button btnType={'theme'} onClick={()=> route ? router.push(route) : router.back()}>Close</Button>);
 	}
 }
