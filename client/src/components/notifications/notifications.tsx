@@ -13,7 +13,7 @@ export function Notifications (): ReactNode {
 	const {notifications, clearOne, add} = useContext(NotificationContext);
 	
 	return (
-		<motion.div className={"flex flex-col fixed bottom-4 right-4 gap-4"}>
+		<motion.div className={"flex flex-col fixed bottom-4 right-4 gap-4 z-[300]"}>
 			<AnimatePresence>
 				{notifications.map(({type, title, message, content, dismissible, timestamp}, index) => (
 					<Notification initial={variants.hidden} animate={variants.show} exit={variants.hidden} layout
