@@ -14,7 +14,7 @@ import {Button} from "@comp/button";
 import {Callout} from "@comp/callout";
 import {Card, CardHead, CardFooter, CardBody} from "@comp/card";
 import {H2} from "@comp/typography";
-import {Textarea} from "components/form/textarea";
+import {Textarea} from "@comp/form/textarea";
 import {Badge} from "@comp/badge";
 import {CloseButton} from "@act/shared/CloseButton";
 
@@ -30,10 +30,10 @@ export const FlagForm = (
     const [state, action, pending] = useActionState<TResult|null>(FlagAction.bind(null, {link}), null);
     
     useEffect(() => {
-        if (!pending && state?.success) {
+        if (!pending && state) {
             add({
-                type: 'success',
-                title: ("Flagged successfully!"),
+                type: state?.success ? 'success' : 'danger',
+                title: (state?.success ? "Flagged successfully!" : "Couldn't flag that link!"),
                 dismissible: false,
             })
         }
@@ -59,13 +59,11 @@ export const FlagForm = (
                 </CardBody>
                 {state?.success ? (
                     <CardFooter className={"!justify-end"}>
-                        {mode === 'page' && (<Link href={`/inspect/${link.id}`} passHref><Button btnType={'theme'}>Back to inspection</Button></Link>)}
-                        {mode === 'modal' && (<CloseButton mode={'modal'} />)}
+                        <CloseButton mode={mode} href={`/inspect/${link.id}`} label={'Back to inspection'} />
                     </CardFooter>
                 ) : (
                     <CardFooter>
-                        {mode === 'page' && (<Link href={`/inspect/${link.id}`} passHref><Button btnType={'theme'}>Back to inspection</Button></Link>)}
-                        {mode === 'modal' && (<CloseButton mode={'modal'} />)}
+                        <CloseButton mode={mode} href={`/inspect/${link.id}`} label={'Back to inspection'} />
 
                         <Button btnType={"danger"} type={'submit'} disabled={pending} effects={true}>
                             {pending ? (<Spinner/>) : ("Send flag")}

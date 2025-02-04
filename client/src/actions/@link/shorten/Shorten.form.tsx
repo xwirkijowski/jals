@@ -10,9 +10,9 @@ import {NotificationContext} from "@ctx/notification/notification.context";
 import Link from "next/link";
 import {Spinner} from "@comp/spinner";
 import {Button} from "@comp/button";
-import {Input} from "components/form/input";
+import {Input} from "@comp/form/input";
 
-import {CopyToClipboard} from "@act/shorten/CopyLinkToClipboard";
+import {CopyToClipboard} from "@act/@link/shorten/CopyLinkToClipboard";
 import {ShortenAction} from "./Shorten.action";
 import {buttonStyles, formStyles, inputStyles} from "@act/shared/link/shared.link.styles";
 import {HTMLMotionProps} from "motion/react";

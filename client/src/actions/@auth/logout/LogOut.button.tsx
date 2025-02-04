@@ -8,7 +8,6 @@ import {LogOutAction} from "./LogOIut.action";
 import {Button} from "@comp/button";
 import {Spinner} from "@comp/spinner";
 import {NotificationContext} from "@ctx/notification/notification.context";
-import {revalidatePath} from "next/cache";
 
 export const LogOutButton = () => {
 	const router = useRouter()
@@ -23,7 +22,6 @@ export const LogOutButton = () => {
 				dismissible: false,
 			})
 			
-			revalidatePath('/', 'layout');
 			router.push('/'); // @todo Add history detection to avoid leaving site
 		}
 	}, [pending, state?.result?.success])
