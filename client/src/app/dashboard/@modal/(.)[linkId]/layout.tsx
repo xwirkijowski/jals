@@ -6,12 +6,10 @@ import {getClient} from '@lib/apollo-client';
 import {LinkContextWrapper} from "@ctx/link/link.context";
 import {getHeaders} from "@lib/auth/session-server";
 
-import {ServersideNofify} from "@comp/@dashboard/serverside-nofify";
-
 // Metadata
 import {Metadata} from "next";
 export const generateMetadata = async (
-    { params, modal } // @ts-ignore Fuck next.js
+    { params } // @ts-ignore Fuck next.js
 ): Promise<Metadata> => {
     const linkId = (await params).linkId;
     return {
@@ -42,6 +40,8 @@ const LINK = gql`
         }
     }
 `;
+
+import {ServersideNofify} from "@comp/@dashboard/serverside-nofify";
 
 export default async function Layout (
     {children, params}: { children: React.ReactNode, params: any }
