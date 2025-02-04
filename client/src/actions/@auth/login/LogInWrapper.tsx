@@ -3,10 +3,10 @@
 import {ReactNode, useActionState, useContext, useEffect} from "react";
 
 import {Container} from "@comp/container/container";
-import {LogInRequestForm} from "@act/login/stage1/LogInRequest.form";
-import {LogInRequestAction} from "@act/login/stage1/LogInRequest.action";
-import {LogInForm} from "@act/login/stage2/LogIn.form";
-import {LogInAction} from "@act/login/stage2/LogIn.action";
+import {LogInRequestForm} from "@act/@auth/login/stage1/LogInRequest.form";
+import {LogInRequestAction} from "@act/@auth/login/stage1/LogInRequest.action";
+import {LogInForm} from "@act/@auth/login/stage2/LogIn.form";
+import {LogInAction} from "@act/@auth/login/stage2/LogIn.action";
 import {NotificationContext} from "@ctx/notification/notification.context";
 
 import {TActionPropsMode} from "@act/shared/common.types";
@@ -26,7 +26,6 @@ export const LogInWrapper = ({mode}: TActionPropsMode): ReactNode => {
 			})
 		}
 	}, [pending2, state2]);
-	
 	
 	return (
 		<>

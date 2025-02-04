@@ -5,10 +5,10 @@ import {ReactNode, useActionState, useContext, useEffect} from "react";
 import {NotificationContext} from "@ctx/notification/notification.context";
 
 import {Container} from "@comp/container/container";
-import {RegisterRequestForm} from "@act/register/stage1/RegisterRequest.form";
-import {RegisterRequestAction} from "@act/register/stage1/RegisterRequest.action";
-import {RegisterForm} from "@act/register/stage2/Register.form";
-import {RegisterAction} from "@act/register/stage2/Register.action";
+import {RegisterRequestForm} from "@act/@auth/register/stage1/RegisterRequest.form";
+import {RegisterRequestAction} from "@act/@auth/register/stage1/RegisterRequest.action";
+import {RegisterForm} from "@act/@auth/register/stage2/Register.form";
+import {RegisterAction} from "@act/@auth/register/stage2/Register.action";
 
 import {TActionPropsMode} from "@act/shared/common.types";
 import {TResponse} from "@type/data/response";

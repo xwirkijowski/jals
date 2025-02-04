@@ -1,6 +1,6 @@
 "use server";
 
-import {REQUEST_AUTH_CODE} from "@act/shared/auth/shared.auth.query";
+import {REQUEST_AUTH_CODE} from "@act/@auth/shared.auth.query";
 import {getClient} from "@lib/apollo-client";
 import {getHeaders} from "@lib/auth/session-server";
 

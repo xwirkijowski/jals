@@ -14,7 +14,7 @@ import {Input} from "@comp/form/input";
 
 import {CopyToClipboard} from "@act/@link/shorten/CopyLinkToClipboard";
 import {ShortenAction} from "./Shorten.action";
-import {buttonStyles, formStyles, inputStyles} from "@act/shared/link/shared.link.styles";
+import {buttonStyles, formStyles, inputStyles} from "@act/@link/shared.link.styles";
 import {HTMLMotionProps} from "motion/react";
 
 type TProps = {} & HTMLMotionProps<'form'>
@@ -49,7 +49,7 @@ export const ShortenForm = ({...props}: TProps): ReactNode => {
                         {state.link.id}
                         <CopyToClipboard value={state.link.id} />
                     </p>
-                    <Link href={'/' + state.link.id + '/+'} passHref>
+                    <Link href={'/inspect/' + state.link.id} passHref>
                         <Button btnType={"success"} className={cx("flex-0")}>Inspect link</Button>
                     </Link>
                 </Fragment>

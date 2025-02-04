@@ -8,7 +8,7 @@ import {redirect, RedirectType} from "next/navigation";
 import {Button} from "@comp/button";
 import {Input} from "@comp/form/input";
 
-import {buttonStyles, formStyles, inputStyles} from "@act/shared/link/shared.link.styles";
+import {buttonStyles, formStyles, inputStyles} from "@act/@link/shared.link.styles";
 import {HTMLMotionProps} from "framer-motion";
 
 type TProps = {} & HTMLMotionProps<'div'>
