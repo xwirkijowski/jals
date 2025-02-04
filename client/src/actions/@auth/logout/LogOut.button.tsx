@@ -22,7 +22,7 @@ export const LogOutButton = () => {
 				dismissible: false,
 			})
 			
-			router.push('/'); // @todo Add history detection to avoid leaving site
+			router.refresh();
 		}
 	}, [pending, state?.result?.success])
 
