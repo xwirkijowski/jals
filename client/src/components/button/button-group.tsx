@@ -2,7 +2,8 @@
 
 import {SCompProps} from "@type/common";
 import {motion, MotionProps} from "motion/react";
-import cx from "classnames";
+
+import {merge} from "@lib/merge";
 
 type TProps = {
 	joined?: boolean,
@@ -12,7 +13,7 @@ type TProps = {
 export function ButtonGroup (
 	{gap = 4, joined = false, children, className, ...props}: TProps) {
 	return (
-		<motion.div className={cx(
+		<motion.div className={merge(
 			`flex flex-row items-center`,
 			{[`gap-${gap}`]: (gap && !joined)},
 			className

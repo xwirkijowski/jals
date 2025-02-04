@@ -1,9 +1,10 @@
 "use client";
 
-import cx from "classnames";
+import {useContext} from "react";
 import Link from "next/link";
 
-import {useContext} from "react";
+import {merge} from "@lib/merge";
+
 import {AuthContext} from "@ctx/auth/auth.context";
 
 import {Button} from "@comp/button";
@@ -15,7 +16,7 @@ export const Header = () => {
     const {session, user} = useContext(AuthContext);
 
     return (
-        <header className={cx(
+        <header className={merge(
             'flex flex-row w-full px-8 py-4 gap-8 mb-8 bg-white border-b-2 border-orange-500',
             'dark:bg-gray-900',
             'c-trans-4',

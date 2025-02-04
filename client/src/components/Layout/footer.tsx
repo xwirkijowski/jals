@@ -5,10 +5,10 @@ import {useAnimation} from "motion/react";
 import cx from "classnames";
 import Link from "next/link";
 
+import {merge} from "@lib/merge";
+
 import {ThemeContext} from "@ctx/theme/theme.context";
-
 import {Button} from "@comp/button";
-
 import {SunIcon, MoonIcon, GithubIcon} from "@comp/Icon";
 import {Wxme} from "@comp/wxme/wxme";
 
@@ -24,7 +24,7 @@ export const Footer = ({version}: TProps): React.ReactNode => {
           githubControlsTail = useAnimation();
     
     return (
-        <footer className={cx(
+        <footer className={merge(
             'flex flex-row w-full mt-8 px-8 py-4 gap-8 items-center',
             'bg-white border-t border-zinc-200',
             'dark:bg-gray-900 dark:border-gray-700',

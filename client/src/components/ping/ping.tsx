@@ -1,7 +1,8 @@
 "use client";
 
-import cx from "classnames";
 import React from "react";
+
+import {merge} from "@lib/merge";
 
 import {SCompProps} from "@type/common";
 
@@ -16,7 +17,7 @@ export const Ping = (
 	{pingType = 'light'}: TProps
 ): React.ReactNode => {
 	return (
-		<span className={cx(
+		<span className={merge(
 			'h-3 w-3 block rounded-full',
 			'before:content-[""] before:animate-ping before:h-3 before:w-3 before:block before:rounded-full',
 			styles[pingType],

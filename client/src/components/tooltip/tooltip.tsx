@@ -1,5 +1,8 @@
+"use client";
+
 import React, {CSSProperties} from "react";
-import cx from "classnames";
+
+import {merge} from "@lib/merge";
 
 import {SCompProps} from "@type/common";
 
@@ -14,7 +17,7 @@ export const Tooltip = ({children, id, style}: TProps): React.ReactNode => {
             id={id}
             popover={"auto"}
             style={style}
-            className={cx(
+            className={merge(
                 'text-left',
                 'bottom-[anchor(top)] right-[calc(anchor(right)_-_0.5rem)] [position-area:top_span-left]',
                 'gap-4 flex-col [&:popover-open]:flex max-w-sm overflow-visible rounded-xl bg-white border border-zinc-200 text-zinc-900 py-4 px-5 absolute mx-2 my-4 text-sm shadow-xl shadow-zinc-900/10',

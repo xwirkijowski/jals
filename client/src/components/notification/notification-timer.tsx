@@ -1,8 +1,9 @@
 "use client";
 
-import cx from 'classnames';
 import {ReactNode} from "react";
 import {motion} from "motion/react";
+
+import {merge} from "@lib/merge";
 
 import {ENotificationType} from "@comp/notification/notification.types";
 
@@ -24,7 +25,7 @@ type TProps = {
 export function NotificationTimer ({time, type}: TProps):ReactNode  {
 	return (
 		<motion.span
-			className={cx("absolute w-full bottom-0 left-0 h-1", styles[type])}
+			className={merge("absolute w-full bottom-0 left-0 h-1", styles[type])}
 			animate={{
 				width: 0,
 				transition: {

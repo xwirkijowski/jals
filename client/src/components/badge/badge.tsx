@@ -1,6 +1,5 @@
 "use client";
 
-import cx from "classnames";
 import React from "react";
 import {motion} from "motion/react";
 
@@ -8,12 +7,13 @@ import {styles} from "@comp/badge/badge.styles";
 import {TBadgeProps} from "@comp/badge/badge.types";
 
 import {Ping} from "@comp/ping";
+import {merge} from "@lib/merge";
 
 export const Badge = (
 	{tooltip = false, ping = false, size = 'md', badgeType = 'light', className, children, ...props}: TBadgeProps
 ): React.ReactNode => {
 	return (
-		<motion.button disabled={!tooltip} {...props} className={cx(
+		<motion.button disabled={!tooltip} {...props} className={merge(
 			'c-trans-4 border font-bold flex flex-row items-center rounded-full text-nowrap overflow-hidden shadow-none',
 			'shadow-md shadow-transparent w-fit',
 			'dark:shadow-gray-900/20',

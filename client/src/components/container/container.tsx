@@ -1,9 +1,9 @@
 "use client";
 
-import cx from 'classnames';
 import React from "react";
 import {motion} from "motion/react";
 
+import {merge} from "@lib/merge";
 import {container} from "@lib/motion/stagger.fly";
 
 // Types
@@ -24,7 +24,7 @@ export const Container = (
 			variants={container}
 			initial="hidden"
 			animate="show"
-			className={cx([
+			className={merge([
 				"flex justify-center items-center text-left flex-1",
 				`gap-${gap} flex-${direction}`,
 				className,

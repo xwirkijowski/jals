@@ -1,9 +1,9 @@
 import React from 'react';
-import cx from "classnames";
+import {merge} from "@lib/merge";
 
 export const Modal = ({children}: {children: React.ReactNode}) => {
     return (
-        <div className={cx(
+        <div className={merge(
 
         )}>
             {children}

@@ -1,5 +1,8 @@
-import cx from "classnames";
+"use client";
+
 import React from "react";
+
+import {merge} from "@lib/merge";
 
 type TProps = {
 	id?: string
@@ -8,7 +11,7 @@ type TProps = {
 
 export const Label = ({id, children}: TProps): React.ReactNode => {
 	return (
-		<label htmlFor={id} className={cx(
+		<label htmlFor={id} className={merge(
 			'absolute bg-white px-0.5 py-0 left-3.5 top-3 mt-[1px] rounded-md block text-md text-zinc-400',
 			'trans',
 			'pointer-events-none',

@@ -1,8 +1,12 @@
+"use client";
+
 import React from "react";
-import cx from "classnames";
+
+import {merge, cx} from "@lib/merge";
 
 import {Label} from "@comp/form/label/Label";
 import {inputStyles} from "@comp/form/common.styles";
+
 import {SCompProps} from "@type/common";
 
 type THTMLTextarea = SCompProps.THTMLTextarea<['className']>;
@@ -23,7 +27,7 @@ export const Textarea = (
 				<div className={cx(
 					'flex-col flex w-full group relative'
 				)}>
-					<textarea id={id} placeholder={withLabel ? '' : placeholder} {...props} className={cx(
+					<textarea id={id} placeholder={withLabel ? '' : placeholder} {...props} className={merge(
 						{'peer': withLabel},
 						inputStyles,
 						className,
@@ -33,7 +37,7 @@ export const Textarea = (
 					}
 				</div>
 			) : (
-				<textarea id={id} placeholder={withLabel ? '' : placeholder} {...props} className={cx(
+				<textarea id={id} placeholder={withLabel ? '' : placeholder} {...props} className={merge(
 					{'peer': withLabel},
 					inputStyles,
 					className,

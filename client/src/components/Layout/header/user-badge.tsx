@@ -1,14 +1,16 @@
 "use client";
 
-import cx from "classnames";
 import React from "react";
+
+import {merge, cx} from "@lib/merge";
+
 import {TCurrentUser} from "@ctx/auth/auth.types";
 
 export const UserBadge = ({user}: {user: TCurrentUser}): React.ReactNode => {
 	if (!user) return null;
 
 	return (
-		<p className={cx(
+		<p className={merge(
 			'flex flex-row items-center rounded-full py-2 px-4 text-sm float-end text-nowrap gap-2',
 			'bg-zinc-100 text-zinc-500',
 			'dark:bg-gray-800 dark:text-gray-200/50',

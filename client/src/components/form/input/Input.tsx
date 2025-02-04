@@ -1,8 +1,10 @@
 import React, {Ref} from "react";
-import cx from "classnames";
+
+import {merge, cx} from "@lib/merge";
 
 import {Label} from "@comp/form/label/Label";
 import {inputStyles} from "@comp/form/common.styles";
+
 import {SCompProps} from "@type/common";
 
 type THTMLInput = SCompProps.THTMLInput<['className']>;
@@ -23,7 +25,7 @@ export const Input = (
                 <div className={cx(
                     'flex-col flex w-full group relative'
                 )}>
-                    <input id={id} placeholder={withLabel ? '' : placeholder} {...props} className={cx(
+                    <input id={id} placeholder={withLabel ? '' : placeholder} {...props} className={merge(
                         {'peer': withLabel},
                         inputStyles,
                         className,
@@ -33,7 +35,7 @@ export const Input = (
                     }
                 </div>
             ) : (
-                <input id={id} placeholder={withLabel ? '' : placeholder} {...props} className={cx(
+                <input id={id} placeholder={withLabel ? '' : placeholder} {...props} className={merge(
                     {'peer': withLabel},
                     inputStyles,
                     className,

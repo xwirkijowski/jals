@@ -1,8 +1,9 @@
 "use client";
 
-import cx from 'classnames';
 import React from 'react';
 import {motion} from "motion/react";
+
+import {merge} from "@lib/merge";
 
 import {TButtonProps} from "@comp/button/button.types";
 import {typeStyles} from "@comp/button/button.styles";
@@ -33,7 +34,7 @@ export const Button = ({
                 ? (e)=>e.preventDefault()
                 : undefined
             }
-            className={cx(
+            className={merge(
                 "trans text-nowrap font-bold",
                 {['rounded-'+roundedMap[size]]: (group !== 'middle')},
                 {'rounded-e-none': (group === 'start')},

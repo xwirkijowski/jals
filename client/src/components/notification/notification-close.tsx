@@ -1,9 +1,10 @@
 "use client";
 
-import cx from "classnames";
 import {ReactNode} from "react";
-
 import {useAnimation} from "motion/react";
+
+import {merge} from "@lib/merge";
+
 import {CloseIcon} from "@comp/Icon/Close";
 
 import {SCompProps} from "@type/common";
@@ -31,7 +32,7 @@ export function NotificationClose ({type, onClick, className}: TProps): ReactNod
 		<button onMouseEnter={() => controls.start('animate')}
 		        onMouseLeave={() => controls.start('normal')}
 		        onClick={onClick}
-		        className={cx(
+		        className={merge(
 					'flex flex-0 bg-inherit c-trans p-1 rounded-md place-self-end',
 			        styles[type],
 					className

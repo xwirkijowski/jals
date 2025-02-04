@@ -1,8 +1,9 @@
 "use client";
 
-import cx from 'classnames';
 import React, {useContext, useEffect} from 'react';
 import {motion} from "motion/react";
+
+import {merge} from "@lib/merge";
 
 import {NotificationContext} from "@ctx/notification/notification.context";
 
@@ -43,7 +44,7 @@ export const Notification = (
 	}, [count, timestamp]);
 	
 	return (
-		<motion.div className={cx(
+		<motion.div className={merge(
 			"max-w-xl py-3 px-4 shadow-xl rounded-xl text-base w-full flex flex-row gap-4 overflow-hidden relative **:!text-current dark:**:!text-current",
 			styles[type],
 			className,

@@ -1,7 +1,8 @@
 "use client";
 
-import cx from "classnames";
 import React, {useContext} from "react";
+
+import {merge} from "@lib/merge";
 
 import {ThemeContext} from "@ctx/theme/theme.context";
 
@@ -14,7 +15,7 @@ export const Body = ({children, className}: TProps): React.ReactNode => {
 	const {theme} = useContext(ThemeContext);
 	
 	return (
-		<body className={cx(
+		<body className={merge(
 			theme,
 			className,
 			'flex items-center justify-center min-h-screen',
