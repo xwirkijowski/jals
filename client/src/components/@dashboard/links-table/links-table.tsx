@@ -1,49 +1,26 @@
 "use client";
 
+import {ReactNode, useCallback, useContext, useMemo, useState, useTransition} from "react";
 import {motion} from "motion/react";
-import {gql, useSuspenseQuery} from "@apollo/client";
+import {useSuspenseQuery} from "@apollo/client";
+import Link from "next/link";
+
+import {getHeaders} from "@lib/auth/session-client";
+import {staggerFly} from "@lib/motion/stagger.fly";
+import {staggerFade} from "@lib/motion/stagger.fade";
 
 import {AuthContext} from "@ctx/auth/auth.context";
-import {useCallback, useContext, useMemo, useState, useTransition} from "react";
-import {getHeaders} from "@lib/auth/session-client";
+
+import {LINKS} from "@comp/@dashboard/links-table/links-table.queries";
+import {LinksTableItem} from "@comp/@dashboard/links-table/links-table-item";
 
 import {Card, CardBody, CardFooter, CardHead} from "@comp/card";
 import {Button, ButtonGroup} from "@comp/button";
 import {H2, P} from "@comp/typography";
 import {Table, TableRow, TableHead, TH} from "@comp/table";
-import {LinksTableItem} from "@comp/@dashboard/links-table/links-table-item";
-
-import {staggerFly} from "@lib/motion/stagger.fly";
-import {staggerFade} from "@lib/motion/stagger.fade";
 import {Spinner} from "@comp/spinner";
-import Link from "next/link";
 
-const query = gql`
-    query Links($createdBy: ID, $perPage: Int, $page: Int) {
-        links(createdBy: $createdBy, perPage: $perPage, page: $page) {
-            nodes {
-                id
-                target
-                active
-				caution
-                clickCount
-                flagCount
-                updatedAt
-                createdAt
-            }
-	        pageInfo {
-                total
-                perPage
-                pageCount
-                currentPage
-                hasNextPage
-                hasPreviousPage
-            }
-        }
-    }
-`;
-
-export function LinksTable () {
+export function LinksTable (): ReactNode {
 	const {session, user} = useContext(AuthContext);
 	const [isPending, startTransition] = useTransition();
 	const [page, setPage] = useState(1);
@@ -58,7 +35,7 @@ export function LinksTable () {
 	}), [page, user]);
 	
 	const {data: {links}, error, fetchMore} = useSuspenseQuery<any>(
-		query,
+		LINKS,
 		{
 			variables,
 			context: getHeaders(session),
