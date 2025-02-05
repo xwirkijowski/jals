@@ -22,10 +22,10 @@ type TProps = SCompProps.TBase
 export function FlagList ({className}: TProps): ReactNode {
 	const {link} = useContext(LinkContext);
 	
-	const [pageInfo, setPageInfo] = useState(null);
+	//const [pageInfo, setPageInfo] = useState(null);
 	
-	const handlePrevPage = () => {};
-	const handleNextPage = () => {};
+	//const handlePrevPage = () => {};
+	//const handleNextPage = () => {};
 	
 	// @todo: Types, interface
 	// @todo: Adapt for flag split
@@ -71,20 +71,21 @@ export function FlagList ({className}: TProps): ReactNode {
 					</motion.tbody>
 				</Table>
 			}
-			{link?.flags && link?.flags.length > 0 &&
-				<CardFooter variants={staggerFade.container} className={'mt-auto'}>
-					<P variants={staggerFade.item}>{/* amount shown */} of {link.flagCount} clicks, {pageInfo?.perPage} per page.</P>
-					<ButtonGroup variants={staggerFade.container}>
-						{pageInfo?.hasPreviousPage === true
-							&& <Button variants={staggerFade.item} btnType={'theme'} onClick={handlePrevPage}>Previous</Button>
-						}
-						<P variants={staggerFade.item}>{pageInfo?.page} of {pageInfo?.pageCount}</P>
-						{pageInfo?.hasNextPage
-							&& <Button variants={staggerFade.item} btnType={'theme'} onClick={handleNextPage}>Next</Button>
-						}
-					</ButtonGroup>
-				</CardFooter>
-			}
 		</Card>
 	)
 }
+
+// {link?.flags && link?.flags.length > 0 &&
+// 	<CardFooter variants={staggerFade.container} className={'mt-auto'}>
+// 		<P variants={staggerFade.item}>{/* amount shown */} of {link.flagCount} clicks, {pageInfo?.perPage} per page.</P>
+// 		<ButtonGroup variants={staggerFade.container}>
+// 			{pageInfo?.hasPreviousPage === true
+// 				&& <Button variants={staggerFade.item} btnType={'theme'} onClick={handlePrevPage}>Previous</Button>
+// 			}
+// 			<P variants={staggerFade.item}>{pageInfo?.page} of {pageInfo?.pageCount}</P>
+// 			{pageInfo?.hasNextPage
+// 				&& <Button variants={staggerFade.item} btnType={'theme'} onClick={handleNextPage}>Next</Button>
+// 			}
+// 		</ButtonGroup>
+// 	</CardFooter>
+// }
