@@ -1,6 +1,7 @@
 "use client";
 
 import {ReactNode, useActionState, useContext, useEffect} from "react";
+import {useRouter} from "next/navigation";
 
 import {Container} from "@comp/container/container";
 import {LogInRequestForm} from "@act/@auth/login/stage1/LogInRequest.form";
@@ -16,6 +17,7 @@ export const LogInWrapper = ({mode}: TActionPropsMode): ReactNode => {
 	const {add} = useContext(NotificationContext);
 	const [state1, action1, pending1] = useActionState(LogInRequestAction, undefined);
 	const [state2, action2, pending2] = useActionState(LogInAction.bind(null, {email: state1?.email}), undefined);
+	const router = useRouter();
 	
 	useEffect(() => {
 		if (!pending2 && (state2 as unknown as TResponse['data'])?.result?.success) {
@@ -24,6 +26,9 @@ export const LogInWrapper = ({mode}: TActionPropsMode): ReactNode => {
 				title: ("Logged in successfully!"),
 				dismissible: false,
 			})
+			
+			// Redirect to dashboard
+			router.push("/dashboard")
 		}
 	}, [pending2, state2]);
 	

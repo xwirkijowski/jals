@@ -1,6 +1,7 @@
 "use client";
 
 import {ReactNode, useActionState, useContext, useEffect} from "react";
+import {useRouter} from "next/navigation";
 
 import {NotificationContext} from "@ctx/notification/notification.context";
 
@@ -17,6 +18,7 @@ export const RegisterWrapper = ({mode}: TActionPropsMode): ReactNode => {
 	const {add} = useContext(NotificationContext);
 	const [state1, action1, pending1] = useActionState(RegisterRequestAction, undefined);
 	const [state2, action2, pending2] = useActionState(RegisterAction.bind(null, {email: state1?.email}), undefined);
+	const router = useRouter();
 	
 	useEffect(() => {
 		if (!pending2 && (state2 as unknown as TResponse['data'])?.result?.success) {
@@ -26,6 +28,9 @@ export const RegisterWrapper = ({mode}: TActionPropsMode): ReactNode => {
 				content: ("You are now logged in to your new account."),
 				dismissible: false,
 			})
+			
+			// Redirect to dashboard
+			router.push("/dashboard")
 		}
 	}, [pending2, state2]);
 	
