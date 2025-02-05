@@ -338,6 +338,10 @@ export const handleError = (err: Error, domain?: string): void|CriticalError => 
 	return new CriticalError(err?.message?`Unexpected error captured: ${err.message}`:'Unexpected error captured', 'UNKNOWN', domain||undefined, err?.stack)
 }
 
+/**
+ *
+ * @since 2.1.2
+ */
 export function setupPagination (readyArgs, pagination) {
 	const perPage = (readyArgs?.perPage && readyArgs.perPage <= pagination.perPageMax) ? readyArgs?.perPage : pagination.perPageDefault;
 	const skip = (readyArgs?.page && readyArgs.page > 1) ? (readyArgs.page - 1) * perPage : 0;
@@ -345,6 +349,10 @@ export function setupPagination (readyArgs, pagination) {
 	return [perPage, skip];
 }
 
+/**
+ *
+ * @since 2.1.2
+ */
 export function setupPageInfo (total, perPage, readyArgs) {
 	return {
 		total: total,
