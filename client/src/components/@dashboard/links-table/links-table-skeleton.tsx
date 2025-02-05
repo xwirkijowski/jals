@@ -9,7 +9,7 @@ import {Placeholder} from "@comp/placeholder";
 import {staggerFly} from "@lib/motion/stagger.fly";
 
 type TProps = {
-	mockCount: number
+	mockCount?: number
 }
 
 export function LinksTableSkeleton ({mockCount = 10}): React.ReactNode {
