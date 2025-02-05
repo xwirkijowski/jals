@@ -72,7 +72,7 @@ export function FlagList ({className}: TProps): ReactNode {
 				</Table>
 			}
 			{link?.flags && link?.flags.length > 0 &&
-				<CardFooter variants={staggerFade.container}>
+				<CardFooter variants={staggerFade.container} className={'mt-auto'}>
 					<P variants={staggerFade.item}>{/* amount shown */} of {link.flagCount} clicks, {pageInfo?.perPage} per page.</P>
 					<ButtonGroup variants={staggerFade.container}>
 						{pageInfo?.hasPreviousPage === true

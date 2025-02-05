@@ -103,7 +103,7 @@ export function LinksTable (): ReactNode {
 				</Table>
 			}
 			{links?.nodes &&
-				<CardFooter variants={staggerFade.container}>
+				<CardFooter variants={staggerFade.container} className={'mt-auto'}>
 					<P variants={staggerFade.item}>Showing {links?.nodes.length} of {links?.pageInfo?.total} links, {links?.pageInfo?.perPage} per page.</P>
 					<ButtonGroup variants={staggerFade.container}>
 						{links?.pageInfo?.hasPreviousPage === true

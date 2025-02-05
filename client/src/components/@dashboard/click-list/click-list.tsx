@@ -112,7 +112,7 @@ export function ClickList ({className}: TProps): ReactNode {
 				</Table>
 			}
 			{clicks?.nodes &&
-				<CardFooter variants={staggerFade.container}>
+				<CardFooter variants={staggerFade.container} className={'mt-auto'}>
 					<P variants={staggerFade.item}>{clicks?.nodes.length} of {clicks?.pageInfo?.total} clicks, {clicks?.pageInfo?.perPage} per page.</P>
 					<ButtonGroup variants={staggerFade.container}>
 						{clicks?.pageInfo?.hasPreviousPage === true
