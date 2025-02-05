@@ -14,12 +14,12 @@ export const Badge = (
 ): React.ReactNode => {
 	return (
 		<motion.button disabled={!tooltip} {...props} className={merge(
-			'c-trans-4 border font-bold flex flex-row items-center rounded-full text-nowrap overflow-hidden shadow-none',
+			'c-trans-4 border font-bold flex flex-row items-center rounded-full text-nowrap overflow-hidden',
 			'shadow-md shadow-transparent w-fit',
 			'dark:shadow-gray-900/20',
-			{'gap-2	py-1 px-2 text-sm/none': size === 'sm'},
+			{'gap-2	py-1 px-2 text-sm leading-tight': size === 'sm'},
 			{'gap-2	py-1 px-2 text-sm': size === 'md'},
-			{'gap-2	py-1 px-2 text-sm/loose': size === 'lg'}, // @todo: Adjust
+			{'gap-2	py-1 px-3 text-md leading-tight': size === 'lg'}, // @todo: Adjust
 			{'cursor-help': tooltip},
 			styles[badgeType],
 			className,
