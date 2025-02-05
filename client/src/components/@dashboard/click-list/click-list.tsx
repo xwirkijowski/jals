@@ -114,15 +114,17 @@ export function ClickList ({className}: TProps): ReactNode {
 			{clicks?.nodes &&
 				<CardFooter variants={staggerFade.container} className={'mt-auto'}>
 					<P variants={staggerFade.item}>{clicks?.nodes.length} of {clicks?.pageInfo?.total} clicks, {clicks?.pageInfo?.perPage} per page.</P>
-					<ButtonGroup variants={staggerFade.container}>
-						{clicks?.pageInfo?.hasPreviousPage === true
-							&& <Button variants={staggerFade.item} btnType={'theme'} onClick={handlePrevPage}>Previous</Button>
-						}
-						<P variants={staggerFade.item}>{page} of {clicks?.pageInfo?.pageCount}</P>
-						{clicks?.pageInfo?.hasNextPage === true
-							&& <Button variants={staggerFade.item} btnType={'theme'} onClick={handleNextPage}>Next</Button>
-						}
-					</ButtonGroup>
+					{clicks?.pageInfo?.pageCount > 1 && (
+						<ButtonGroup variants={staggerFade.container}>
+							{clicks?.pageInfo?.hasPreviousPage === true
+								&& <Button variants={staggerFade.item} btnType={'theme'} onClick={handlePrevPage}>Previous</Button>
+							}
+							<P variants={staggerFade.item}>{page} of {clicks?.pageInfo?.pageCount}</P>
+							{clicks?.pageInfo?.hasNextPage === true
+								&& <Button variants={staggerFade.item} btnType={'theme'} onClick={handleNextPage}>Next</Button>
+							}
+						</ButtonGroup>
+					)}
 				</CardFooter>
 			}
 		</Card>

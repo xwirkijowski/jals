@@ -105,15 +105,17 @@ export function LinksTable (): ReactNode {
 			{links?.nodes &&
 				<CardFooter variants={staggerFade.container} className={'mt-auto'}>
 					<P variants={staggerFade.item}>Showing {links?.nodes.length} of {links?.pageInfo?.total} links, {links?.pageInfo?.perPage} per page.</P>
-					<ButtonGroup variants={staggerFade.container}>
-						{links?.pageInfo?.hasPreviousPage === true
-							&& <Button variants={staggerFade.item} btnType={'theme'} onClick={handlePrevPage}>Previous page</Button>
-						}
-						<P variants={staggerFade.item}>Page {page} of {links?.pageInfo?.pageCount}</P>
-						{links?.pageInfo?.hasNextPage === true
-							&& <Button variants={staggerFade.item} btnType={'theme'} onClick={handleNextPage}>Next page</Button>
-						}
-					</ButtonGroup>
+					{links?.pageInfo?.pageCount > 1 && (
+						<ButtonGroup variants={staggerFade.container}>
+							{links?.pageInfo?.hasPreviousPage === true
+								&& <Button variants={staggerFade.item} btnType={'theme'} onClick={handlePrevPage}>Previous page</Button>
+							}
+							<P variants={staggerFade.item}>Page {page} of {links?.pageInfo?.pageCount}</P>
+							{links?.pageInfo?.hasNextPage === true
+								&& <Button variants={staggerFade.item} btnType={'theme'} onClick={handleNextPage}>Next page</Button>
+							}
+						</ButtonGroup>
+					)}
 				</CardFooter>
 			}
 		</Card>
