@@ -8,7 +8,6 @@ type Click {
 
     createdBy: User @auth
     createdAt: DateTime!
-    version: Int!
 }
 
 type ClickConnection {
