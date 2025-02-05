@@ -15,6 +15,8 @@ export const LogOutAction = async () => {
 	})
 
 	await deleteCookie()
+	
+	revalidatePath('/');
 
 	return data;
 }
