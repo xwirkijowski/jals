@@ -8,13 +8,13 @@ import {merge} from "@lib/merge";
 import {SCompProps} from "@type/common";
 import {textColor} from "style/common-classes";
 
-type TProps = {
+export type TCardProps = {
 	structured?: boolean
 	contained?: boolean
 } & SCompProps.TBase<true> & SCompProps.THTMLDiv<["className"]> & MotionProps
 
 export const Card = (
-	{structured = false, contained = true, className, children, ...props}: TProps
+	{structured = false, contained = true, className, children, ...props}: TCardProps
 ): React.ReactNode => {
 	return (
 		<motion.div className={merge(
