@@ -2,7 +2,7 @@
 
 
 import {createContext, ReactNode} from "react";
-import {TAuthContext, TAuthContextUnion, TCurrentUser} from "./auth.types";
+import {TAuthContext, TAuthContextUnion, TUser} from "./auth.types";
 
 export const AuthContext = createContext<TAuthContext>({
     session: null,
@@ -11,7 +11,7 @@ export const AuthContext = createContext<TAuthContext>({
 
 export const AuthProvider = (
     {session, user, children}:
-    {session: TAuthContextUnion, user: TCurrentUser, children: ReactNode}) => {
+    {session: TAuthContextUnion, user: TUser, children: ReactNode}) => {
     return (
         <AuthContext.Provider value={{session, user}}>
             {children}

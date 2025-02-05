@@ -2,10 +2,10 @@ import {TSessionCookie} from "@lib/auth/session.types";
 
 export type TAuthContext = {
 	session: TAuthContextUnion;
-	user: TCurrentUser
+	user: TUser
 }
 
-export type TCurrentUser = {
+export type TUser = {
 	id: string
 	email: string
 	isAdmin: boolean
