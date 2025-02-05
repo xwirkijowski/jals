@@ -1,12 +1,12 @@
 import 'server-only';
 
-import {getCookie} from "./session.cookies";
 import {headers as Headers} from "next/headers";
+import {getCookie} from "./session.cookies";
 
 export const getHeaders = async () => {
 	const agent = (await Headers()).get('user-agent'),
 		  addr = (await Headers()).get('x-forwarded-for');
-
+	
 	const userHeaders = {
 		"jals-user-agent": agent,
 		"jals-user-addr": addr,
