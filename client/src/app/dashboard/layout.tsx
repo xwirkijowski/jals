@@ -1,22 +1,24 @@
 "use server";
 
 import React from "react";
-import * as motion from "motion/react-client";
-
-import {container} from "@lib/motion/stagger.fly";
+import {redirect} from "next/navigation";
 
 import {ApolloWrapper} from "@ctx/apollo/apollo.context";
+import {getSession} from "@ctx/auth/auth.utils.server";
 
 export default async (
 	{modal, children, params}: { modal: React.ReactNode, children: React.ReactNode, params: any }
-): Promise<React.ReactNode> => (
-	<ApolloWrapper>
-		{modal}
-		<motion.div variants={container}
-		            initial="hidden"
-		            animate="show"
-		            className={"w-full flex-col flex gap-8"}>
+): Promise<React.ReactNode> => {
+	const session = await getSession();
+	
+	if (!session) {
+		redirect('/login');
+	}
+	
+	return (
+		<ApolloWrapper>
+			{modal}
 			{children}
-		</motion.div>
-	</ApolloWrapper>
-)
+		</ApolloWrapper>
+	)
+}

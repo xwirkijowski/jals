@@ -2,9 +2,12 @@
 
 import React from "react";
 import {ReactNode} from "react";
+import * as motion from "motion/react-client";
 
 import {fetchLink} from "@ctx/link/link.utils.server";
 import {LinkContextWrapper} from "@ctx/link/link.context";
+
+import {container} from "@lib/motion/stagger.fly";
 
 import {ServersideNofify} from "@comp/@dashboard/serverside-nofify";
 
@@ -31,8 +34,14 @@ export default async function Layout (
     if (!loading && !data) return <ServersideNofify action={'no-link'} route={'/dashboard'} />
     
     return (
-        <LinkContextWrapper data={data.link}>
-            {children}
+        <LinkContextWrapper data={data.link} isLoading={loading}>
+            {modal}
+            <motion.div variants={container}
+                        initial="hidden"
+                        animate="show"
+                        className={"w-full flex-col flex gap-8"}>
+                {children}
+            </motion.div>
         </LinkContextWrapper>
     )
 }
