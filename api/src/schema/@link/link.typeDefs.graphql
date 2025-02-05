@@ -4,7 +4,7 @@ type Link {
 
 	clicks: ClickConnection
 	clickCount: Int
-	flags: [LinkFlag!]
+	flags: [LinkFlag!] # @todo: Separate domain and collection for flags
 	flagCount: Int
 	active: Boolean!
 	caution: Boolean!
@@ -17,8 +17,8 @@ type Link {
 }
 
 type LinkConnection {
-	edges: [LinkEdge]
 	nodes: [Link]
+	edges: [LinkEdge]
 	pageInfo: PageInfo!
 }
 

@@ -1,4 +1,4 @@
-import { check } from "@util/helpers";
+import {check, setupPageInfo, setupPagination} from "@util/helpers";
 
 // Types
 import {THydratedLink} from "@model/link.types";
@@ -44,32 +44,24 @@ export default {
 			const filter = {
 				...((readyArgs?.createdBy) && {createdBy: readyArgs.createdBy}),
 			};
-
-			const perPage = (readyArgs?.perPage && readyArgs.perPage <= pagination.perPageMax) ? readyArgs?.perPage : pagination.perPageDefault;
-			const skip = (readyArgs?.page && readyArgs.page > 1) ? (readyArgs.page - 1) * perPage : 0;
+			
+			const [perPage, skip] = setupPagination(readyArgs, pagination);
 			
 			const nodes: THydratedLink[] = await link.find(filter, null)
 				.skip(skip)
 				.limit(perPage);
 			
-			if (!nodes || nodes.length === 0) return;
+			if (!nodes || nodes.length === 0) return {
+				nodes: null,
+				pageInfo: setupPageInfo(0, perPage, readyArgs)
+			}
 			
 			check.isOwner(session, nodes[0]?.createdBy);
 			
-			const total = await link.countDocuments(filter);
+			const total: number = await link.countDocuments(filter);
 			
-			const pageInfo = {
-				total: total,
-				perPage: perPage,
-				pageCount: undefined,
-				currentPage: readyArgs?.page || 1,
-			}
+			const pageInfo = setupPageInfo(total, perPage, readyArgs);
 			
-			
-			pageInfo.pageCount = Math.ceil(pageInfo.total / pageInfo.perPage);
-			
-			console.log(pageInfo, skip, perPage)
-			// Set up search
 			return {
 				nodes,
 				pageInfo
