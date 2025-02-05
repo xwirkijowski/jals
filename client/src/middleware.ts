@@ -3,7 +3,6 @@ import {getCookie, refreshCookie, deleteCookie} from "@lib/auth/session.cookies"
 import {TSessionCookie} from "@lib/auth/session.types";
 import {getSession} from "@ctx/auth/auth.utils.server";
 
-const protectedRoutes = ['/dashboard']
 const authRoutes = ['/login', '/register']
 
 export default async function middleware(req: NextRequest) {
@@ -39,11 +38,11 @@ export default async function middleware(req: NextRequest) {
 	/**
 	 * Authorization and route protection
 	 */
-
+	
 	const path = req.nextUrl.pathname,
-		  isProtectedRoute = protectedRoutes.includes(path),
+		  isProtectedRoute = req.nextUrl.pathname.startsWith('/dashboard'),
 		  isAuthRoute = authRoutes.includes(path);
-
+	
 	if (isProtectedRoute && !isAuthenticated) {
 		return NextResponse.redirect(new URL('/login', req.nextUrl))
 	}
@@ -51,7 +50,7 @@ export default async function middleware(req: NextRequest) {
 	if (
 		isAuthRoute &&
 		isAuthenticated &&
-		!req.nextUrl.pathname.startsWith('/dashboard')
+		!isProtectedRoute
 	) {
 		return NextResponse.redirect(new URL('/dashboard', req.nextUrl))
 	}
