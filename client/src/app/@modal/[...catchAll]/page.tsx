@@ -1,1 +1,1 @@
-export default (): null => null;
+export default function () { return null };
