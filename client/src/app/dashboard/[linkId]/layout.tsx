@@ -21,17 +21,6 @@ import {container} from "@lib/motion/stagger.fly";
 
 import {ServersideNofify} from "@comp/@dashboard/serverside-nofify";
 
-// Metadata
-import {Metadata} from "next";
-export const generateMetadata = async (
-    { params, modal } // @ts-ignore Fuck next.js
-): Promise<Metadata> => {
-    const linkId = (await params).linkId;
-    return {
-        title: `Inspect ${linkId}`,
-    }
-}
-
 export default async function Layout (
     {modal, children, params}: { modal: ReactNode, children: ReactNode, params: any }
 ): Promise<ReactNode> {
