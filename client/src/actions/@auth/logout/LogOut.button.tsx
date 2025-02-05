@@ -1,6 +1,6 @@
 'use client';
 
-import {useRouter} from "next/navigation";
+import {usePathname, useRouter} from "next/navigation";
 import {useActionState, useContext, useEffect} from "react";
 import {LogOutAction} from "./LogOIut.action";
 
@@ -10,7 +10,8 @@ import {Spinner} from "@comp/spinner";
 import {NotificationContext} from "@ctx/notification/notification.context";
 
 export const LogOutButton = () => {
-	const router = useRouter()
+	const router = useRouter(),
+		  path = usePathname();
 	const [state, action, pending] = useActionState(LogOutAction, undefined);
 	const {add} = useContext(NotificationContext);
 	
@@ -22,7 +23,9 @@ export const LogOutButton = () => {
 				dismissible: false,
 			})
 			
-			router.refresh();
+			if (path !== '/') {
+				router.push('/')
+			}
 		}
 	}, [pending, state?.result?.success])
 
