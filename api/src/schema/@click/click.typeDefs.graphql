@@ -11,7 +11,8 @@ type Click {
 }
 
 type ClickConnection {
-    edges: [ClickEdge]!
+    nodes: [Click]
+    edges: [ClickEdge]
     pageInfo: PageInfo!
 }
 
@@ -26,10 +27,11 @@ extend type Query {
     clicks(
         page: Int
         perPage: Int
-        linkId: ID!
+
+        linkId: ID
     ): ClickConnection! @auth(level: SESSION)
 
     countClicks(
-        linkId: ID!
+        linkId: ID
     ): Int @auth
 }
