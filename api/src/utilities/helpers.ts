@@ -344,3 +344,12 @@ export function setupPagination (readyArgs, pagination) {
 	
 	return [perPage, skip];
 }
+
+export function setupPageInfo (total, perPage, readyArgs) {
+	return {
+		total: total,
+		perPage: perPage,
+		pageCount: Math.ceil(total / perPage),
+		currentPage: readyArgs?.page || 1,
+	}
+}
