@@ -117,7 +117,7 @@ export default function Page ():ReactNode {
                     'lg:col-span-6',
                 )} />
                 
-                <Card variants={container} contained={false} className={"col-span-full flex-row justify-between mt-auto"}>
+                <Card variants={container} contained={false} className={"col-span-full flex-row justify-between"}>
                     <Link passHref href={'/dashboard'}><Button btnType={'theme'} variants={item}>Go back</Button></Link>
                     <ButtonGroup className={"justify-end"}>
                         <Link passHref href={`/dashboard/${link.id}/modify`}><Button btnType={'theme'} variants={item}>Modify</Button></Link>
