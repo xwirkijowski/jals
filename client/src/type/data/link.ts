@@ -1,4 +1,5 @@
 import {TResult} from "@type/data/response";
+import {TUser} from "@ctx/auth/auth.types";
 
 export type TLinkFlag = {
     note: string,
@@ -14,6 +15,7 @@ export type TLink = {
     flagCount: number,
     flags: Array<TLinkFlag>,
     createdAt: string,
+    createdBy?: TUser
     updatedAt: string,
     version: number,
 };
