@@ -18,7 +18,7 @@ export function ServersideNofify ({action, route}) {
 					dismissible: false,
 				})
 				
-				router.push('/route')
+				router.push(route)
 				break;
 		}
 	});
