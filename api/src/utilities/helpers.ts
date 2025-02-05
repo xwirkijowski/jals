@@ -337,3 +337,10 @@ export const handleError = (err: Error, domain?: string): void|CriticalError => 
 	if (['InternalError', 'CriticalError', 'FatalError'].includes(err.name)) return;
 	return new CriticalError(err?.message?`Unexpected error captured: ${err.message}`:'Unexpected error captured', 'UNKNOWN', domain||undefined, err?.stack)
 }
+
+export function setupPagination (readyArgs, pagination) {
+	const perPage = (readyArgs?.perPage && readyArgs.perPage <= pagination.perPageMax) ? readyArgs?.perPage : pagination.perPageDefault;
+	const skip = (readyArgs?.page && readyArgs.page > 1) ? (readyArgs.page - 1) * perPage : 0;
+	
+	return [perPage, skip];
+}
