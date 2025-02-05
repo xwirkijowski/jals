@@ -29,9 +29,8 @@ export const LogInAction = async (
     if (data && data?.result?.success === true && data?.sessionId) {
         await createCookie(data)
     }
-
-    // Refresh layout
-    revalidatePath('/', 'layout')
+    
+    revalidatePath('/')
 
     return data;
 }
