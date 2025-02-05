@@ -1,8 +1,18 @@
 "use server";
 
-import React from "react";
 import {ReactNode} from "react";
 import * as motion from "motion/react-client";
+
+// Metadata
+import {Metadata} from "next";
+export const generateMetadata = async (
+    { params, modal } // @ts-ignore Fuck next.js
+): Promise<Metadata> => {
+    const linkId = (await params).linkId;
+    return {
+        title: `Inspect ${linkId}`,
+    }
+}
 
 import {fetchLink} from "@ctx/link/link.utils.server";
 import {LinkContextWrapper} from "@ctx/link/link.context";
