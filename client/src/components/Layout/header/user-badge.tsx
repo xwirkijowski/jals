@@ -4,9 +4,9 @@ import React from "react";
 
 import {merge, cx} from "@lib/merge";
 
-import {TCurrentUser} from "@ctx/auth/auth.types";
+import {TUser} from "@ctx/auth/auth.types";
 
-export const UserBadge = ({user}: {user: TCurrentUser}): React.ReactNode => {
+export const UserBadge = ({user}: {user: TUser}): React.ReactNode => {
 	if (!user) return null;
 
 	return (
