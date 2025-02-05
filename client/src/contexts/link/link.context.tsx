@@ -17,14 +17,21 @@ export const LinkContext = createContext<ILinkContext>({
 
 type TProps = {
     data?: TLink
+    isLoading?: boolean
 } & SCompProps.TBase<true>
 
-export const LinkContextWrapper = ({data, children}: TProps): React.ReactNode => {
+export const LinkContextWrapper = ({data, isLoading, children}: TProps): React.ReactNode => {
     const [link, setLink] = useState<ILinkContext['link']>(data);
+    const [loading, setLoading] = useState<boolean|null>(isLoading||null);
+    
+    useEffect(() => {
+        if (isLoading) setLoading(isLoading);
+    }, [isLoading]);
     
     const providerValue = {
         link,
-        setLink
+        setLink,
+        loading,
     }
     
     return (

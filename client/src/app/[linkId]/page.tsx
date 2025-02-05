@@ -19,9 +19,10 @@ export const generateMetadata = async (
 	}
 }
 
-import { GET_LINK, CLICK_ADD } from "./queries";
-import { getClient, query } from "@lib/apollo-client";
+import { CLICK_ADD } from "./queries";
+import { getClient } from "@lib/apollo-client";
 import { getHeaders } from "@lib/auth/session-server";
+import {fetchLink} from "@ctx/link/link.utils.server";
 
 // Components
 import {Spinner} from "@comp/spinner";
@@ -44,7 +45,7 @@ const Page = async (
 	// @todo: Param validation
 	// @todo: Test query and mutation edge cases, error handling
 	
-	const {data: {link}, loading} = await query({query: GET_LINK, variables: {linkId: linkId}, context: requestContext});
+	const {data: {link}, loading} = await fetchLink(linkId, 'redirect');
 
 	const registerClick = async () => {
 		const {data: {createClick: {click}}} = await getClient().mutate({mutation: CLICK_ADD, variables: {input: {linkId: linkId}}, context: requestContext, errorPolicy: 'all'});

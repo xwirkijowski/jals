@@ -1,10 +1,10 @@
 "use server";
 
 import React from "react";
+import {ReactNode} from "react";
 
-import {getClient} from '@lib/apollo-client';
+import {fetchLink} from "@ctx/link/link.utils.server";
 import {LinkContextWrapper} from "@ctx/link/link.context";
-import {getHeaders} from "@lib/auth/session-server";
 
 import {ServersideNofify} from "@comp/@dashboard/serverside-nofify";
 
@@ -19,39 +19,16 @@ export const generateMetadata = async (
     }
 }
 
-// Query
-import { gql } from "@apollo/client";
-const LINK = gql`
-    query Link($linkId: ID!) {
-        link(linkId: $linkId) {
-            id
-            target
-            active
-            clickCount
-            flagCount
-            flags {
-                note
-                createdAt
-            }
-            createdAt
-            createdBy {
-                email
-            }
-            updatedAt
-            version
-        }
-    }
-`;
-
 export default async function Layout (
-    {children, params}: { children: React.ReactNode, params: any }
-): Promise<React.ReactNode> {
+    {modal, children, params}: { modal: ReactNode, children: ReactNode, params: any }
+): Promise<ReactNode> {
     const linkId: string = (await params).linkId;
-
-    // @todo Add types for this query
-    const {data} = await getClient().query({query: LINK, variables: {linkId: linkId}, context: await getHeaders()});
     
-    if (!data) return <ServersideNofify action={'no-link'} route={'/dashboard'} />
+    const {data, loading} = await fetchLink(linkId, 'owner');
+    
+    if (loading) return ('loading') // @todo: Skeleton (?)
+    
+    if (!loading && !data) return <ServersideNofify action={'no-link'} route={'/dashboard'} />
     
     return (
         <LinkContextWrapper data={data.link}>

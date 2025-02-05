@@ -2,9 +2,8 @@
 
 import React from "react";
 
-import {getClient} from '@lib/apollo-client';
 import {LinkContextWrapper} from "@ctx/link/link.context";
-import {getHeaders} from "@lib/auth/session-server";
+import {fetchLink} from "@ctx/link/link.utils.server";
 
 import {Container} from "@comp/container";
 import {LinkNotFound} from "@comp/@organisms/link-not-found";
@@ -20,35 +19,12 @@ export const generateMetadata = async (
     }
 }
 
-// Query
-import { gql } from "@apollo/client";
-const LINK = gql`
-    query Link($linkId: ID!) {
-        link(linkId: $linkId) {
-            id
-            target
-            active
-            clickCount
-            flagCount
-            flags {
-                note
-                createdAt
-            }
-            createdAt
-            updatedAt
-            version
-        }
-    }
-`;
-
-
 export default async function Layout (
     {modal, children, params}: { modal: React.ReactNode, children: React.ReactNode, params: any }
 ): Promise<React.ReactNode> {
     const linkId: string = (await params).linkId;
 
-    // @todo Add types for this query
-    const {data} = await getClient().query({query: LINK, variables: {linkId: linkId}, context: await getHeaders()});
+    const {data} = await fetchLink(linkId);
     
     if (!data) return <Container><LinkNotFound linkId={linkId} context={'inspect'} /></Container>
     
