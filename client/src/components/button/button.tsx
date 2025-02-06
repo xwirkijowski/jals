@@ -15,6 +15,7 @@ export const Button = ({
     size = 'md',
     group = false,
     disabled = false,
+    custom = false,
     className,
     children,
     ...props
@@ -44,7 +45,8 @@ export const Button = ({
                 {'': size === 'lg'},
                 {"shadow-xl hover:shadow-md hover:!scale-[0.975]": effects},
                 typeStyles[btnType],
-                "disabled:cursor-not-allowed disabled:opacity-50",
+                "disabled:cursor-not-allowed",
+                {"disabled:opacity-50": !custom},
                 className
             )}
             {...props}

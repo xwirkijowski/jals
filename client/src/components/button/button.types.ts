@@ -21,4 +21,5 @@ export type TButtonProps = {
 	effects?: boolean
 	group?: false|'start'|'middle'|'end'
 	size?: 'sm' | 'md' | 'lg'
+	custom?: boolean
 } & SCompProps.THTMLButton<['className']> & SCompProps.TBase<true> & MotionProps
