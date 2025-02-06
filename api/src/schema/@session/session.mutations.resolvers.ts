@@ -120,13 +120,24 @@ export default {
 			const {readyInput, result} = validateAuthInput(input);
 			if (result.hasErrors()) return result.response();
 
-			// Get user by email, return response if not found
-			const userNode: THydratedUser = await user.findOne({email: readyInput.email})
-			if (!userNode) return result.addError('INVALID_CREDENTIALS').response();
+			let codeNode: TAuthCodeInstance|undefined,
+				userNode: THydratedUser|undefined;
+			
+			if (readyInput.magic) {
+				codeNode = await services.auth.checkCode(undefined, undefined, readyInput?.magic, ERequestAuthCodeAction['LOGIN'], requestId);
+				if (!codeNode) return result.addError('CODE_NOT_FOUND').response();
 
-			// Check code, return response if not found
-			const codeNode: TAuthCodeInstance|undefined = await services.auth.checkCode(userNode._id, readyInput.code, ERequestAuthCodeAction['LOGIN'], requestId);
-			if (!codeNode) return result.addError('CODE_NOT_FOUND').response();
+				userNode = await user.findOne({_id: codeNode.userId});
+				if (!userNode) return result.addError('INVALID_CREDENTIALS').response();
+			} else {
+				userNode = await user.findOne({email: readyInput.email});
+				if (!userNode) return result.addError('INVALID_CREDENTIALS').response();
+				
+				codeNode = await services.auth.checkCode(userNode._id, readyInput?.code, undefined, ERequestAuthCodeAction['LOGIN'], requestId);
+				if (!codeNode) return result.addError('CODE_NOT_FOUND').response();
+			}
+			
+			if (!userNode || !codeNode) return result.addError('INTERNAL_ERROR').response();
 			
 			// Create a session
 			const sessionNode: TSessionInstance|undefined = await services.auth.createSession(userNode._id, userNode.isAdmin, req, requestId);
@@ -154,22 +165,33 @@ export default {
 
 			const {readyInput, result} = validateAuthInput(input);
 			if (result.hasErrors()) return result.response();
-
-			// Check for existing user
-			const userNode: THydratedUser = await user.findOne({email: readyInput.email})
-
-			// If user found return operation failed
-			if (userNode) {
-				return result.addError('INVALID_CREDENTIALS').response();
+			
+			let codeNode: TAuthCodeInstance|undefined,
+				userNode: THydratedUser|undefined;
+			
+			if (readyInput.magic) {
+				// Check code, return response if not found
+				codeNode = await services.auth.checkCode(undefined, undefined, readyInput?.magic, ERequestAuthCodeAction['REGISTER'], requestId);
+				if (!codeNode) return result.addError('CODE_NOT_FOUND').response();
+				
+				// Check for existing user
+				userNode = await user.findOne({_id: codeNode.userId});
+				if (userNode) return result.addError('INVALID_CREDENTIALS').response();
+			} else {
+				// Check for existing user
+				userNode = await user.findOne({email: readyInput.email});
+				if (userNode) return result.addError('INVALID_CREDENTIALS').response();
+				
+				// Check code, return response if not found
+				codeNode = await services.auth.checkCode(undefined, readyInput?.code, undefined, ERequestAuthCodeAction['REGISTER'], requestId);
+				if (!codeNode) return result.addError('CODE_NOT_FOUND').response();
 			}
 			
-			// Check code, return response if not found
-			const codeNode: TAuthCodeInstance|undefined = await services.auth.checkCode(undefined, readyInput.code, ERequestAuthCodeAction['REGISTER'], requestId);
-			if (!codeNode) return result.addError('CODE_NOT_FOUND').response();
-
+			if (!codeNode) return result.addError('INTERNAL_ERROR').response();
+			
 			// Construct new user and set up metadata
 			const newUser = setupMeta(session, {
-				email: readyInput.email,
+				email: codeNode.userEmail,
 				isAdmin: false,
 			});
 
