@@ -60,6 +60,19 @@ export default class AuthCode {
 	}
 	
 	/**
+	 * Applies magic string to AuthCode instance.
+	 *
+	 * @since 2.2.0
+	 *
+	 * @param   magic
+	 * @return  TAuthCodeInstance
+	 */
+	applyMagic (magic: string): this {
+		this.magic = magic;
+		return this;
+	}
+	
+	/**
 	 * Retrieve an AuthCode entity that matches the parameters.
 	 * Changes query based on action.
 	 *
@@ -87,6 +100,33 @@ export default class AuthCode {
 				.where('code').equals(code)
 				.and('action').equals(action)
 				.return.first();
+		
+		node.authCodeId = node[EntityId];
+		
+		return (AuthCode.isValid(node)) ? new AuthCode(node, rId) : undefined;
+	}
+	
+	
+	/**
+	 * Retrieve an AuthCode entity based on provided magic string.
+	 *
+	 * @since 2.2.0
+	 * @static
+	 * @async
+	 *
+	 * @throws  InternalError   Missing parameters, cannot search
+	 * @param   magic   String used for magic authentication URLs
+	 * @param   action  Context in which the code will be used
+	 * @param   rId     The unique request ID
+	 * @return  Promise<TAuthCodeInstance|undefined>
+	 */
+	static async findByMagic (magic: string, action: ERequestAuthCodeAction, rId: TId): Promise<TAuthCodeInstance|undefined> {
+		if (!magic) throw new InternalError('Cannot search without magic parameter', 'AUTHCODE_FIND_MISSING_MAGIC', AuthCode.domain, true, {requestId: rId})
+	
+		const node: IAuthCode = await model.search()
+			.where('magic').equals(magic)
+			.and('action').equals(action)
+			.return.first();
 		
 		node.authCodeId = node[EntityId];
 		
