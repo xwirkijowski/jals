@@ -151,17 +151,29 @@ export class AuthService extends EventEmitter {
 	 * Check if supplied code exists.
 	 * In registration context, only code and action is used to find the AuthCode.
 	 *
+	 *
 	 * @since   2.1.1
 	 * @async
 	 *
 	 * @param   userId  The ID of the user for which the code is to be created, undefined if used for registration
 	 * @param   code    The authentication code string
+	 * @param   magic   The magic string used for link authentication
 	 * @param	action  Context of the authentication code
 	 * @param   rId     Unique request ID
 	 * @return  Promise<TAuthCodeInstance|undefined>
 	 */
-	async checkCode (userId: TId|undefined, code: string, action: ERequestAuthCodeAction, rId: TId): Promise<TAuthCodeInstance|undefined> {
-		return await this.authCodeManager.retrieve(userId, code, action, rId);
+	async checkCode (
+		userId: TId|undefined,
+		code: string|undefined = undefined,
+		magic: string|undefined = undefined,
+		action: ERequestAuthCodeAction,
+		rId: TId
+	): Promise<TAuthCodeInstance|undefined> {
+		if (magic) {
+			return await this.authCodeManager.retrieveByMagic(magic, action, rId);
+		} else {
+			return await this.authCodeManager.retrieve(userId, code, action, rId);
+		}
 	}
 	
 	/**
