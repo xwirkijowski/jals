@@ -62,8 +62,19 @@ export class AuthCodeManager extends Manager {
 	 * @param   rId     Unique request ID
 	 * @return  string      Authentication code string
 	 */
-	generateCode (length: number = this?.config?.length, rId: TId): TCode {
-		return new CodeGenerator(length, rId);
+	generateCode (length: number = this?.config?.length, rId: TId): string {
+		return new CodeProvider(length, rId).generate();
+	}
+	
+	/**
+	 * Generates a magic string based on AuthCode data.
+	 * String consists of authentication code, user email and a dynamic secret.
+	 *
+	 * @param authCode
+	 * @param rId
+	 */
+	generateMagic (authCode: TAuthCodeInstance, rId: TId): string {
+		return new MagicProvider('@KVs*94C5^Xu*qUfifUj32j3zj9!4#ph#km6Hq*4&b&%5VLEFJ#q%stg7$NqUG*o', rId).generate(authCode); // @todo: Implement secret
 	}
 
 	/**
@@ -90,7 +101,15 @@ export class AuthCodeManager extends Manager {
 		}
 
 		try {
-			const node: TAuthCodeInstance = await new AuthCode({userId: userId?.toString(), userEmail, action}, rId, this.generateCode(this.config.length, rId)).save(this.config.expiresIn, rId);
+			// Create new AuthCode instance with generated code.
+			const node: TAuthCodeInstance = new AuthCode({userId: userId?.toString(), userEmail, action}, rId, this.generateCode(this.config.length, rId));
+			
+			// Apply generated magic string got AuthCode instance.
+			node.applyMagic(this.generateMagic(node, rId));
+			
+			// Save AuthCode instance to repository; create entity.
+			await node.save(this.config.expiresIn, rId);
+			
 			this.emit('created', {authCodeId: node.authCodeId, rId});
 			
 			return node;
@@ -112,7 +131,7 @@ export class AuthCodeManager extends Manager {
 	 * @param   rId         Unique request ID
 	 * @return  Promise<TAuthCodeInstance|undefined>
 	 */
-	async retrieve (userId: TId|undefined, code: string, action: ERequestAuthCodeAction = ERequestAuthCodeAction.LOGIN, rId: TId): Promise<TAuthCodeInstance|undefined> {
+	async retrieve (userId: TId|undefined, code: string|undefined, action: ERequestAuthCodeAction = ERequestAuthCodeAction.LOGIN, rId: TId): Promise<TAuthCodeInstance|undefined> {
 		if ((action === ERequestAuthCodeAction['LOGIN'] && !userId) || !code || !rId) {
 			this.processError(new CriticalError('Missing arguments, cannot search for AuthCode!', 'CODE_RETRIEVE_MISSING_ARGS', AuthCode.domain, true, {requestId: rId}));
 			return undefined;
@@ -120,6 +139,31 @@ export class AuthCodeManager extends Manager {
 		
 		try {
 			return await AuthCode.find(userId?.toString(), code, action, rId);
+		} catch (e) {
+			this.processError(e);
+			return undefined;
+		}
+	}
+	
+	/**
+	 * Attempts to find an authentication code matching supplied parameters
+	 *
+	 * @since   2.2.0
+	 * @async
+	 *
+	 * @param   magic   String used for magic authentication URLs
+	 * @param   action  Context in which the code will be used
+	 * @param   rId     Unique request ID
+	 * @return  Promise<TAuthCodeInstance|undefined>
+	 */
+	async retrieveByMagic (magic: string|undefined, action: ERequestAuthCodeAction = ERequestAuthCodeAction.LOGIN, rId: TId): Promise<TAuthCodeInstance|undefined> {
+		if (!magic || !rId) {
+			this.processError(new CriticalError('Missing arguments, cannot search for AuthCode!', 'CODE_RETRIEVE_MAGIC_MISSING_ARGS', AuthCode.domain, true, {requestId: rId}));
+			return undefined;
+		}
+		
+		try {
+			return await AuthCode.findByMagic(magic, action, rId);
 		} catch (e) {
 			this.processError(e);
 			return undefined;
