@@ -49,14 +49,18 @@ export const LoginEmail = (data: IEmailData): React.ReactNode => {
                         <div style={styles.authCodeWrapper}>
                             {authCode}
                         </div>
-                        <p style={{
-                            ...styles.paragraph,
-                            textAlign: 'center',
-                        }}>or</p>
-                        <p style={{
-                            ...styles.paragraph,
-                            textAlign: 'center',
-                        }}>use <a href={`${frontendAddr}/${data.action.toLowerCase()}/magic/${data.authCode.authCodeId}`}>this magic link</a> to log in</p>
+                        {data?.authCode?.magic && (
+                            <>
+                                <p style={{
+                                    ...styles.paragraph,
+                                    textAlign: 'center',
+                                }}>or</p>
+                                <p style={{
+                                    ...styles.paragraph,
+                                    textAlign: 'center',
+                                }}>use <a href={`${frontendAddr}/magic?v=${data.authCode.magic}&a=${data.authCode.action.toLowerCase()}`}>this magic link</a> to log in</p>
+                            </>
+                        )}
                         <p style={{
                             ...styles.paragraph,
                             textAlign: 'center',
