@@ -12,7 +12,8 @@ export interface IRequestAuthCodeInput {
 
 export interface IAuthInput {
     email: string,
-    code: string,
+    code?: string,
+    magic?: string,
     userAgent?: string
     userAddr?: string
 }

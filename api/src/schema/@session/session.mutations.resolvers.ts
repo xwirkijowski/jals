@@ -26,10 +26,16 @@ const validateAuthInput = (input: IAuthInput): { readyInput: IAuthInput, result:
 	const {readyInput, result} = check.validator.prepareInput(input, {
 		email: {
 			type: 'string',
+			optional: !!(input.magic)
 		},
 		code: {
 			type: 'string',
 			length: 8,
+			optional: !!(input.magic)
+		},
+		magic: {
+			type: 'string',
+			optional: !!(input?.code)
 		},
 		userAgent: {
 			type: 'string',

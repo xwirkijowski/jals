@@ -19,9 +19,10 @@ input RequestAuthCodeInput {
 
 input AuthInput {
     "The user's e-mail address"
-    email: EmailAddress!
+    email: EmailAddress
     "Provided login code"
-    code: String!
+    code: String
+    magic: String
 
     "User-agent used while creating the session"
     userAgent: String
@@ -70,7 +71,6 @@ extend type Mutation {
     logIn(input: AuthInput): AuthPayload
     "Register a new user account"
     register(input: AuthInput): AuthPayload
-
 
     "Log out current user out of current session"
     logOut: LogOutPayload @auth(level: SESSION)
