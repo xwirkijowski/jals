@@ -2,7 +2,7 @@
 
 ## Todos
 
-- [ ] User dashboard
+- [x] User dashboard
 - [ ] Implement proper error handling on GraphQL queries and mutations
 - [ ] Implement transitions between pages
 - [ ] Explore better animations
@@ -34,7 +34,14 @@ Separation of sensitive information, business logic and interactivity layer.
 Implemented on all forms that result in mutations. Occasionally leveraging built-in `.bind()` method for additional data.
 
 #### `useContext` (React)
-Link context implementation on `/inspect` route, theme context, auth context;
+Link context implementation on `/inspect` route, theme context, auth context.
+
+#### Streaming / Suspense (Next,js, React)
+Implementation of suspense and fallback skeleton UI elements on dashboard routes.
+
+- [Dashboard (/dashboard)](./src/app/dashboard/(home))
+- [ClickList component (/dashboard/[linkId])](./src/components/@dashboard/click-list)
+- [LinksTable component (/dashboard)](./src/components/@dashboard/links-table)
 
 ## Walkthrough
 

@@ -6,9 +6,13 @@ A simple solution for shortening links built with React, Next.js and GraphQL wit
 
 I began work on a refactor in december 2024. Primary goal was to gain practical knowledge of current React (v19) and Next.js (v15) features, including the new App router. As a secondary goal, client application was to fully leverage TailwindCSS features and implement some subtle animations.
 
-> **Now live!** Development stage preview available at [jals2.wirkijowski.dev](https://jals2.wirkijowski.dev/)
+React and Next.js features used are listed in separate [api](./api/README.md) and [client](./client/README.md) `README.md` files.
 
-[![CircleCI](https://dl.circleci.com/status-badge/img/circleci/8Np7CK78S4uw4ebGLepWmK/MzQiBDF67dqMd44rGhkv6K/tree/deploy-prod.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/circleci/8Np7CK78S4uw4ebGLepWmK/MzQiBDF67dqMd44rGhkv6K/tree/deploy-prod)
+> **Now live!** Development stage preview available at [jals2.wirkijowski.dev](https://jals2.wirkijowski.dev/). I recommend creating an account and playing around with the dashboard :)
+
+| Deployment |
+|------------|
+| [![CircleCI](https://dl.circleci.com/status-badge/img/circleci/8Np7CK78S4uw4ebGLepWmK/MzQiBDF67dqMd44rGhkv6K/tree/deploy-prod.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/circleci/8Np7CK78S4uw4ebGLepWmK/MzQiBDF67dqMd44rGhkv6K/tree/deploy-prod) |
 
 ## Technology stack
 
@@ -21,9 +25,9 @@ I began work on a refactor in december 2024. Primary goal was to gain practical 
 - **PostCSS**
   - Tailwind-CSS
   - Autoprefixer
-- `classnames`
-- Motion (Framer Motion)
 - **Eslint**
+- Motion (Framer Motion)
+- `classnames`, `tailwind-merge` — class utilities
 
 ### API server
 
@@ -61,19 +65,18 @@ I began work on a refactor in december 2024. Primary goal was to gain practical 
 - [x] Reporting functionality — link flagging
 - [x] User-agent and address collection (`@todo levarage User-Agent Client Hints API`)
 - [x] Light and dark themes
+- [x] Link management
 
 ### Planned & In-progress
 - [ ] Magic link functionality
 - [ ] Transitions, animations
 - [ ] Dashboards
-- [ ] Link management
 - [ ] User management
 - [ ] Client to API health checks
 - [ ] Full query error handling
 
 ---
 ## Version 1 (2021)
-
 
 > **See it in action!** Production demo of v1 available at [jals.wirkijowski.dev](https://jals.wirkijowski.dev/)
 
