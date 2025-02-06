@@ -1,9 +1,9 @@
 import {config} from "@config";
 import {globalLogger as log} from "@util/logging/log";
 
-import {ErrorAggregator, CriticalError} from "@util/error";
+import {CriticalError, ErrorAggregator} from "@util/error";
 import AuthCode, {TAuthCodeInstance} from "@service/auth/authCode"
-import {CodeGenerator, TCode} from "@service/auth/codeGenerator";
+import {CodeProvider, MagicProvider} from "@service/auth/providers";
 import {Manager} from "@service/auth/manager";
 
 // Types
