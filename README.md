@@ -66,9 +66,9 @@ React and Next.js features used are listed in separate [api](./api/README.md) an
 - [x] User-agent and address collection (`@todo levarage User-Agent Client Hints API`)
 - [x] Light and dark themes
 - [x] Link management
+- [x] Magic link functionality
 
 ### Planned & In-progress
-- [ ] Magic link functionality
 - [ ] Transitions, animations
 - [ ] Dashboards
 - [ ] User management
