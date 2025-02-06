@@ -16,6 +16,7 @@ export default class AuthCode {
 	code?: IAuthCode["code"]
 	action: IAuthCode["action"]
 	createdAt?: IAuthCode["createdAt"]
+	magic?: IAuthCode["magic"]
 	
 	static domain: string = "AuthService->Code"
 	

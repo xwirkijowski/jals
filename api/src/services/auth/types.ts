@@ -11,6 +11,7 @@ export interface IAuthCode {
     userEmail: string
     action: ERequestAuthCodeAction
     code?: string
+    magic?: string
     createdAt?: Date | string
 }
 
@@ -20,6 +21,7 @@ export type TAuthCode = {
     userEmail: string
     action: ERequestAuthCodeAction
     code?: string
+    magic?: string
     createdAt?: Date | string
 }
 

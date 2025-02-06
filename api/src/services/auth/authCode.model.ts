@@ -9,6 +9,7 @@ export const repository = new Repository<IAuthCodeEntity>(new Schema(
 		userId: { type: 'string' },
 		userEmail: { type: 'string' },
 		code: { type: 'string' },
+		magic: { type: 'string' },
 		createdAt: { type: 'date' },
 	},
 	{
