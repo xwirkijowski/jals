@@ -21,6 +21,8 @@ export const generateViewport = async (): Promise<Viewport> => ({
 // Import global styles
 import 'style/globals.css';
 
+import {getCookie} from "@lib/auth/session.cookies";
+
 // Contexts
 import {getUser} from "@ctx/auth/auth.utils.server";
 import {AuthProvider} from "@ctx/auth/auth.context";
@@ -30,19 +32,18 @@ import {NotificationProvider} from "@ctx/notification/notification.context";
 // Components
 import {Header, Body, Footer} from '@comp/Layout';
 import {Notifications} from "@comp/notifications";
-import {getCookie} from "@lib/auth/session.cookies";
 
 const RootLayout = async (
     {children, modal}: { children: React.ReactNode, modal: React.ReactNode }
 ):Promise<React.ReactNode> => {
     const session = await getCookie();
     const user = await getUser(session);
-
+    
     return (
-        <html lang="en" className="bg-white">
-            <AuthProvider session={session} user={user}>
-                <NotificationProvider>
-                    <ThemeProvider>
+        <AuthProvider session={session} user={user}>
+            <NotificationProvider>
+                <ThemeProvider>
+                    <html lang="en">
                         <Body className={`${montserrat.className} antialiased`}>
                             <Header/>
                             <main className="w-full flex-1 px-8 flex">
@@ -52,10 +53,10 @@ const RootLayout = async (
                             <Notifications />
                             <Footer version={process?.env?.npm_package_version} />
                         </Body>
-                    </ThemeProvider>
-                </NotificationProvider>
-            </AuthProvider>
-        </html>
+                    </html>
+                </ThemeProvider>
+            </NotificationProvider>
+        </AuthProvider>
     )
 }
 
