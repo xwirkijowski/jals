@@ -115,7 +115,7 @@ const Page = async (
 										</Link>
 									</>
 								}
-								{!link.caution && <Spinner/>}
+								{!link.caution && <Spinner className={'mx-auto'} />}
 							</CardFooter>
 						</Card>
 					)}
