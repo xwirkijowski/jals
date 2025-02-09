@@ -2,13 +2,17 @@
 
 # JALS / Just Another Link Shortener v2
 
-A simple solution for shortening links built with React, Next.js and GraphQL with basic safety features. Initially designed and developed in 2021 as a personal challenge and to get some new experience.
+> [!WARNING]
+> As of 09.02.2025 this project is on the back burner, since all basic functionality that has been planned is now done. I will be moving on to my next project.
+
+A solution for shortening links built with React, Next.js and GraphQL with basic safety features included. Initially designed and developed in 2021 as a personal challenge and to get some new experience.
 
 I began work on a refactor in december 2024. Primary goal was to gain practical knowledge of current React (v19) and Next.js (v15) features, including the new App router. As a secondary goal, client application was to fully leverage TailwindCSS features and implement some subtle animations.
 
 React and Next.js features used are listed in separate [api](./api/README.md) and [client](./client/README.md) `README.md` files.
 
-> **Now live!** Development stage preview available at [jals2.wirkijowski.dev](https://jals2.wirkijowski.dev/). I recommend creating an account and playing around with the dashboard :)
+> [!NOTE]
+> **Now live!** Current state demo available at [jals2.wirkijowski.dev](https://jals2.wirkijowski.dev/). I recommend creating an account and trying out the dashboard :)
 
 | Deployment |
 |------------|
@@ -56,14 +60,14 @@ React and Next.js features used are listed in separate [api](./api/README.md) an
 
 ## Functionality
 
-### Operational
+### Done
 - [x] Session management on both client and api
 - [x] Auth code transactional emails
 - [x] Short link creation
 - [x] Redirection logic with safeguards
 - [x] Link inspection (`/inspect/[linkId]` & `/[linkId]/+`)
 - [x] Reporting functionality — link flagging
-- [x] User-agent and address collection (`@todo levarage User-Agent Client Hints API`)
+- [x] User-agent and address collection (`@todo: levarage User-Agent Client Hints API`)
 - [x] Light and dark themes
 - [x] Link management
 - [x] Magic link functionality
@@ -74,6 +78,7 @@ React and Next.js features used are listed in separate [api](./api/README.md) an
 - [ ] User management
 - [ ] Client to API health checks
 - [ ] Full query error handling
+- [ ] Fully mobile-friendly UI
 
 ---
 ## Version 1 (2021)
@@ -104,4 +109,5 @@ React and Next.js features used are listed in separate [api](./api/README.md) an
 
 
 ---
-No license is available.
+## License
+This project is not licensed for commercial use. You are free to explore the code, propose changes, and take inspiration, but redistribution or commercial repurposing is not permitted.
