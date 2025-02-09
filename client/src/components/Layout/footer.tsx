@@ -8,7 +8,7 @@ import Link from "next/link";
 import {merge} from "@lib/merge";
 
 import {ThemeContext} from "@ctx/theme/theme.context";
-import {Button} from "@comp/button";
+import {Button, ButtonGroup} from "@comp/button";
 import {SunIcon, MoonIcon, GithubIcon} from "@comp/Icon";
 import {Wxme} from "@comp/wxme/wxme";
 
@@ -51,16 +51,18 @@ export const Footer = ({version}: TProps): React.ReactNode => {
                         <GithubIcon controlsBody={githubControlsBody} controlsTail={githubControlsTail} />
                     </Button>
                 </Link>
-                <Button btnType={'light'} role={"link"} aria-label={"Light Theme"} onClick={() => setTheme('light')}
-                        onMouseEnter={() => sunControls.start('animate')}
-                        onMouseLeave={() => sunControls.start('normal')}>
-                    <SunIcon controls={sunControls} />
-                </Button>
-                <Button btnType={'dark'} role={"link"} aria-label={"Dark Theme"} onClick={() => setTheme('dark')}
-                        onMouseEnter={() => moonControls.start('animate')}
-                        onMouseLeave={() => moonControls.start('normal')}>
-                    <MoonIcon controls={moonControls} />
-                </Button>
+                <ButtonGroup joined>
+                    <Button group={'start'} btnType={'light'} role={"link"} aria-label={"Light Theme"} onClick={() => setTheme('light')}
+                            onMouseEnter={() => sunControls.start('animate')}
+                            onMouseLeave={() => sunControls.start('normal')}>
+                        <SunIcon controls={sunControls} />
+                    </Button>
+                    <Button group={'end'} btnType={'dark'} role={"link"} aria-label={"Dark Theme"} onClick={() => setTheme('dark')}
+                            onMouseEnter={() => moonControls.start('animate')}
+                            onMouseLeave={() => moonControls.start('normal')}>
+                        <MoonIcon controls={moonControls} />
+                    </Button>
+                </ButtonGroup>
             </div>
         </footer>
     )

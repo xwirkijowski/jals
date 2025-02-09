@@ -7,7 +7,7 @@ import {merge} from "@lib/merge";
 
 import {AuthContext} from "@ctx/auth/auth.context";
 
-import {Button} from "@comp/button";
+import {Button, ButtonGroup} from "@comp/button";
 import {LogOutButton} from "@act/@auth/logout/LogOut.button";
 import {UserBadge} from "@comp/Layout/header/user-badge";
 import {Tagline} from "@comp/Layout/header/tagline";
@@ -30,10 +30,10 @@ export const Header = () => {
                         <LogOutButton />
                     </>
                 ) : (
-                    <>
-                        <Link href={'/login'} passHref><Button btnType={'theme'}>Log In</Button></Link>
-                        <Link href={'/register'} passHref><Button>Create account</Button></Link>
-                    </>
+                    <ButtonGroup joined>
+                        <Link href={'/login'} passHref><Button group={'start'} btnType={'theme'}>Log In</Button></Link>
+                        <Link href={'/register'} passHref><Button group={'end'}>Create account</Button></Link>
+                    </ButtonGroup>
                 )}
             </nav>
         </header>
