@@ -15,14 +15,18 @@
     "api-compile": "tsc && tsc-alias && npm run api-copyfiles",
     "api-start": "node dist/main.js",
     "api-compile-and-start": "npm run api-compile && node dist/main.js",
-    "api-dev": "tsx watch --tsconfig ./tsconfig.json main.ts"
+    "api-dev": "tsx watch --tsconfig ./tsconfig.json main.ts",
+    "api-test": "mocha \"./dist/**/*.test.js\"",
+    "api-compile-and-test": "npm run api-compile && npm run api-test"
   },
   "devDependencies": {
     "@types/luxon": "^3.4.2",
+    "@types/mocha": "^10.0.10",
     "@types/node": "^22.10.5",
     "@types/react": "^19.0.2",
     "@types/react-dom": "^19.0.2",
     "copyfiles": "^2.4.1",
+    "mocha": "^11.1.0",
     "tsc-alias": "^1.8.10",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2"
